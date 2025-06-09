@@ -6,6 +6,8 @@ import { connectDB } from "./database/db.js";
 import { errorMiddleware } from "./middlewares/errorMiddlewares.js";
 import authRouter from "./routes/AuthRouter.js";
 import socRouter from "./routes/socRouter.js";
+import cartRouter from "./routes/cartRouter.js";
+
 
 export const app =  express();
 
@@ -25,6 +27,7 @@ app.use(express.urlencoded({extended: true}));
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/soc", socRouter);
+app.use("/api/v1/cart", cartRouter);
 
 connectDB();
 

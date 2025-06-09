@@ -29,15 +29,8 @@ const userSchema = new mongoose.Schema(
 
         cart: [
             {
-                socId: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "societies",
-                },
-                addedToCart: {
-                    type: Boolean,
-                    default: false,
-                },
-                socName: String,
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Society",
             },
         ],
         avatar: {
