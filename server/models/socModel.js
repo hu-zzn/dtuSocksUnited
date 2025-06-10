@@ -27,18 +27,17 @@ const socSchema = new mongoose.Schema(
             default : [],
         },
         socContact: {
-            president: { type: String, trim: true },
+            team: [
+                {
+                role: { type: String, required: true, trim: true },
+                name: { type: String, required: true, trim: true }
+                }
+            ],
             email: {
                 type: String,
                 trim: true,
                 default: "_@.",
                 match: [/^\S+@\S+\.\S+$/, 'Invalid email'],
-            },
-            phone: {
-                type: String,
-                trim: true,
-                default: "1000000000",
-                match: [/^\d{10}$/, 'Phone must be 10 digits'],
             },
         },
         socSocials: {
