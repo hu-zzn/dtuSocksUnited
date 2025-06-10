@@ -7,7 +7,7 @@ export function generateVerificationOtpEmailTemplate(otpCode) {
   return `
     <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 0; background-color: #ffffff;">
       <!-- Header -->
-      <div style="background-color: #ff6f61; padding: 20px; text-align: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+      <div style="background-color:rgb(0, 0, 0); padding: 20px; text-align: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
         <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">DTUsocksUnited</h1>
       </div>
 
@@ -21,7 +21,7 @@ export function generateVerificationOtpEmailTemplate(otpCode) {
 
         <!-- OTP Code -->
         <div style="display: inline-block; background-color: #ffffff; padding: 15px 30px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px;">
-          <span style="font-size: 28px; font-weight: bold; color: #ff6f61; letter-spacing: 5px;" role="text">
+          <span style="font-size: 28px; font-weight: bold; color:rgb(0, 0, 0); letter-spacing: 5px;" role="text">
             ${safeOtpCode}
           </span>
         </div>
