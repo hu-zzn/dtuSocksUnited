@@ -8,7 +8,6 @@ import { sendToken } from "../utils/sendToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { generateForgotPasswordEmailTemplate } from "../utils/emailTemplates.js";
 
-
 export const register = catchAsyncErrors(async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
@@ -50,7 +49,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}); //sumit ji
+}); 
 
 export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
     const { email, otp } = req.body;
@@ -105,7 +104,7 @@ export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
     } catch (error) {
         return next(new ErrorHandler("Internal Server error", 500));
     }
-}); //ashish babu
+}); 
 
 export const login = catchAsyncErrors(async (req, res, next) => {
     const { email, password } = req.body;
@@ -121,7 +120,7 @@ export const login = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Invalid email or password.", 400));
     }
     sendToken(user, 200, "User login successfully.", res);
-}); // hussain
+});
 
 export const logout = catchAsyncErrors(async (req, res, next) => {
     res.status(200).cookie("token", "", {

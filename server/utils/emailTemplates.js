@@ -1,8 +1,9 @@
 export function generateVerificationOtpEmailTemplate(otpCode) {
-  if (!otpCode || typeof otpCode !== 'string') {
+  if (!otpCode) {
     throw new Error('Invalid or missing OTP code');
   }
-  const safeOtpCode = otpCode.replace(/[<>]/g, ''); // Basic XSS prevention
+
+  const safeOtpCode = String(otpCode).replace(/[<>]/g, '');
 
   return `
     <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 0; background-color: #ffffff;">
