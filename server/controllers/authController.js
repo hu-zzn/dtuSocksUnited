@@ -50,7 +50,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-});
+}); //sumit ji
 
 export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
     const { email, otp } = req.body;
@@ -103,10 +103,9 @@ export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
 
 
     } catch (error) {
-        console.error("🔴 verifyOTP error:", error); // Add this for debugging
         return next(new ErrorHandler("Internal Server error", 500));
     }
-});
+}); //ashish babu
 
 export const login = catchAsyncErrors(async (req, res, next) => {
     const { email, password } = req.body;
@@ -122,7 +121,7 @@ export const login = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Invalid email or password.", 400));
     }
     sendToken(user, 200, "User login successfully.", res);
-});
+}); // hussain
 
 export const logout = catchAsyncErrors(async (req, res, next) => {
     res.status(200).cookie("token", "", {
