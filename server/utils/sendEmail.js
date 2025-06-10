@@ -1,5 +1,7 @@
 import nodeMailer from "nodemailer";
 export const sendEmail = async ({ email, subject, message }) => {
+
+// try {
     const transpoter = nodeMailer.createTransport({
         host: process.env.SMTP_HOST,
         service: process.env.SMTP_SERVICE,
@@ -15,8 +17,14 @@ export const sendEmail = async ({ email, subject, message }) => {
         from: process.env.SMTP_MAIL,
         to: email,
         subject,
-        text: message,
+        html: message,
     };
 
     await transpoter.sendMail(mailOptions);
+
+    // console.log("✅ Email sent successfully to:", email);
+    // } catch (error) {
+    //     console.error("❌ Failed to send email:", error.message);
+    //     throw error;
+    // }
 };
