@@ -39,22 +39,22 @@ const socSchema = new mongoose.Schema(
                 default: "_@.",
                 match: [/^\S+@\S+\.\S+$/, 'Invalid email'],
             },
-        },
-        socSocials: {
-            instagram: {
-                type: String,
-                default : "_",
-                trim: true,
-            },
-            linkedin: {
-                type: String,
-                default : "_",
-                trim: true,
-            },
-            linktree: {
-                type: String,
-                default : "_",
-                trim: true,
+            socSocials: {
+                instagram: {
+                    type: String,
+                    default : "_",
+                    trim: true,
+                },
+                linkedin: {
+                    type: String,
+                    default : "_",
+                    trim: true,
+                },
+                linktree: {
+                    type: String,
+                    default : "_",
+                    trim: true,
+                },
             },
         },
     },
