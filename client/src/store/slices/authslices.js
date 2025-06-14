@@ -1,5 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit"
 import axios from "axios"
+
 const authSlice= createSlice({
     name :"auth",
     initialState:{
@@ -131,18 +132,15 @@ const authSlice= createSlice({
             state.loading=false;
             state.error=action.payload;
         },
-        
-
-
         resetAuthSlice(state){
-            state.error=null,
-            state.loading=null,
-            state.message=null,
+            state.error=null;
+            state.loading=false;
+            state.message=null;
             state.user=state.user;
             state.isAuthenticated=state.isAuthenticated;
         },
 
-    }
+    },
 
 });
 export const resetAuthSlice=()=>(dispatch)=>{
