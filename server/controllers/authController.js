@@ -235,3 +235,24 @@ export const updatePassword = catchAsyncErrors(async (req, res, next)=>{
         message: "password updated.",
     });
 });
+
+export const resendOtp = catchAsyncErrors(async (req, res, next) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return next(new ErrorHandler("Email is required.", 400));
+    }
+
+    const user = await User.findOne({ email, accountVerified: false });
+
+    if (!user) {
+        return next(new ErrorHandler("No unverified account found with this email.", 400));
+    }
+
+    // Optional: add cooldown check here if you want (not required for now)
+
+    const newOtp = await user.generateVerificationCode();
+    await user.save();
+
+    sendverificationCode(newOtp, email, res);
+});
