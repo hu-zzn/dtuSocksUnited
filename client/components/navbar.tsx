@@ -2,12 +2,12 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Button } from "../components/ui/button"
+import { Badge } from "../components/ui/badge"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu"
 import { ShoppingCart, User, Menu, X } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
-import { useCart } from "@/hooks/use-cart"
+import { useAuth } from "../hooks/use-auth"
+import { useCart } from "../hooks/use-cart"
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)

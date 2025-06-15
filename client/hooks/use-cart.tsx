@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import { cartApi } from "@/lib/api"
+import { cartApi } from "../lib/api"
 import { useAuth } from "./use-auth"
 
 interface CartContextType {

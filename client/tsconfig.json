@@ -16,8 +16,15 @@
     "plugins": [{"name": "next"}],
     "baseUrl": ".", // already present
     "paths": {
-      "@/*": ["client/*"]
+      "@/*": [
+        "./app/*",
+        "./components/*",
+        "./hooks/*",
+        "./lib/*",
+        "./types/*"
+      ]
     }
+
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

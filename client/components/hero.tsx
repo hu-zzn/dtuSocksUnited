@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "../components/ui/button"
 import { GraduationCap, Users, Calendar } from "lucide-react"
 
 export function Hero() {

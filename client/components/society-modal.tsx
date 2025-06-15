@@ -1,12 +1,12 @@
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog"
+import { Button } from "../components/ui/button"
+import { Badge } from "../components/ui/badge"
 import { Mail, Instagram, Linkedin, ExternalLink, Users, Calendar, Plus, Check } from "lucide-react"
-import type { Society } from "@/types/society"
-import { useCart } from "@/hooks/use-cart"
-import { useAuth } from "@/hooks/use-auth"
+import type { Society } from "../types/society"
+import { useCart } from "../hooks/use-cart"
+import { useAuth } from "../hooks/use-auth"
 
 interface SocietyModalProps {
   society: Society | null

@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../components/ui/card"
+import { Button } from "../components/ui/button"
+import { Badge } from "../components/ui/badge"
 import { Heart, Users, Calendar, Plus, Check } from "lucide-react"
-import type { Society } from "@/types/society"
-import { useCart } from "@/hooks/use-cart"
-import { useAuth } from "@/hooks/use-auth"
+import type { Society } from "../types/society"
+import { useCart } from "../hooks/use-cart"
+import { useAuth } from "../hooks/use-auth"
 
 interface SocietyCardProps {
   society: Society
