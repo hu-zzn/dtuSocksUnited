@@ -15,7 +15,7 @@ export async function sendverificationCode(verificationCode,email, res) {
             message: "Verification code sent successfully.",
         });
     } catch(error){
-        // console.error("Error sending verification email:", error);
+        console.error("Error sending verification email:", error);
         return res.status(500).json({
             success: false,
             message: "Verification code failed to send.",
