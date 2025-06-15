@@ -7,7 +7,7 @@ import { Input } from "../components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
 import { Search } from "lucide-react"
 import type { Society } from "../types/society"
-import { societyApi } from "../lib/api"
+import { societyApi } from "../lib/apiClient"
 
 export function SocietyGrid() {
   const [societies, setSocieties] = useState<Society[]>([])

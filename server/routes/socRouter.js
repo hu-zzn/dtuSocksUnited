@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/admin/add",isAuthenticated, isAuthorized("Admin"), addSoc);
 router.get("/all",isAuthenticated, getAllSocs);
-router.delete("/delete/:id", isAuthenticated, isAuthorized("Admin"), deleteSoc);
-router.patch("/update/:id", isAuthenticated, isAuthorized("Admin"), updateSoc);
+router.delete("/admin/delete/:id", isAuthenticated, isAuthorized("Admin"), deleteSoc);
+router.patch("/admin/update/:id", isAuthenticated, isAuthorized("Admin"), updateSoc);
 
 export default router;

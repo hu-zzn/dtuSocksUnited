@@ -1,71 +1,67 @@
-"use client"
+"use client";
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import { authApi } from "../lib/api"
-import type { User } from "../types/user"
-
-interface AuthContextType {
-  user: User | null
-  isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<void>
-  logout: () => void
-  loading: boolean
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
-    try {
-      const token = localStorage.getItem("token")
-      if (token) {
-        const userData = await authApi.getMe()
-        setUser(userData)
-      }
-    } catch (error) {
-      localStorage.removeItem("token")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const login = async (email: string, password: string) => {
-    const response = await authApi.login(email, password)
-    localStorage.setItem("token", response.token)
-    setUser(response.user)
-  }
-
-  const logout = () => {
-    localStorage.removeItem("token")
-    setUser(null)
-  }
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        login,
-        logout,
-        loading,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
-}
+import { useState } from "react";
+import { authApi } from "../lib/apis";
+import type { User, LoginResponse, GenericResponse } from "../types/index";
 
 export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider")
-  }
-  return context
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const register = async (name: string, email: string, password: string) => {
+    setLoading(true);
+    try {
+      await authApi.register({ name, email, password });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyOTP = async (email: string, otp: string) => {
+    setLoading(true);
+    try {
+      const res = await authApi.verifyOTP(email, otp);
+      setUser(res.user);
+      localStorage.setItem("token", res.token);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resendOTP = async (email: string) => {
+    setLoading(true);
+    try {
+      await authApi.resendOTP(email);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    setLoading(true);
+    try {
+      const res: LoginResponse = await authApi.login(email, password);
+      setUser(res.user);
+      localStorage.setItem("token", res.token);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
+
+  const getMe = async () => {
+    setLoading(true);
+    try {
+      const res = await authApi.getMe();
+      setUser(res.user);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { user, loading, register, verifyOTP, resendOTP, login, logout, getMe };
 }

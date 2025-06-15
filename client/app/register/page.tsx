@@ -11,7 +11,7 @@ import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
 import { Alert, AlertDescription } from "../../components/ui/alert"
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react"
-import { authApi } from "../../lib/api"
+import  authApi  from "../../lib/apiClient"
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
