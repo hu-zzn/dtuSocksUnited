@@ -6,55 +6,43 @@ import { SocietyModal } from "../components/society-modal"
 import { Input } from "../components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
 import { Search } from "lucide-react"
-import type { Society } from "../types/society"
-import { societyApi } from "../lib/apiClient"
+import type { Society } from "../types/index"
+import { useSocieties } from "../hooks/use-society";
 
 export function SocietyGrid() {
-  const [societies, setSocieties] = useState<Society[]>([])
-  const [filteredSocieties, setFilteredSocieties] = useState<Society[]>([])
-  const [selectedSociety, setSelectedSociety] = useState<Society | null>(null)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [categoryFilter, setCategoryFilter] = useState("all")
-  const [loading, setLoading] = useState(true)
+  const { societies, loading, getAllSocieties } = useSocieties();
+  const [filteredSocieties, setFilteredSocieties] = useState<Society[]>([]);
+  const [selectedSociety, setSelectedSociety] = useState<Society | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
   useEffect(() => {
-    fetchSocieties()
+    getAllSocieties(); 
   }, [])
 
   useEffect(() => {
     filterSocieties()
   }, [societies, searchTerm, categoryFilter])
-
-  const fetchSocieties = async () => {
-    try {
-      const data = await societyApi.getAll()
-      setSocieties(data)
-    } catch (error) {
-      console.error("Failed to fetch societies:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
+  
   const filterSocieties = () => {
-    let filtered = societies
+    let filtered = societies;
 
     if (searchTerm) {
       filtered = filtered.filter(
         (society) =>
           society.socName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          society.socAbout.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
+          society.socAbout.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
 
     if (categoryFilter !== "all") {
-      filtered = filtered.filter((society) => society.socCategory.includes(categoryFilter))
+      filtered = filtered.filter((society) => society.socCategory.includes(categoryFilter));
     }
 
-    setFilteredSocieties(filtered)
-  }
+    setFilteredSocieties(filtered);
+  };
 
-  const categories = Array.from(new Set(societies.flatMap((society) => society.socCategory)))
+  const categories = Array.from(new Set(societies.flatMap((society) => society.socCategory)));
 
   if (loading) {
     return (
@@ -63,7 +51,7 @@ export function SocietyGrid() {
           <div key={i} className="h-64 bg-gray-200 animate-pulse rounded-lg" />
         ))}
       </div>
-    )
+    );
   }
 
   return (

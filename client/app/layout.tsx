@@ -3,8 +3,6 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { Navbar } from "../components/navbar"
-import { AuthProvider } from "../hooks/use-auth"
-import { CartProvider } from "../hooks/use-cart"
 import { ThemeProvider } from "../components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -12,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "SocietyHub - Discover Your Perfect Society",
   description: "Join communities that match your interests and build lifelong connections",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -24,12 +22,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AuthProvider>
-            <CartProvider>
-              <Navbar />
-              {children}
-            </CartProvider>
-          </AuthProvider>
+          <Navbar />
+          {children}
         </ThemeProvider>
       </body>
     </html>

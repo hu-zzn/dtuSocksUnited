@@ -11,8 +11,10 @@ import { useCart } from "../hooks/use-cart"
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { user, logout, isAuthenticated } = useAuth()
-  const { cartCount } = useCart()
+  const { user, logout } = useAuth();
+  const isAuthenticated = !!user;
+  const { cart } = useCart()
+  const  cartCount  = cart?.length?? 0
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50 backdrop-blur-md bg-white/95">

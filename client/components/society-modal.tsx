@@ -4,9 +4,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { Mail, Instagram, Linkedin, ExternalLink, Users, Calendar, Plus, Check } from "lucide-react"
-import type { Society } from "../types/society"
+import type { Society } from "../types/index"
 import { useCart } from "../hooks/use-cart"
 import { useAuth } from "../hooks/use-auth"
+import { useState, useEffect } from "react";
 
 interface SocietyModalProps {
   society: Society | null
@@ -15,17 +16,33 @@ interface SocietyModalProps {
 }
 
 export function SocietyModal({ society, isOpen, onClose }: SocietyModalProps) {
-  const { isInCart, toggleCart } = useCart()
-  const { isAuthenticated } = useAuth()
+  const { cart, toggleCart, fetchCart } = useCart();
+  const { user } = useAuth();
+  const isAuthenticated = !!user;
+  const [isToggling, setIsToggling] = useState(false);
 
-  if (!society) return null
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchCart();
+    }
+  }, [isAuthenticated]);
 
-  const inCart = isInCart(society._id)
+  if (!society) return null;
+
+  const inCart = cart?.some(item => item._id === society._id) ?? false;
 
   const handleToggleCart = async () => {
-    if (!isAuthenticated) return
-    await toggleCart(society._id)
-  }
+    if (!isAuthenticated) return;
+
+    setIsToggling(true);
+    try {
+      await toggleCart(society._id);
+    } catch (error) {
+      console.error("Failed to toggle cart:", error);
+    } finally {
+      setIsToggling(false);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

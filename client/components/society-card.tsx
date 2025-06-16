@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../compone
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { Heart, Users, Calendar, Plus, Check } from "lucide-react"
-import type { Society } from "../types/society"
+import type { Society } from "../types/index"
 import { useCart } from "../hooks/use-cart"
 import { useAuth } from "../hooks/use-auth"
 
@@ -15,10 +15,13 @@ interface SocietyCardProps {
 }
 
 export function SocietyCard({ society, onViewDetails }: SocietyCardProps) {
-  const { isInCart, toggleCart } = useCart()
-  const { isAuthenticated } = useAuth()
+  const { cart, toggleCart } = useCart()
+  const { user } = useAuth()
+  const isAuthenticated = !!user
+
+  const inCart = cart?.some(item => item._id === society._id) ?? false
+
   const [isToggling, setIsToggling] = useState(false)
-  const inCart = isInCart(society._id)
 
   const handleToggleCart = async () => {
     if (!isAuthenticated) return
@@ -69,7 +72,7 @@ export function SocietyCard({ society, onViewDetails }: SocietyCardProps) {
       <CardContent className="flex-1 pb-4">
         <p className="text-gray-600 text-sm line-clamp-3 mb-6 leading-relaxed">{society.socAbout}</p>
 
-        {society.socHighlights.length > 0 && (
+        {society.socHighlights?.length > 0 && (
           <div className="space-y-3">
             <h4 className="font-medium text-sm text-gray-900">Highlights</h4>
             <ul className="text-xs text-gray-600 space-y-2">
@@ -86,11 +89,11 @@ export function SocietyCard({ society, onViewDetails }: SocietyCardProps) {
         <div className="flex items-center gap-6 mt-6 text-xs text-gray-500">
           <div className="flex items-center gap-2">
             <Users className="w-3.5 h-3.5" />
-            <span>{society.socContact.team.length} members</span>
+            <span>{society.socContact?.team?.length ?? 0} members</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-3.5 h-3.5" />
-            <span>{society.socKeyEvents.length} events</span>
+            <span>{society.socKeyEvents?.length ?? 0} events</span>
           </div>
         </div>
       </CardContent>
