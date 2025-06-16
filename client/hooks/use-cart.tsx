@@ -12,7 +12,7 @@ export function useCart() {
     setLoading(true);
     try {
       const res = await cartApi.getCart();
-      setCart(res.cart);
+      setCart(res.data.cart);
     } finally {
       setLoading(false);
     }

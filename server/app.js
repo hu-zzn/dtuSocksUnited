@@ -15,8 +15,9 @@ config({path: "./config/config.env"});
 
 app.use(
     cors({
-        origin: [process.env.FRONTEND_URL],
-        methods: ["GET","POST","PUT","DELETE"],
+        // origin: process.env.FRONTEND_URL?.split(",") || ["http://localhost:3000"],
+        origin:["http://localhost:3000"],
+        methods: ["GET","POST","PUT","DELETE","PATCH"],
         credentials: true,
     })
 );

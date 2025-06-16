@@ -1,31 +1,36 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { Navbar } from "../components/navbar"
-import { ThemeProvider } from "../components/theme-provider"
+// app/layout.tsx
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] })
+// ✅ Adjust these paths based on your actual folder structure
+import { Navbar } from "../components/navbar";
+import { ThemeProvider } from "../components/theme-provider";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "SocietyHub - Discover Your Perfect Society",
   description: "Join communities that match your interests and build lifelong connections",
-  generator: 'v0.dev'
-}
+  generator: "v0.dev",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Navbar />
-          {children}
+          <main className="min-h-screen bg-background text-foreground p-4">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

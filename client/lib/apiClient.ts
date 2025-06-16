@@ -1,65 +1,48 @@
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
 class ApiClient {
-  private baseURL: string;
+  private client = axios.create({
+    baseURL: API_BASE_URL,
+    withCredentials: true, // 👈 essential for sending/receiving cookies (JWT)
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-  constructor(baseURL: string) {
-    this.baseURL = baseURL;
-  }
-
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${this.baseURL}${endpoint}`;
-    const token = localStorage.getItem("token");
-
-    const config: RequestInit = {
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
-        ...options.headers,
-      },
-      ...options,
-    };
-
-    const response = await fetch(url, config);
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: "Network error" }));
-      throw new Error(error.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint);
-  }
-
-  post<T>(endpoint: string, data?: any): Promise<T> {
-    return this.request<T>(endpoint, {
-      method: "POST",
-      body: data ? JSON.stringify(data) : undefined,
+  private handleResponse<T>(promise: Promise<AxiosResponse<T>>): Promise<T> {
+    return promise.then(res => res.data).catch(error => {
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Unknown error occurred";
+      console.error("🔴 API Error:", message);
+      throw new Error(message);
     });
   }
 
-  put<T>(endpoint: string, data?: any): Promise<T> {
-    return this.request<T>(endpoint, {
-      method: "PUT",
-      body: data ? JSON.stringify(data) : undefined,
-    });
+  get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return this.handleResponse<T>(this.client.get(url, config));
   }
 
-  patch<T>(endpoint: string, data?: any): Promise<T> {
-    return this.request<T>(endpoint, {
-      method: "PATCH",
-      body: data ? JSON.stringify(data) : undefined,
-    });
+  post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    return this.handleResponse<T>(this.client.post(url, data, config));
   }
 
-  delete<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, {
-      method: "DELETE",
-    });
+  put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    return this.handleResponse<T>(this.client.put(url, data, config));
+  }
+
+  patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    return this.handleResponse<T>(this.client.patch(url, data, config));
+  }
+
+  delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return this.handleResponse<T>(this.client.delete(url, config));
   }
 }
-
-export const apiClient = new ApiClient(API_BASE_URL);
+export const apiClient = axios.create({
+  baseURL: "http://localhost:4000/api/v1",
+  withCredentials: true, // ✅ this sends the cookie
+});

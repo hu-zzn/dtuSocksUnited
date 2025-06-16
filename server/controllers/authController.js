@@ -107,31 +107,32 @@ export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
 }); 
 
 export const login = catchAsyncErrors(async (req, res, next) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        return next(new ErrorHandler("Please enter all feilds.", 400));
-    }
-    const user = await User.findOne({ email, accountVerified: true }).select("+password");
-    if (!user) {
-        return next(new ErrorHandler("Invalid email or password.", 400));
-    }
-    const isPasswordMatched = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatched) {
-        return next(new ErrorHandler("Invalid email or password.", 400));
-    }
-    sendToken(user, 200, "User login successfully.", res);
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return next(new ErrorHandler("Please enter all fields.", 400));
+  }
+
+  const user = await User.findOne({ email, accountVerified: true }).select("+password");
+  if (!user) {
+    return next(new ErrorHandler("Invalid email or password.", 400));
+  }
+
+  const isPasswordMatched = await bcrypt.compare(password, user.password);
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Invalid email or password.", 400));
+  }
+
+  sendToken(user, 200, "User login successfully.", res);
 });
 
-export const logout = catchAsyncErrors(async (req, res, next) => {
-    res.status(200).cookie("token", "", {
-        expies: new Date(Date.now()),
-        httpOnly: true,
-    }).json({
-        success: true,
-        messasage: "Logged out successfully.",
-    });
-
-});
+export const logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  });
+  res.status(200).json({ success: true, message: "Logged out" });
+};
 
 export const getUser = catchAsyncErrors(async (req, res, next) => {
     const user = req.user;

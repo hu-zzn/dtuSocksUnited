@@ -9,14 +9,15 @@ export function useSocieties() {
   const [loading, setLoading] = useState(false);
 
   const getAllSocieties = async () => {
-    setLoading(true);
+  setLoading(true);
     try {
       const res = await societyApi.getAll();
-      setSocieties(res.socs);
+      setSocieties(res.data?.socs ?? []);
     } finally {
       setLoading(false);
     }
   };
+
 
   const addSociety = async (societyData: Partial<Society>) => {
     setLoading(true);
