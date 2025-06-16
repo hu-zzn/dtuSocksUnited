@@ -1,18 +1,24 @@
 export const sendToken = (user, statusCode, message, res) => {
-  const token = user.getJWTToken(); // ✅ uses getJWTToken method
-  const options = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  };
+  try {
+    const token = user.getJwtToken();
 
-  res
-    .status(statusCode)
-    .cookie("token", token, options)
-    .json({
-      success: true,
-      message,
-      user,
-    });
+    const options = {
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    };
+
+    res.status(statusCode)
+      .cookie("token", token, options)
+      .json({
+        success: true,
+        message,
+        user,
+      });
+
+  } catch (err) {
+    console.error("🔥 Error generating token:", err);
+    res.status(500).json({ success: false, message: "Token generation failed", error: err.message });
+  }
 };
