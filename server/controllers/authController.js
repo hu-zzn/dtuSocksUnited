@@ -9,47 +9,70 @@ import { sendEmail } from "../utils/sendEmail.js";
 import { generateForgotPasswordEmailTemplate } from "../utils/emailTemplates.js";
 
 export const register = catchAsyncErrors(async (req, res, next) => {
-    try {
-        const { name, email, password } = req.body;
-        if (!name || !email || !password) {
-            return next(new ErrorHandler("please enter all fields.", 400));
-        }
+  try {
+    const { name, email, password } = req.body;
 
-        const isRegisterted = await User.findOne({ email, accountVerified: true });
-        if (isRegisterted) {
-            return next(new ErrorHandler("User already exists", 400))
-        }
-
-        const registrationAttemptsByUser = await User.find({
-            email,
-            accountVerified: false,
-        });
-        if (registrationAttemptsByUser.length >= 500) {
-            return next(
-                new ErrorHandler(
-                    "You have exceeded the number of registration attempts. Please contact support.",
-                    400
-                )
-            );
-        }
-        if (password.length < 4 || password.length > 16) {
-            return next(
-                new ErrorHandler("Password must be between 4 and 16 characters.", 400)
-            );
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({
-            name,
-            email,
-            password: hashedPassword,
-        })
-        const verificationCode = await user.generateVerificationCode();
-        await user.save();
-        sendverificationCode(verificationCode, email, res);
-    } catch (error) {
-        next(error);
+    if (!name || !email || !password) {
+      return next(new ErrorHandler("Please enter all fields.", 400));
     }
-}); 
+
+    // ✅ Block if already registered and verified
+    const isRegistered = await User.findOne({ email, accountVerified: true });
+    if (isRegistered) {
+      return next(new ErrorHandler("User already exists", 400));
+    }
+
+    // ✅ Check if unverified user already exists
+    const unverifiedUser = await User.findOne({ email, accountVerified: false });
+
+    if (unverifiedUser) {
+      // ✅ Resend OTP
+      const verificationCode = await unverifiedUser.generateVerificationCode();
+      await unverifiedUser.save();
+
+      sendverificationCode(verificationCode, email, res, {
+        message: "Verification code resent. Please verify your email.",
+        userAlreadyExists: true, // helpful for frontend redirect logic
+      });
+      return;
+    }
+
+    // ✅ Limit registration attempts
+    const registrationAttemptsByUser = await User.find({ email, accountVerified: false });
+    if (registrationAttemptsByUser.length >= 500) {
+      return next(
+        new ErrorHandler(
+          "You have exceeded the number of registration attempts. Please contact support.",
+          400
+        )
+      );
+    }
+
+    if (password.length < 4 || password.length > 16) {
+      return next(
+        new ErrorHandler("Password must be between 4 and 16 characters.", 400)
+      );
+    }
+
+    // ✅ Register new user
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    const verificationCode = await user.generateVerificationCode();
+    await user.save();
+    sendverificationCode(verificationCode, email, res, {
+        message: "Registered successfully. Please verify your email.",
+        userAlreadyExists: false,
+    });
+} catch (error) {
+    next(error);
+}
+});
+
 
 export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
     const { email, otp } = req.body;
