@@ -105,25 +105,31 @@ export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Internal Server error", 500));
     }
 }); 
+export const login = async (req, res, next) => {
+  try {
 
-export const login = catchAsyncErrors(async (req, res, next) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return next(new ErrorHandler("Please enter all fields.", 400));
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Please enter all fields." });
+    }
+
+    const user = await User.findOne({ email, accountVerified: true }).select("+password");
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password." });
+    }
+
+    const isPasswordMatched = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatched) {
+      return res.status(400).json({ message: "Invalid email or password." });
+    }
+
+    sendToken(user, 200, "User login successfully.", res);
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
+};
 
-  const user = await User.findOne({ email, accountVerified: true }).select("+password");
-  if (!user) {
-    return next(new ErrorHandler("Invalid email or password.", 400));
-  }
-
-  const isPasswordMatched = await bcrypt.compare(password, user.password);
-  if (!isPasswordMatched) {
-    return next(new ErrorHandler("Invalid email or password.", 400));
-  }
-
-  sendToken(user, 200, "User login successfully.", res);
-});
 
 export const logout = (req, res) => {
   res.clearCookie("token", {
@@ -257,3 +263,6 @@ export const resendOtp = catchAsyncErrors(async (req, res, next) => {
 
     sendverificationCode(newOtp, email, res);
 });
+
+
+

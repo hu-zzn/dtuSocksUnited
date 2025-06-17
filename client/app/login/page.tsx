@@ -31,7 +31,8 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      await login(formData.email, formData.password)
+      await login(formData.email, formData.password);
+      router.refresh(); // ✅ Reloads the page + re-fetches data
       router.push("/")
     } catch (err: any) {
       setError(err.message || "Login failed")

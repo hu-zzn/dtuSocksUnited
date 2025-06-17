@@ -1,12 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authApi } from "../lib/apis";
 import type { User } from "../types";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // start as true
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await getMe();
+      } catch (err) {
+        console.log("No user session found");
+      } finally {
+        setLoading(false);
+      }
+    };
+    init();
+  }, []); // ✅ Run once on first load
 
   const register = async (name: string, email: string, password: string): Promise<void> => {
     setLoading(true);
@@ -39,8 +52,8 @@ export function useAuth() {
   const login = async (email: string, password: string): Promise<void> => {
     setLoading(true);
     try {
-      await authApi.login(email, password); // ✅ Cookie stored by browser
-      await getMe(); // ✅ Get user data from backend
+      await authApi.login(email, password); // sets cookie
+      await getMe(); // get user
     } finally {
       setLoading(false);
     }
@@ -52,13 +65,8 @@ export function useAuth() {
   };
 
   const getMe = async (): Promise<void> => {
-    setLoading(true);
-    try {
-      const res = await authApi.getMe();
-      setUser(res.data.user);
-    } finally {
-      setLoading(false);
-    }
+    const res = await authApi.getMe();
+    setUser(res.data.user);
   };
 
   return {
