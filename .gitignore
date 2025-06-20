@@ -19,6 +19,8 @@ pnpm-debug.log*
 # Environment variables
 .env*
 !.env.example
+server/config/config.env
+
 
 # Vercel
 .vercel
