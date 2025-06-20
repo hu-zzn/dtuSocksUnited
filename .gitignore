@@ -44,3 +44,8 @@ pnpm-lock.yaml
 # Configs or secrets (optional if server exists)
 server/config/*
 !server/config/README.md  # <- if you want to keep a placeholder file
+server/config/config.env
+*.env
+/server/config
+server/config/config.env
+server/config/config.env
