@@ -41,11 +41,12 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
-# Configs or secrets (optional if server exists)
+# Ignore all config files (optional if server exists)
 server/config/*
-!server/config/README.md  # <- if you want to keep a placeholder file
-server/config/config.env
+
+# Except the README as a placeholder
+!server/config/README.md
+
+# Explicitly ignore env files
 *.env
-/server/config
-server/config/config.env
 server/config/config.env
