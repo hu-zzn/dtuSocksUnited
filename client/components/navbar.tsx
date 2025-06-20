@@ -29,8 +29,8 @@ export function Navbar() {
             <Link href="/" className="text-gray-600 hover:text-black transition-colors font-light">
               Home
             </Link>
-            <Link href="/societies" className="text-gray-600 hover:text-black transition-colors font-light">
-              Societies
+            <Link href="/eventCalender" className="text-gray-600 hover:text-black transition-colors font-light">
+              Event Calender 
             </Link>
             {user?.role === "Admin" && (
               <Link href="/admin" className="text-gray-600 hover:text-black transition-colors font-light">
