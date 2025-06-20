@@ -23,7 +23,7 @@ export const authApi = {
     apiClient.post<GenericResponse>("/auth/password/forgot", { email }),
 
   resetPassword: (token: string, password: string, confirmPassword: string) =>
-    apiClient.put<GenericResponse>(`/auth/password/reset/${token}`, {
+    apiClient.put<GenericResponse>(`/auth/reset-password/${token}`, {
       password,
       confirmPassword,
     }),

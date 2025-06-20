@@ -185,7 +185,7 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) =>{
     const resetToken = user.getResetPasswordToken();
 
     await user.save ({ validationBeforeSave : false });
-    const resetPasswordUrl = `${process.env.FRONTEND_URL}/password/reset/${resetToken}`;
+    const resetPasswordUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
     const message = generateForgotPasswordEmailTemplate(resetPasswordUrl);
 
