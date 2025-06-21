@@ -20,7 +20,7 @@ export const addSoc = catchAsyncErrors(async (req, res, next) => {
 });
 export const getAllSocs = catchAsyncErrors(async (req, res, next) => {
     const socs = await Soc.find();
-    res.status(201).json({
+    res.status(200).json({
         success: true,
         socs,
     });
