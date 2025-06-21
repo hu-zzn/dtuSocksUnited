@@ -43,6 +43,6 @@ class ApiClient {
   }
 }
 export const apiClient = axios.create({
-  baseURL: "http://localhost:4000/api/v1",
+  baseURL: "https://unifydtu-backend.vercel.app/api/v1",
   withCredentials: true, // ✅ this sends the cookie
 });
