@@ -1,4 +1,3 @@
-// app.js
 import express from "express";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
@@ -11,37 +10,44 @@ import cartRouter from "./routes/cartRouter.js";
 
 export const app = express();
 
-// ✅ Load environment variables
 config({ path: "./config/config.env" });
 
-// ✅ Setup allowed origins for CORS
 const allowedOrigins = process.env.FRONTEND_URL
-  ? process.env.FRONTEND_URL.split(",").map(origin => origin.trim().replace(/\/$/, ""))
-  : ["https://unifydtu.vercel.app", "http://localhost:3000"];
+  ? process.env.FRONTEND_URL.split(",").map(origin =>
+      origin.trim().replace(/\/$/, "")
+    )
+  : ["http://localhost:3000", "https://unifydtu.vercel.app"];
 
-// ✅ Middleware
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Not allowed by CORS"));
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+// ✅ Handle OPTIONS preflight manually before other middlewares
+app.options("*", cors({
+  origin: allowedOrigins,
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
 }));
+
+// ✅ Apply CORS middleware
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  })
+);
 
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/soc", socRouter);
 app.use("/api/v1/cart", cartRouter);
 
-// ✅ Connect DB once (you must do this once in `api/index.js`)
 connectDB();
 
-// ✅ Global error handler
 app.use(errorMiddleware);
