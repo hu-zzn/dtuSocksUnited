@@ -43,6 +43,7 @@ class ApiClient {
   }
 }
 export const apiClient = axios.create({
-  baseURL: "NEXT_PUBLIC_API_UR",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  // const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1"
   withCredentials: true, // ✅ this sends the cookie
 });
