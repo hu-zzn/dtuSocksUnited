@@ -62,8 +62,5 @@ app.get("/test-db", async (req, res) => {
   }
 });
 
-// ✅ Connect Database
-connectDB();
-
 // ✅ Error Middleware
 app.use(errorMiddleware);
