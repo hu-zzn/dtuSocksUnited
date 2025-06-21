@@ -23,28 +23,23 @@ const allowedOrigins = process.env.FRONTEND_URL
 
 console.log("✅ Allowed Origins:", allowedOrigins);
 
-// ✅ CORS middleware (manual)
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
+// ✅ Use CORS middleware only
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
 // ✅ Built-in middlewares
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ✅ Health Check
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "Backend is running 🎉" });
+});
 
 // ✅ API Routes
 app.use("/api/v1/auth", authRouter);
@@ -62,7 +57,6 @@ app.get("/test-db", async (req, res) => {
     res.send("✅ MongoDB Connected Successfully!");
   } catch (err) {
     console.log("🧪 Loaded MONGODB_URI:", process.env.MONGODB_URI);
-
     console.error("❌ MongoDB ping failed:", err.message);
     res.status(500).send("❌ MongoDB Connection Failed");
   }
