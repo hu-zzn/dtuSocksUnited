@@ -54,10 +54,16 @@ app.use("/api/v1/cart", cartRouter);
 // ✅ Test MongoDB Connection Route
 app.get("/test-db", async (req, res) => {
   try {
-    await mongoose.connection.db.admin().ping();
+    if (!mongoose.connection.readyState) {
+      throw new Error("Mongoose is not connected");
+    }
+
+    const dbStatus = await mongoose.connection.db.admin().ping();
     res.send("✅ MongoDB Connected Successfully!");
   } catch (err) {
-    console.error("❌ MongoDB ping failed:", err);
+    console.log("🧪 Loaded MONGODB_URI:", process.env.MONGODB_URI);
+
+    console.error("❌ MongoDB ping failed:", err.message);
     res.status(500).send("❌ MongoDB Connection Failed");
   }
 });
