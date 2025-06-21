@@ -39,12 +39,7 @@ app.options("*", cors(corsOptions)); // ✅ Preflight handling
 // ✅ Core Middlewares
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// ✅ Routes
-app.get("/", (req, res) => {
-  res.status(200).json({ status: "Backend is running 🎉" });
-});
+app.use(express.urlencoded({ extended: true }))
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/soc", socRouter);
