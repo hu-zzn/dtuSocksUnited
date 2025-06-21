@@ -58,4 +58,4 @@ const socSchema = new mongoose.Schema(
 );
 
 
-export const Soc = mongoose.model("Soc", socSchema,"Societies");
+export const Soc = mongoose.model("Soc", socSchema,"societies");
