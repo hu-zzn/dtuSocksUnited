@@ -18,36 +18,38 @@ const allowedOrigins = process.env.FRONTEND_URL
     )
   : ["http://localhost:3000", "https://unifydtu.vercel.app"];
 
-// ✅ Handle OPTIONS preflight manually before other middlewares
-app.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-}));
+// ✅ Log allowed origins for debugging
+console.log("✅ Allowed Origins:", allowedOrigins);
 
-// ✅ Apply CORS middleware
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  })
-);
+// ✅ Middleware to handle CORS preflight & headers
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ✅ Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/soc", socRouter);
 app.use("/api/v1/cart", cartRouter);
 
+// ✅ Connect DB only if not in serverless environment
 connectDB();
 
+// ✅ Error middleware
 app.use(errorMiddleware);
