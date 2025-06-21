@@ -15,13 +15,16 @@ export const app = express();
 config({ path: "./config/config.env" });
 
 // ✅ Define allowed origins from .env or use default
-const allowedOrigins = process.env.FRONTEND_URL
-  ? process.env.FRONTEND_URL.split(",").map(origin =>
-      origin.trim().replace(/\/$/, "")
-    )
-  : ["http://localhost:3000", "https://unifydtu.vercel.app"];
-
-console.log("✅ Allowed Origins:", allowedOrigins);
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 // ✅ Use CORS middleware only
 app.use(
