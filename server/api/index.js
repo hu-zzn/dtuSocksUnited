@@ -1,14 +1,11 @@
-// api/index.js
 import { app } from "../app.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { createServer } from "http";
 
 dotenv.config({ path: "../config/config.env" });
 
 let isConnected = false;
 
-// Vercel-compatible handler
 export default async function handler(req, res) {
   if (!isConnected) {
     try {
@@ -24,6 +21,5 @@ export default async function handler(req, res) {
     }
   }
 
-  // Convert Express to handle Vercel's req/res
-  return createServer(app).emit("request", req, res);
+  return app(req, res); // ✅ This is the correct way
 }
