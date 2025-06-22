@@ -29,8 +29,8 @@ export function Navbar() {
             <Link href="/" className="text-gray-600 hover:text-black transition-colors font-light">
               Home
             </Link>
-            <Link href="/eventCalender" className="text-gray-600 hover:text-black transition-colors font-light">
-              Event Calender 
+            <Link href="/eventCalendar" className="text-gray-600 hover:text-black transition-colors font-light">
+              Event Calendar 
             </Link>
             {user?.role === "Admin" && (
               <Link href="/admin" className="text-gray-600 hover:text-black transition-colors font-light">
@@ -94,8 +94,9 @@ export function Navbar() {
               <Link href="/" className="text-gray-700 hover:text-blue-600">
                 Home
               </Link>
-              <Link href="/societies" className="text-gray-700 hover:text-blue-600">
-                Societies
+              
+              <Link href="/eventCalendar" className="text-gray-700 hover:text-blue-600">
+                Event Calendar
               </Link>
               {user?.role === "Admin" && (
                 <Link href="/admin" className="text-gray-700 hover:text-blue-600">
