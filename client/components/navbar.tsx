@@ -21,7 +21,7 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="text-3xl font-light text-black tracking-tight">
-            Society<span className="font-bold">Hub</span>
+            Unify<span className="font-bold">DTU</span>
           </Link>
 
           {/* Desktop Navigation */}
