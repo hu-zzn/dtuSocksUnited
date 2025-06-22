@@ -40,6 +40,7 @@ export default function ForgotPasswordPage() {
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
+                name="email" // ✅ Add this
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

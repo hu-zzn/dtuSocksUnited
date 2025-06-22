@@ -53,6 +53,8 @@ export function SocietyGrid() {
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <Input
+            id="search"
+            name="search"
             placeholder="Search societies..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}

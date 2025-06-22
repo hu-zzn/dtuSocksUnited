@@ -89,6 +89,7 @@ export default function RegisterPage() {
           {renderError()}
           <InputField
             id="otp"
+            name="otp"  // ✅ Add this
             label="Verification Code"
             placeholder="Enter 6-digit code"
             value={otp}

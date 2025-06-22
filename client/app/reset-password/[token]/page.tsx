@@ -61,6 +61,7 @@ export default function ResetPasswordPage() {
               <Label htmlFor="password">New Password</Label>
               <Input
                 id="password"
+                name="password" // ✅ Add this
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -71,6 +72,7 @@ export default function ResetPasswordPage() {
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <Input
                 id="confirmPassword"
+                name="confirmPassword" // ✅ Add this
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
