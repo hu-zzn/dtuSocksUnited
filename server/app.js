@@ -22,24 +22,28 @@ const allowedOrigins = process.env.FRONTEND_URL
 console.log("✅ Allowed Origins:", allowedOrigins);
 
 // ✅ CORS Middleware
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // ✅ Preflight handling
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 // ✅ Core Middlewares
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
+
+// ✅ Routes
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "Backend is running 🎉" });
+});
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/soc", socRouter);
