@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
 
@@ -11,15 +11,30 @@ class ApiClient {
     },
   });
 
-  private handleResponse<T>(promise: Promise<AxiosResponse<T>>): Promise<T> {
-    return promise.then(res => res.data).catch(error => {
+
+  private async handleResponse<T>(promise: Promise<AxiosResponse<T>>): Promise<T> {
+    try {
+      const res = await promise;
+      return res.data;
+    } catch (error) {
+      const err = error as AxiosError<{ message?: string }>;
+
+      const status = err.response?.status;
       const message =
-        error?.response?.data?.message ||
-        error?.message ||
+        err.response?.data?.message ||
+        err.message ||
         "Unknown error occurred";
-      console.error("🔴 API Error:", message);
+
+      console.error("🔴 API Error:", message, "| Status:", status);
+
+      // Optional: handle unauthorized globally
+      if (status === 401) {
+        console.warn("🛑 Unauthorized: Maybe cookies are missing or expired");
+        // You can also redirect to login or trigger logout here
+      }
+
       throw new Error(message);
-    });
+    }
   }
 
   get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
