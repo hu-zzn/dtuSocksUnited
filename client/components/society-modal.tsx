@@ -239,7 +239,7 @@ export function SocietyModal({ society, isOpen, onClose }: SocietyModalProps) {
 
     setIsToggling(true);
     try {
-      toggleCart(society._id);
+      toggleCart(society);
     } catch (error) {
       console.error("Failed to toggle cart:", error);
     } finally {

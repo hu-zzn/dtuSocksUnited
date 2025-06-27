@@ -30,43 +30,39 @@
 
 //   return { cart, loading, fetchCart, toggleCart };
 // }
+
 import { useEffect, useState } from "react";
 import type { Society } from "../types";
 
 export function useCart() {
   const [cart, setCart] = useState<Society[]>([]);
 
-  // STEP 1: Load cart from localStorage when app starts
+  // Load cart from localStorage when hook mounts
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
+    try {
+      const saved = localStorage.getItem("cart");
+      if (saved) {
+        setCart(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error("Failed to parse cart from localStorage", e);
     }
   }, []);
 
-  // STEP 2: Save cart to localStorage whenever it changes
+  // Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // STEP 3: Toggle add/remove
-  const toggleCart = (societyId: string, societyData?: Society) => {
-    setCart((prevCart) => {
-      const exists = prevCart.some((item) => item._id === societyId);
-      const updatedCart = exists
-        ? prevCart.filter((item) => item._id !== societyId)
-        : [...prevCart, societyData!]; // Add full object if adding
-      return updatedCart;
-    });
+  // Toggle cart with full object
+  const toggleCart = (society: Society) => {
+    const exists = cart.some((item) => item._id === society._id);
+    const updated = exists
+      ? cart.filter((item) => item._id !== society._id)
+      : [...cart, society];
+    setCart(updated);
   };
 
-  // STEP 4: Expose fetchCart (optional, can remove if unused)
-  const fetchCart = () => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-  };
-
-  return { cart, toggleCart, fetchCart };
+  return { cart, toggleCart };
 }
+
