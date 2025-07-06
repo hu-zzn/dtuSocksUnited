@@ -40,7 +40,8 @@ export function SocietyCard({
       if (onToggle) {
         onToggle();
       } else {
-        toggleCart(society);
+        await toggleCart(society._id); // ✅ pass society._id (string)
+
       }
 
     } catch (error) {

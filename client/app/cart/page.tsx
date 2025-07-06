@@ -18,7 +18,7 @@ export default function CartPage() {
             <SocietyCard
               key={society._id}
               society={society}
-              onToggle={() => toggleCart(society)}
+              onToggle={() => toggleCart(society._id)}
               isInCart={true}
             />
           ))}
