@@ -8,9 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Search } from "lucide-react"
 import type { Society } from "../types/index"
 import { useSocieties } from "../hooks/use-society"
+import { useCart } from "../hooks/use-cart" // ✅ added here
 
 export function SocietyGrid() {
   const { societies, loading, getAllSocieties } = useSocieties()
+  const { cart, toggleCart } = useCart() // ✅ use only once
+
   const [selectedSociety, setSelectedSociety] = useState<Society | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("all")
@@ -19,23 +22,21 @@ export function SocietyGrid() {
     getAllSocieties()
   }, [])
 
-  // Derive categories safely
   const safeSocieties = societies ?? []
   const categories = safeSocieties.length > 0 
     ? Array.from(new Set(safeSocieties.flatMap((society) => society.socCategory)))
     : []
 
-
   const filteredSocieties = safeSocieties.filter((society) => {
-  const matchesSearch =
-    society.socName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    society.socAbout.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch =
+      society.socName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      society.socAbout.toLowerCase().includes(searchTerm.toLowerCase())
 
-  const matchesCategory =
-    categoryFilter === "all" || society.socCategory.includes(categoryFilter)
+    const matchesCategory =
+      categoryFilter === "all" || society.socCategory.includes(categoryFilter)
 
-  return matchesSearch && matchesCategory
-})
+    return matchesSearch && matchesCategory
+  })
 
   if (loading) {
     return (
@@ -83,6 +84,8 @@ export function SocietyGrid() {
             key={society._id}
             society={society}
             onViewDetails={() => setSelectedSociety(society)}
+            onToggle={() => toggleCart(society._id)} // ✅ only triggers when clicked
+            isInCart={cart?.some(item => item._id === society._id)} // ✅ avoid calling useCart again
           />
         ))}
       </div>

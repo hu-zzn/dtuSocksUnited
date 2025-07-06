@@ -6,7 +6,6 @@ import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { Heart, Users, Calendar, Plus, Check } from "lucide-react"
 import type { Society } from "../types/index"
-import { useCart } from "../hooks/use-cart"
 import { useAuth } from "../hooks/use-auth"
 
 interface SocietyCardProps {
@@ -16,34 +15,23 @@ interface SocietyCardProps {
   isInCart?: boolean
 }
 
-
 export function SocietyCard({
   society,
   onViewDetails,
   onToggle,
-  isInCart,
+  isInCart = false,
 }: SocietyCardProps) {
-
-  const { cart, toggleCart } = useCart()
   const { user } = useAuth()
   const isAuthenticated = !!user
-
-  const inCart = isInCart ?? cart?.some(item => item._id === society._id) ?? false;
 
   const [isToggling, setIsToggling] = useState(false)
 
   const handleToggleCart = async () => {
-    if (!isAuthenticated) return
+    if (!isAuthenticated || !onToggle) return
 
     setIsToggling(true)
     try {
-      if (onToggle) {
-        onToggle();
-      } else {
-        await toggleCart(society._id); // ✅ pass society._id (string)
-
-      }
-
+      await onToggle()
     } catch (error) {
       console.error("Failed to toggle cart:", error)
     } finally {
@@ -121,18 +109,19 @@ export function SocietyCard({
         >
           View Details
         </Button>
+
         {isAuthenticated && (
           <Button
             onClick={handleToggleCart}
             disabled={isToggling}
-            variant={inCart ? "default" : "outline"}
+            variant={isInCart ? "default" : "outline"}
             className={`flex-1 rounded-full font-light ${
-              inCart ? "bg-black hover:bg-gray-800 text-white" : "border-gray-300 hover:bg-gray-50"
+              isInCart ? "bg-black hover:bg-gray-800 text-white" : "border-gray-300 hover:bg-gray-50"
             }`}
           >
             {isToggling ? (
               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-            ) : inCart ? (
+            ) : isInCart ? (
               <>
                 <Check className="w-4 h-4 mr-2" />
                 Added

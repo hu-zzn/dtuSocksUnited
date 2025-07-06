@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { useCart } from "../../hooks/use-cart"; // adjust if path is different
-import { SocietyCard } from "../../components/society-card";
+import { useCart } from "../../hooks/use-cart"
+import { SocietyCard } from "../../components/society-card"
 
 export default function CartPage() {
-  const { cart, toggleCart } = useCart();
+  const { cart, toggleCart } = useCart()
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -19,11 +19,11 @@ export default function CartPage() {
               key={society._id}
               society={society}
               onToggle={() => toggleCart(society._id)}
-              isInCart={true}
+              isInCart={true} 
             />
           ))}
         </div>
       )}
     </div>
-  );
+  )
 }
