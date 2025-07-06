@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-// ✅ Adjust these paths based on your actual folder structure
 import { Navbar } from "../components/navbar";
 import { ThemeProvider } from "../components/theme-provider";
+import { AuthProvider } from "../context/auth-context"; // ✅ import it
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,10 +25,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <Navbar />
-          <main className="min-h-screen bg-background text-foreground p-4">
-            {children}
-          </main>
+          <AuthProvider> {/* ✅ wrap all with AuthProvider */}
+            <Navbar />
+            <main className="min-h-screen bg-background text-foreground p-4">
+              {children}
+            </main>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

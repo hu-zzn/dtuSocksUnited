@@ -11,7 +11,8 @@ import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
 import { Alert, AlertDescription } from "../../components/ui/alert"
 import { Eye, EyeOff, Mail, Lock } from "lucide-react"
-import { useAuth } from "../../hooks/use-auth"
+import { useAuth } from "../../context/auth-context"
+
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({

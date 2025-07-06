@@ -6,7 +6,8 @@ import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { Heart, Users, Calendar, Plus, Check } from "lucide-react"
 import type { Society } from "../types/index"
-import { useAuth } from "../hooks/use-auth"
+import { useAuth } from "../context/auth-context"
+
 
 interface SocietyCardProps {
   society: Society

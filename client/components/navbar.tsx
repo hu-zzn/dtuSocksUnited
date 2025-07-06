@@ -6,7 +6,7 @@ import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu"
 import { ShoppingCart, User, Menu, X } from "lucide-react"
-import { useAuth } from "../hooks/use-auth"
+import { useAuth } from "../context/auth-context"
 import { useCart } from "../hooks/use-cart"
 
 export function Navbar() {
