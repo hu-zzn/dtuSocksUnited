@@ -54,6 +54,7 @@ export interface Society {
   socAbout: string;
   socKeyEvents: SocKeyEvent[];
   socHighlights: string[];
+  socKeyWord: string[];
   socContact: SocContact;
   createdAt: string;
   updatedAt: string;

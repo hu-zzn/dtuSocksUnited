@@ -28,15 +28,24 @@ export function SocietyGrid() {
     : []
 
   const filteredSocieties = safeSocieties.filter((society) => {
-    const matchesSearch =
-      society.socName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      society.socAbout.toLowerCase().includes(searchTerm.toLowerCase())
+  const matchesSearch = 
+    society.socName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    society.socCategory.some((cat) =>
+      cat.toLowerCase().includes(searchTerm.toLowerCase())
+    ) ||
+    (society.socKeyWord ?? []).some((keyword) =>
+      keyword.toLowerCase().includes(searchTerm.toLowerCase())
+    ) ||
+    (society.socKeyEvents ?? []).some((event) =>
+      event.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-    const matchesCategory =
-      categoryFilter === "all" || society.socCategory.includes(categoryFilter)
+  const matchesCategory =
+    categoryFilter === "all" || society.socCategory.includes(categoryFilter);
 
-    return matchesSearch && matchesCategory
-  })
+  return matchesSearch && matchesCategory;
+});
+
 
   if (loading) {
     return (

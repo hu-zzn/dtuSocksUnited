@@ -26,6 +26,10 @@ const socSchema = new mongoose.Schema(
             type: [String],
             default : [],
         },
+        socKeyWord:{
+            type: [String],
+            default : [],
+        },
         socContact: {
             team: [
                 {
