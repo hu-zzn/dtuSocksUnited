@@ -11,15 +11,24 @@ import { useAuth } from "../hooks/use-auth"
 
 interface SocietyCardProps {
   society: Society
-  onViewDetails: () => void
+  onViewDetails?: () => void
+  onToggle?: () => void
+  isInCart?: boolean
 }
 
-export function SocietyCard({ society, onViewDetails }: SocietyCardProps) {
+
+export function SocietyCard({
+  society,
+  onViewDetails,
+  onToggle,
+  isInCart,
+}: SocietyCardProps) {
+
   const { cart, toggleCart } = useCart()
   const { user } = useAuth()
   const isAuthenticated = !!user
 
-  const inCart = cart?.some(item => item._id === society._id) ?? false
+  const inCart = isInCart ?? cart?.some(item => item._id === society._id) ?? false;
 
   const [isToggling, setIsToggling] = useState(false)
 
@@ -28,7 +37,12 @@ export function SocietyCard({ society, onViewDetails }: SocietyCardProps) {
 
     setIsToggling(true)
     try {
-      await toggleCart(society._id)
+      if (onToggle) {
+        onToggle();
+      } else {
+        toggleCart(society);
+      }
+
     } catch (error) {
       console.error("Failed to toggle cart:", error)
     } finally {
