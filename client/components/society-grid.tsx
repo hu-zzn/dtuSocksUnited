@@ -22,23 +22,24 @@ export function SocietyGrid() {
     getAllSocieties()
   }, [])
 
-  const safeSocieties = societies ?? []
+  const safeSocieties = societies ?? [];
   const categories = safeSocieties.length > 0 
-    ? Array.from(new Set(safeSocieties.flatMap((society) => society.socCategory)))
-    : []
+  ? Array.from(new Set(safeSocieties.flatMap((society) => society.socCategory)))
+  : [];
 
-  const filteredSocieties = safeSocieties.filter((society) => {
+const filteredSocieties = safeSocieties.filter((society) => {
+  const searchWord = searchTerm.trim().toLowerCase();
+
+  // Exit early if search term is empty
+  if (!searchWord) return categoryFilter === "all" || society.socCategory.includes(categoryFilter);
+
+  const searchRegex = new RegExp(`\\b${searchWord}\\b`, "i"); // "i" for case-insensitive
+
   const matchesSearch = 
-    society.socName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    society.socCategory.some((cat) =>
-      cat.toLowerCase().includes(searchTerm.toLowerCase())
-    ) ||
-    (society.socKeyWord ?? []).some((keyword) =>
-      keyword.toLowerCase().includes(searchTerm.toLowerCase())
-    ) ||
-    (society.socKeyEvents ?? []).some((event) =>
-      event.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    searchRegex.test(society.socName) ||
+    society.socCategory.some((cat) => searchRegex.test(cat)) ||
+    (society.socKeyWord ?? []).some((keyword) => searchRegex.test(keyword)) ||
+    (society.socKeyEvents ?? []).some((event) => searchRegex.test(event.name));
 
   const matchesCategory =
     categoryFilter === "all" || society.socCategory.includes(categoryFilter);
