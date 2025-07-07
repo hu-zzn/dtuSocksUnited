@@ -1,66 +1,156 @@
+// import mongoose from "mongoose";
+
+// const socSchema = new mongoose.Schema(
+//     {
+//         socName: {
+//             type: String,
+//             required: true,
+//             trim: true,
+//         },
+//         socCategory: {
+//             type: [String],
+//             required: true,
+//         },
+//         socAbout: {
+//             type: String,
+//             required: true,
+//             trim: true,
+//         },
+//         socKeyEvents: [
+//             {
+//                 name: { type: String, trim: true, required: true, default : "_" },
+//                 description: { type: String, trim: true,default : "_" },
+//             },
+//         ],
+//         socHighlights: {
+//             type: [String],
+//             default : [],
+//         },
+//         socKeyWord:{
+//             type: [String],
+//             default : [],
+//         },
+//         socContact: {
+//             team: [
+//                 {
+//                 role: { type: String, required: true, trim: true },
+//                 name: { type: String, required: true, trim: true }
+//                 }
+//             ],
+//             socSocials: {
+//                 instagram: {
+//                     type: String,
+//                     default : "_",
+//                     trim: true,
+//                 },
+//                 linkedin: {
+//                     type: String,
+//                     default : "_",
+//                     trim: true,
+//                 },
+//                 linktree: {
+//                     type: String,
+//                     default : "_",
+//                     trim: true,
+//                 },
+//             },
+//         },
+//     },
+//     {
+//         timestamps: true,
+//     }
+// );
+
+// export const Soc = mongoose.model("Society", socSchema);
+
+// // export const Soc = mongoose.model("Soc", socSchema,"societies");
+
+
+
+
+
 import mongoose from "mongoose";
 
 const socSchema = new mongoose.Schema(
-    {
-        socName: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        socCategory: {
-            type: [String],
-            required: true,
-        },
-        socAbout: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        socKeyEvents: [
-            {
-                name: { type: String, trim: true, required: true, default : "_" },
-                description: { type: String, trim: true,default : "_" },
-            },
-        ],
-        socHighlights: {
-            type: [String],
-            default : [],
-        },
-        socKeyWord:{
-            type: [String],
-            default : [],
-        },
-        socContact: {
-            team: [
-                {
-                role: { type: String, required: true, trim: true },
-                name: { type: String, required: true, trim: true }
-                }
-            ],
-            socSocials: {
-                instagram: {
-                    type: String,
-                    default : "_",
-                    trim: true,
-                },
-                linkedin: {
-                    type: String,
-                    default : "_",
-                    trim: true,
-                },
-                linktree: {
-                    type: String,
-                    default : "_",
-                    trim: true,
-                },
-            },
-        },
+  {
+    socName: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true // 🔒 Prevent duplicate entries
     },
-    {
-        timestamps: true,
+    socCategory: {
+      type: [String],
+      required: true
+    },
+    socAbout: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    socKeyEvents: [
+      {
+        name: {
+          type: String,
+          trim: true,
+          required: true,
+          default: "_"
+        },
+        description: {
+          type: String,
+          trim: true,
+          default: "_"
+        }
+      }
+    ],
+    socHighlights: {
+      type: [String],
+      default: []
+    },
+    socKeyWord: {
+      type: [String],
+      default: []
+    },
+    socContact: {
+      team: [
+        {
+          role: {
+            type: String,
+            required: true,
+            trim: true
+          },
+          name: {
+            type: String,
+            required: true,
+            trim: true
+          }
+        }
+      ],
+      socSocials: {
+        instagram: {
+          type: String,
+          default: "_",
+          trim: true
+        },
+        linkedin: {
+          type: String,
+          default: "_",
+          trim: true
+        },
+        linktree: {
+          type: String,
+          default: "_",
+          trim: true
+        }
+      }
     }
+  },
+  {
+    timestamps: true
+  }
 );
 
+// Export the model
 export const Soc = mongoose.model("Society", socSchema);
-
-// export const Soc = mongoose.model("Soc", socSchema,"societies");
+// Optional collection name version: "societies"
+// export const Soc = mongoose.model("Soc", socSchema, "societies");
