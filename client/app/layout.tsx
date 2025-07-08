@@ -1,3 +1,4 @@
+
 // app/layout.tsx
 import type React from "react";
 import type { Metadata } from "next";
@@ -6,7 +7,8 @@ import "./globals.css";
 
 import { Navbar } from "../components/navbar";
 import { ThemeProvider } from "../components/theme-provider";
-import { AuthProvider } from "../context/auth-context"; // ✅ import it
+import { AuthProvider } from "../context/auth-context";
+import BottomTicker from "../components/BottomTicker"; // ✅ import it
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,14 +27,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AuthProvider> {/* ✅ wrap all with AuthProvider */}
+          <AuthProvider>
             <Navbar />
-            <main className="min-h-screen bg-background text-foreground p-4">
+            <main className="min-h-screen bg-background text-foreground p-4 pb-16"> {/* Leave space for ticker */}
               {children}
             </main>
+            <BottomTicker /> {/* ✅ Add this line */}
           </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+
