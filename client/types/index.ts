@@ -56,6 +56,7 @@ export interface Society {
   socHighlights: string[];
   socKeyWord: string[];
   socContact: SocContact;
+  socLogo?: string;
   createdAt: string;
   updatedAt: string;
 }

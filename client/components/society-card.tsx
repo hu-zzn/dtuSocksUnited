@@ -1,13 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
-import { Heart, Users, Calendar, Plus, Check } from "lucide-react"
+import { Users, Calendar, Plus, Check } from "lucide-react"
 import type { Society } from "../types/index"
 import { useAuth } from "../context/auth-context"
-
 
 interface SocietyCardProps {
   society: Society
@@ -47,14 +52,16 @@ export function SocietyCard({
           <CardTitle className="text-xl font-medium line-clamp-2 text-gray-900 group-hover:text-black transition-colors">
             {society.socName}
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <Heart className="w-4 h-4" />
-          </Button>
+
+          {society.socLogo && (
+            <img
+              src={society.socLogo}
+              alt={`${society.socName} logo`}
+              className="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-sm"
+            />
+          )}
         </div>
+
         <div className="flex flex-wrap gap-2 mt-3">
           {society.socCategory.slice(0, 2).map((category) => (
             <Badge
@@ -74,7 +81,9 @@ export function SocietyCard({
       </CardHeader>
 
       <CardContent className="flex-1 pb-4">
-        <p className="text-gray-600 text-sm line-clamp-3 mb-6 leading-relaxed">{society.socAbout}</p>
+        <p className="text-gray-600 text-sm line-clamp-3 mb-6 leading-relaxed">
+          {society.socAbout}
+        </p>
 
         {society.socHighlights?.length > 0 && (
           <div className="space-y-3">
