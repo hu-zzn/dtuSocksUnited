@@ -5,9 +5,12 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Hero />
-      <main className="container mx-auto px-4 py-16">
-        <SocietyGrid />
-      </main>
+      
+      <section className="py-16">
+        <div className="container mx-auto px-4 scale-[0.85] origin-top">
+          <SocietyGrid />
+        </div>
+      </section>
     </div>
   )
 }
