@@ -23,29 +23,29 @@ export function SocietyGrid() {
   }, [])
 
   const safeSocieties = societies ?? [];
-  const categories = safeSocieties.length > 0 
-  ? Array.from(new Set(safeSocieties.flatMap((society) => society.socCategory)))
-  : [];
+  const categories = safeSocieties.length > 0
+    ? Array.from(new Set(safeSocieties.flatMap((society) => society.socCategory)))
+    : [];
 
-const filteredSocieties = safeSocieties.filter((society) => {
-  const searchWord = searchTerm.trim().toLowerCase();
+  const filteredSocieties = safeSocieties.filter((society) => {
+    const searchWord = searchTerm.trim().toLowerCase();
 
-  // Exit early if search term is empty
-  if (!searchWord) return categoryFilter === "all" || society.socCategory.includes(categoryFilter);
+    // Exit early if search term is empty
+    if (!searchWord) return categoryFilter === "all" || society.socCategory.includes(categoryFilter);
 
-  const searchRegex = new RegExp(`\\b${searchWord}\\b`, "i"); // "i" for case-insensitive
+    const searchRegex = new RegExp(`\\b${searchWord}\\b`, "i"); // "i" for case-insensitive
 
-  const matchesSearch = 
-    searchRegex.test(society.socName) ||
-    society.socCategory.some((cat) => searchRegex.test(cat)) ||
-    (society.socKeyWord ?? []).some((keyword) => searchRegex.test(keyword)) ||
-    (society.socKeyEvents ?? []).some((event) => searchRegex.test(event.name));
+    const matchesSearch =
+      searchRegex.test(society.socName) ||
+      society.socCategory.some((cat) => searchRegex.test(cat)) ||
+      (society.socKeyWord ?? []).some((keyword) => searchRegex.test(keyword)) ||
+      (society.socKeyEvents ?? []).some((event) => searchRegex.test(event.name));
 
-  const matchesCategory =
-    categoryFilter === "all" || society.socCategory.includes(categoryFilter);
+    const matchesCategory =
+      categoryFilter === "all" || society.socCategory.includes(categoryFilter);
 
-  return matchesSearch && matchesCategory;
-});
+    return matchesSearch && matchesCategory;
+  });
 
 
   if (loading) {
@@ -88,17 +88,55 @@ const filteredSocieties = safeSocieties.filter((society) => {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredSocieties.map((society) => (
-          <SocietyCard
-            key={society._id}
-            society={society}
-            onViewDetails={() => setSelectedSociety(society)}
-            onToggle={() => toggleCart(society._id)} // ✅ only triggers when clicked
-            isInCart={cart?.some(item => item._id === society._id)} // ✅ avoid calling useCart again
-          />
-        ))}
-      </div>
+      {/* Category-wise layout when "All" is selected */}
+      {categoryFilter === "all" ? (
+        categories.map((category) => {
+          const societiesInCategory = filteredSocieties.filter((s) =>
+            s.socCategory.includes(category)
+          );
+
+          if (societiesInCategory.length === 0) return null;
+
+          return (
+            <div key={category} className="space-y-4 mb-12">
+              <h2 className="text-xl font-semibold text-gray-800">{category}</h2>
+
+              <div className="relative">
+                <div className="swiper-container">
+                  <div className="flex overflow-x-auto gap-6 scrollbar-hide snap-x snap-mandatory">
+                    {societiesInCategory.map((society) => (
+                      <div
+                        key={society._id}
+                        className="min-w-[300px] max-w-[320px] snap-start shrink-0"
+                      >
+                        <SocietyCard
+                          society={society}
+                          onViewDetails={() => setSelectedSociety(society)}
+                          onToggle={() => toggleCart(society._id)}
+                          isInCart={cart?.some((item) => item._id === society._id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        // Category selected — Show grid layout
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredSocieties.map((society) => (
+            <SocietyCard
+              key={society._id}
+              society={society}
+              onViewDetails={() => setSelectedSociety(society)}
+              onToggle={() => toggleCart(society._id)}
+              isInCart={cart?.some((item) => item._id === society._id)}
+            />
+          ))}
+        </div>
+      )}
 
       {filteredSocieties.length === 0 && (
         <div className="text-center py-20">
