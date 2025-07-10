@@ -48,18 +48,19 @@ export function SocietyCard({
   return (
     <Card className="h-full flex flex-col hover:shadow-2xl transition-all duration-300 border-gray-100 bg-white group hover:-translate-y-1">
       <CardHeader className="pb-4">
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-xl font-medium line-clamp-2 text-gray-900 group-hover:text-black transition-colors">
-            {society.socName}
-          </CardTitle>
-
-          {society.socLogo && (
-            <img
-              src={society.socLogo}
-              alt={`${society.socName} logo`}
-              className="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-sm"
-            />
-          )}
+        <div className="flex flex-col items-center sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            {society.socLogo && (
+              <img
+                src={society.socLogo}
+                alt={`${society.socName} logo`}
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border border-gray-300 shadow-md"
+              />
+            )}
+            <CardTitle className="text-xl font-semibold text-gray-900 group-hover:text-black transition-colors">
+              {society.socName}
+            </CardTitle>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 mt-3">
@@ -125,9 +126,8 @@ export function SocietyCard({
             onClick={handleToggleCart}
             disabled={isToggling}
             variant={isInCart ? "default" : "outline"}
-            className={`flex-1 rounded-full font-light ${
-              isInCart ? "bg-black hover:bg-gray-800 text-white" : "border-gray-300 hover:bg-gray-50"
-            }`}
+            className={`flex-1 rounded-full font-light ${isInCart ? "bg-black hover:bg-gray-800 text-white" : "border-gray-300 hover:bg-gray-50"
+              }`}
           >
             {isToggling ? (
               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
