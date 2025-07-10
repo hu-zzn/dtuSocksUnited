@@ -48,35 +48,40 @@ export function SocietyCard({
   return (
     <Card className="h-full flex flex-col hover:shadow-2xl transition-all duration-300 border-gray-100 bg-white group hover:-translate-y-1">
       <CardHeader className="pb-4">
-        <div className="flex flex-col items-center sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {society.socLogo && (
+        <div className="flex justify-between items-start gap-4">
+          {/* Left Side: Title and Categories */}
+          <div className="flex-1">
+            <CardTitle className="text-xl font-medium text-gray-900 group-hover:text-black transition-colors line-clamp-2">
+              {society.socName}
+            </CardTitle>
+
+            <div className="flex flex-wrap gap-2 mt-2">
+              {society.socCategory.slice(0, 2).map((category) => (
+                <Badge
+                  key={category}
+                  variant="secondary"
+                  className="text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 rounded-full"
+                >
+                  {category}
+                </Badge>
+              ))}
+              {society.socCategory.length > 2 && (
+                <Badge variant="outline" className="text-xs border-gray-300 text-gray-600 rounded-full">
+                  +{society.socCategory.length - 2}
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          {/* Right Side: Larger Logo, Fixed Size */}
+          {society.socLogo && (
+            <div className="flex-shrink-0">
               <img
                 src={society.socLogo}
                 alt={`${society.socName} logo`}
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border border-gray-300 shadow-md"
+                className="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm"
               />
-            )}
-            <CardTitle className="text-xl font-semibold text-gray-900 group-hover:text-black transition-colors">
-              {society.socName}
-            </CardTitle>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-2 mt-3">
-          {society.socCategory.slice(0, 2).map((category) => (
-            <Badge
-              key={category}
-              variant="secondary"
-              className="text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 border-0 rounded-full"
-            >
-              {category}
-            </Badge>
-          ))}
-          {society.socCategory.length > 2 && (
-            <Badge variant="outline" className="text-xs border-gray-300 text-gray-600 rounded-full">
-              +{society.socCategory.length - 2}
-            </Badge>
+            </div>
           )}
         </div>
       </CardHeader>
