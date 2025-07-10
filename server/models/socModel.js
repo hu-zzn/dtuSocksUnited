@@ -16,41 +16,46 @@ const socSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+        socLogo: {
+            type: String,
+            default: "_",  // Default placeholder image path or URL
+            trim: true,
+        },
         socKeyEvents: [
             {
-                name: { type: String, trim: true, required: true, default : "_" },
-                description: { type: String, trim: true,default : "_" },
+                name: { type: String, trim: true, required: true, default: "_" },
+                description: { type: String, trim: true, default: "_" },
             },
         ],
         socHighlights: {
             type: [String],
-            default : [],
+            default: [],
         },
-        socKeyWord:{
+        socKeyWord: {
             type: [String],
-            default : [],
+            default: [],
         },
         socContact: {
             team: [
                 {
-                role: { type: String, required: true, trim: true },
-                name: { type: String, required: true, trim: true }
+                    role: { type: String, required: true, trim: true },
+                    name: { type: String, required: true, trim: true },
                 }
             ],
             socSocials: {
                 instagram: {
                     type: String,
-                    default : "_",
+                    default: "_",
                     trim: true,
                 },
                 linkedin: {
                     type: String,
-                    default : "_",
+                    default: "_",
                     trim: true,
                 },
                 linktree: {
                     type: String,
-                    default : "_",
+                    default: "_",
                     trim: true,
                 },
             },
@@ -63,4 +68,4 @@ const socSchema = new mongoose.Schema(
 
 export const Soc = mongoose.model("Society", socSchema);
 
-// export const Soc = mongoose.model("Soc", socSchema,"societies");
+// export const Soc = mongoose.model("Soc", socSchema, "societies");
