@@ -3,6 +3,7 @@
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script"; 
 import "./globals.css";
 
 import { Navbar } from "../components/navbar";
@@ -25,6 +26,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* ✅ Google AdSense Script */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3750452404735470"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AuthProvider>
