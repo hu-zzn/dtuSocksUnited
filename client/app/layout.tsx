@@ -3,7 +3,7 @@
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script"; 
+import Script from "next/script";
 import "./globals.css";
 
 import { Navbar } from "../components/navbar";
@@ -39,8 +39,10 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AuthProvider>
             <Navbar />
-            <main className="min-h-screen bg-background text-foreground p-4 pb-16"> {/* Leave space for ticker */}
-              {children}
+            <main className="min-h-screen bg-background text-foreground flex justify-center px-4 sm:px-6 lg:px-8 pb-16">
+              <div className="w-full max-w-screen-xl">
+                {children}
+              </div>
             </main>
             <BottomTicker /> {/* ✅ Add this line */}
           </AuthProvider>
