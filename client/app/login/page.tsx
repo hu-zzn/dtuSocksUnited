@@ -50,21 +50,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <Card className="w-full max-w-md border-gray-200 shadow-xl">
-        <CardHeader className="text-center pb-8">
-          <CardTitle className="text-3xl font-light text-gray-900">Welcome Back</CardTitle>
-          <CardDescription className="text-gray-600 font-light">Sign in to your account to continue</CardDescription>
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      <Card className="w-full max-w-sm shadow-md border-none rounded-2xl">
+        <CardHeader className="text-center mt-6 space-y-1">
+          <CardTitle className="text-2xl font-semibold text-gray-800">Welcome User!</CardTitle>
+          <CardDescription className="text-sm text-gray-500">Please Login to Continue</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <Alert variant="destructive" className="border-red-200 bg-red-50">
-                <AlertDescription className="text-red-700">{error}</AlertDescription>
-              </Alert>
-            )}
+        <CardContent className="space-y-6">
+          {error && (
+            <Alert variant="destructive" className="border-red-200 bg-red-50">
+              <AlertDescription className="text-red-700">{error}</AlertDescription>
+            </Alert>
+          )}
 
-<<<<<<< HEAD
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email / Phone */}
             <div className="relative">
@@ -77,81 +75,57 @@ export default function LoginPage() {
                 className="h-12 rounded-full pl-5 border border-gray-300"
                 required
               />
-=======
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700 font-medium">
-                Email
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="pl-12 h-12 border-gray-200 rounded-xl bg-white focus:border-gray-400"
-                  required
-                />
-              </div>
->>>>>>> parent of 421c8fac (TRYING LOGIN PAGE)
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-700 font-medium">
-                Password
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="pl-12 pr-12 h-12 border-gray-200 rounded-xl bg-white focus:border-gray-400"
-                  required
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-4 hover:bg-transparent"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5 text-gray-400" />
-                  ) : (
-                    <Eye className="w-5 h-5 text-gray-400" />
-                  )}
-                </Button>
-              </div>
+            {/* Password */}
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                className="h-12 rounded-full pl-5 pr-10 border border-gray-300"
+                required
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-0"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <Eye className="h-5 w-5 text-gray-400" />
+                )}
+              </Button>
             </div>
 
+            {/* Forgot Password */}
             <div className="flex justify-end">
-              <Link href="/forgot-password" className="text-sm text-gray-600 hover:text-black transition-colors">
-                Forgot password?
+              <Link href="/forgot-password" className="text-sm text-gray-600 hover:text-black">
+                Forgot Password?
               </Link>
             </div>
 
+            {/* Login Button */}
             <Button
               type="submit"
-              className="w-full h-12 bg-black hover:bg-gray-800 text-white rounded-xl font-medium"
+              className="w-full h-12 rounded-full bg-gradient-to-r from-black to-gray-800 text-white font-semibold"
               disabled={loading}
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-sm text-gray-600">
-              {"Don't have an account? "}
-              <Link href="/register" className="text-black hover:text-gray-700 font-medium transition-colors">
-                Sign up
-              </Link>
-            </p>
+          {/* Sign Up Link */}
+          <div className="text-center mt-6 text-sm text-gray-600">
+            Don’t have an account?{" "}
+            <Link href="/register" className="text-black font-semibold hover:underline">
+              Create an account
+            </Link>
           </div>
         </CardContent>
       </Card>
