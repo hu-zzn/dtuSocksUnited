@@ -34,10 +34,17 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className={inter.className}>
+      <body
+        className={`
+          ${inter.className}
+          bg-white text-black
+          dark:bg-[#393646] dark:text-[#F4EEE0]
+          transition-colors duration-300
+        `}
+      >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AuthProvider>
-            <CartProvider> {/* ✅ Wrap around children */}
+            <CartProvider>
               <Navbar />
               <main className="min-h-screen bg-background text-foreground p-4 pb-16">
                 {children}

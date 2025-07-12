@@ -66,7 +66,7 @@ export function SocietyGrid() {
         {[...Array(6)].map((_, i) => (
           <div
             key={i}
-            className="h-64 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-lg"
+            className="h-64 bg-muted animate-pulse rounded-lg"
           />
         ))}
       </div>
@@ -78,22 +78,22 @@ export function SocietyGrid() {
       {/* 🔍 Search + Filter */}
       <div className="flex flex-col md:flex-row gap-6 mb-12">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <Input
             id="search"
             name="search"
             placeholder="Search societies..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 h-12 border-gray-200 dark:border-gray-600 rounded-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+            className="pl-12 h-12 border border-border rounded-full bg-card text-foreground"
           />
         </div>
 
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full md:w-64 h-12 border-gray-200 dark:border-gray-600 rounded-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+          <SelectTrigger className="w-full md:w-64 h-12 border border-border rounded-full bg-card text-foreground">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
-          <SelectContent className="border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+          <SelectContent className="border border-border bg-card text-foreground">
             <SelectItem value="all">All Categories</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category} value={category}>
@@ -115,7 +115,7 @@ export function SocietyGrid() {
 
           return (
             <div key={category} className="space-y-4 mb-12">
-              <h2 className="text-3xl font-semibold bg-gradient-to-r from-blue-600 to-purple-500 text-transparent bg-clip-text dark:from-blue-400 dark:to-pink-400">
+              <h2 className="text-3xl font-semibold text-primary">
                 {category}
               </h2>
 
@@ -161,7 +161,7 @@ export function SocietyGrid() {
       {/* ❌ No Results */}
       {filteredSocieties.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-gray-500 dark:text-gray-400 text-xl font-light">
+          <p className="text-muted-foreground text-xl font-light">
             No societies found matching your criteria.
           </p>
         </div>

@@ -21,15 +21,12 @@ export function Navbar() {
   const isAuthenticated = !!user;
   const { cart } = useCart();
   const cartCount = cart?.length ?? 0;
-
+  
   return (
-    <nav className="bg-white dark:bg-black text-black dark:text-white shadow-sm dark:shadow-white border-b border-gray-100 sticky top-0 z-50 backdrop-blur-md">
+    <nav className="bg-background text-foreground shadow-sm border-b border-border sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          <Link
-            href="/"
-            className="text-3xl font-light tracking-tight text-black dark:text-white"
-          >
+          <Link href="/" className="text-3xl font-light tracking-tight">
             Unify<span className="font-bold">DTU</span>
           </Link>
 
@@ -37,20 +34,20 @@ export function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-light"
+              className="hover:text-primary transition-colors font-light"
             >
               Home
             </Link>
             <Link
               href="/eventCalendar"
-              className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-light"
+              className="hover:text-primary transition-colors font-light"
             >
               Event Calendar
             </Link>
             {user?.role === "Admin" && (
               <Link
                 href="/admin"
-                className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors font-light"
+                className="hover:text-primary transition-colors font-light"
               >
                 Admin Panel
               </Link>
@@ -66,7 +63,7 @@ export function Navbar() {
                   variant="outline"
                   size="sm"
                   asChild
-                  className="border-gray-300 dark:border-white hover:bg-gray-50 dark:hover:bg-white/10 rounded-full"
+                  className="rounded-full border-border hover:bg-secondary"
                 >
                   <Link href="/cart" className="flex items-center gap-2">
                     <ShoppingCart className="w-4 h-4" />
@@ -74,7 +71,7 @@ export function Navbar() {
                     {cartCount > 0 && (
                       <Badge
                         variant="default"
-                        className="ml-1 bg-black dark:bg-white text-white dark:text-black"
+                        className="ml-1 bg-foreground text-background"
                       >
                         {cartCount}
                       </Badge>
@@ -86,16 +83,13 @@ export function Navbar() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="hover:bg-gray-50 dark:hover:bg-white/10 rounded-full"
+                      className="hover:bg-secondary rounded-full"
                     >
                       <User className="w-4 h-4 mr-2" />
                       {user?.name}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    className="border-gray-200 dark:border-white"
-                  >
+                  <DropdownMenuContent align="end" className="border-border">
                     <DropdownMenuItem asChild>
                       <Link href="/profile">Profile</Link>
                     </DropdownMenuItem>
@@ -109,14 +103,14 @@ export function Navbar() {
                   variant="outline"
                   size="sm"
                   asChild
-                  className="border-gray-300 dark:border-white hover:bg-gray-50 dark:hover:bg-white/10 rounded-full"
+                  className="border-border hover:bg-secondary rounded-full"
                 >
                   <Link href="/login">Login</Link>
                 </Button>
                 <Button
                   size="sm"
                   asChild
-                  className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-full"
+                  className="bg-primary text-primary-foreground hover:bg-muted rounded-full"
                 >
                   <Link href="/register">Register</Link>
                 </Button>
@@ -131,60 +125,36 @@ export function Navbar() {
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-600">
+          <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col space-y-3">
-              <Link
-                href="/"
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white"
-              >
+              <Link href="/" className="hover:text-primary">
                 Home
               </Link>
               <ThemeToggle />
-              <Link
-                href="/eventCalendar"
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white"
-              >
+              <Link href="/eventCalendar" className="hover:text-primary">
                 Event Calendar
               </Link>
               {user?.role === "Admin" && (
-                <Link
-                  href="/admin"
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white"
-                >
+                <Link href="/admin" className="hover:text-primary">
                   Admin Panel
                 </Link>
               )}
               {isAuthenticated ? (
                 <>
-                  <Link
-                    href="/cart"
-                    className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white"
-                  >
+                  <Link href="/cart" className="flex items-center gap-2 hover:text-primary">
                     <ShoppingCart className="w-4 h-4" />
                     Cart ({cartCount})
                   </Link>
-                  <Link
-                    href="/profile"
-                    className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white"
-                  >
+                  <Link href="/profile" className="hover:text-primary">
                     Profile
                   </Link>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={logout}
-                    className="w-fit"
-                  >
+                  <Button variant="outline" size="sm" onClick={logout}>
                     Logout
                   </Button>
                 </>
