@@ -8,13 +8,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ShoppingCart, User, Menu, X } from "lucide-react"
 import { useAuth } from "../context/auth-context"
 import { useCart } from "../context/cart-context"
+import { ThemeToggle } from "../components/theme-toggle"
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { user, logout } = useAuth();
   const isAuthenticated = !!user;
   const { cart } = useCart()
-  const  cartCount  = cart?.length?? 0
+  const cartCount = cart?.length ?? 0
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50 backdrop-blur-md bg-white/95">
@@ -30,7 +31,7 @@ export function Navbar() {
               Home
             </Link>
             <Link href="/eventCalendar" className="text-gray-600 hover:text-black transition-colors font-light">
-              Event Calendar 
+              Event Calendar
             </Link>
             {user?.role === "Admin" && (
               <Link href="/admin" className="text-gray-600 hover:text-black transition-colors font-light">
@@ -41,6 +42,7 @@ export function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle /> {/* ✅ Dark mode toggle */}
             {isAuthenticated ? (
               <>
                 <Button variant="outline" size="sm" asChild className="border-gray-300 hover:bg-gray-50 rounded-full">
@@ -81,6 +83,7 @@ export function Navbar() {
             )}
           </div>
 
+
           {/* Mobile Menu Button */}
           <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -94,7 +97,7 @@ export function Navbar() {
               <Link href="/" className="text-gray-700 hover:text-blue-600">
                 Home
               </Link>
-              
+              <ThemeToggle /> {/* ✅ Dark mode toggle for mobile */}
               <Link href="/eventCalendar" className="text-gray-700 hover:text-blue-600">
                 Event Calendar
               </Link>
