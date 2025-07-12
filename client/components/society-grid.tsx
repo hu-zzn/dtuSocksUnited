@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Search } from "lucide-react"
 import type { Society } from "../types/index"
 import { useSocieties } from "../hooks/use-society"
-import { useCart } from "../hooks/use-cart" // ✅ added here
+import { useCart } from "../context/cart-context"; // ✅ added here
 
 export function SocietyGrid() {
   const { societies, loading, getAllSocieties } = useSocieties()
