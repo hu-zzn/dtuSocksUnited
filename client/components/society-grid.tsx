@@ -99,7 +99,7 @@ export function SocietyGrid() {
 
           return (
             <div key={category} className="space-y-4 mb-12">
-              <h2 className="text-xl font-semibold text-gray-800">{category}</h2>
+              <h2 className="text-3xl font-semibold text-gray-800">{category}</h2>
 
               <div className="relative">
                 <div className="swiper-container">
