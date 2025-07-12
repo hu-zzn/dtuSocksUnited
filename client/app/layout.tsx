@@ -14,9 +14,8 @@ import BottomTicker from "../components/BottomTicker";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SocietyHub - Discover Your Perfect Society",
+  title: "UnifyDTU",
   description: "Join communities that match your interests and build lifelong connections",
-  generator: "v0.dev",
 };
 
 export default function RootLayout({
