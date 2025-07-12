@@ -1,45 +1,58 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { SocietyCard } from "../components/society-card"
-import { SocietyModal } from "../components/society-modal"
-import { Input } from "../components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { Search } from "lucide-react"
-import type { Society } from "../types/index"
-import { useSocieties } from "../hooks/use-society"
-import { useCart } from "../context/cart-context"; // ✅ added here
+import { useState, useEffect } from "react";
+import { SocietyCard } from "../components/society-card";
+import { SocietyModal } from "../components/society-modal";
+import { Input } from "../components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import { Search } from "lucide-react";
+import type { Society } from "../types/index";
+import { useSocieties } from "../hooks/use-society";
+import { useCart } from "../context/cart-context";
 
 export function SocietyGrid() {
-  const { societies, loading, getAllSocieties } = useSocieties()
-  const { cart, toggleCart } = useCart() // ✅ use only once
+  const { societies, loading, getAllSocieties } = useSocieties();
+  const { cart, toggleCart } = useCart();
 
-  const [selectedSociety, setSelectedSociety] = useState<Society | null>(null)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [categoryFilter, setCategoryFilter] = useState("all")
+  const [selectedSociety, setSelectedSociety] = useState<Society | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
   useEffect(() => {
-    getAllSocieties()
-  }, [])
+    getAllSocieties();
+  }, []);
 
   const safeSocieties = societies ?? [];
-  const categories = safeSocieties.length > 0
-    ? Array.from(new Set(safeSocieties.flatMap((society) => society.socCategory)))
-    : [];
+  const categories =
+    safeSocieties.length > 0
+      ? Array.from(
+          new Set(safeSocieties.flatMap((society) => society.socCategory))
+        )
+      : [];
 
   const filteredSocieties = safeSocieties.filter((society) => {
     const searchWord = searchTerm.trim().toLowerCase();
+    if (!searchWord)
+      return categoryFilter === "all" ||
+        society.socCategory.includes(categoryFilter);
 
-    // Exit early if search term is empty
-    if (!searchWord) return categoryFilter === "all" || society.socCategory.includes(categoryFilter);
-
-    const searchRegex = new RegExp(`\\b${searchWord}\\b`, "i"); // "i" for case-insensitive
+    const searchRegex = new RegExp(`\\b${searchWord}\\b`, "i");
 
     const matchesSearch =
       searchRegex.test(society.socName) ||
       society.socCategory.some((cat) => searchRegex.test(cat)) ||
-      (society.socKeyWord ?? []).some((keyword) => searchRegex.test(keyword)) ||
-      (society.socKeyEvents ?? []).some((event) => searchRegex.test(event.name));
+      (society.socKeyWord ?? []).some((keyword) =>
+        searchRegex.test(keyword)
+      ) ||
+      (society.socKeyEvents ?? []).some((event) =>
+        searchRegex.test(event.name)
+      );
 
     const matchesCategory =
       categoryFilter === "all" || society.socCategory.includes(categoryFilter);
@@ -47,37 +60,40 @@ export function SocietyGrid() {
     return matchesSearch && matchesCategory;
   });
 
-
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-64 bg-gray-200 animate-pulse rounded-lg" />
+          <div
+            key={i}
+            className="h-64 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-lg"
+          />
         ))}
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-6">
+      {/* 🔍 Search + Filter */}
       <div className="flex flex-col md:flex-row gap-6 mb-12">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
           <Input
             id="search"
             name="search"
             placeholder="Search societies..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 h-12 border-gray-200 rounded-full bg-white focus:border-gray-400 text-gray-900"
+            className="pl-12 h-12 border-gray-200 dark:border-gray-600 rounded-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
           />
         </div>
 
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full md:w-64 h-12 border-gray-200 rounded-full bg-white focus:border-gray-400">
+          <SelectTrigger className="w-full md:w-64 h-12 border-gray-200 dark:border-gray-600 rounded-full bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
-          <SelectContent className="border-gray-200">
+          <SelectContent className="border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
             <SelectItem value="all">All Categories</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category} value={category}>
@@ -88,7 +104,7 @@ export function SocietyGrid() {
         </Select>
       </div>
 
-      {/* Category-wise layout when "All" is selected */}
+      {/* 🧩 Display by Category Carousel */}
       {categoryFilter === "all" ? (
         categories.map((category) => {
           const societiesInCategory = filteredSocieties.filter((s) =>
@@ -99,7 +115,9 @@ export function SocietyGrid() {
 
           return (
             <div key={category} className="space-y-4 mb-12">
-              <h2 className="text-3xl font-semibold text-gray-800">{category}</h2>
+              <h2 className="text-3xl font-semibold bg-gradient-to-r from-blue-600 to-purple-500 text-transparent bg-clip-text dark:from-blue-400 dark:to-pink-400">
+                {category}
+              </h2>
 
               <div className="relative">
                 <div className="swiper-container">
@@ -113,7 +131,9 @@ export function SocietyGrid() {
                           society={society}
                           onViewDetails={() => setSelectedSociety(society)}
                           onToggle={() => toggleCart(society._id)}
-                          isInCart={cart?.some((item) => item._id === society._id)}
+                          isInCart={cart?.some(
+                            (item) => item._id === society._id
+                          )}
                         />
                       </div>
                     ))}
@@ -124,7 +144,7 @@ export function SocietyGrid() {
           );
         })
       ) : (
-        // Category selected — Show grid layout
+        // 🔳 Selected category — Grid layout
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredSocieties.map((society) => (
             <SocietyCard
@@ -138,19 +158,21 @@ export function SocietyGrid() {
         </div>
       )}
 
+      {/* ❌ No Results */}
       {filteredSocieties.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-gray-500 text-xl font-light">
+          <p className="text-gray-500 dark:text-gray-400 text-xl font-light">
             No societies found matching your criteria.
           </p>
         </div>
       )}
 
+      {/* 🔍 Modal */}
       <SocietyModal
         society={selectedSociety}
         isOpen={!!selectedSociety}
         onClose={() => setSelectedSociety(null)}
       />
     </div>
-  )
+  );
 }
