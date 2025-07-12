@@ -7,7 +7,7 @@ import { Badge } from "../components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu"
 import { ShoppingCart, User, Menu, X } from "lucide-react"
 import { useAuth } from "../context/auth-context"
-import { useCart } from "../hooks/use-cart"
+import { useCart } from "../context/cart-context"
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
