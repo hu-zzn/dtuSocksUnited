@@ -7,7 +7,7 @@ export default function HomePage() {
       <Hero />
       
       <section className="py-16">
-        <div className="container mx-auto px-4 scale-[0.85] origin-top">
+        <div className="container mx-auto px-4 scale-[0.90] origin-top">
           <SocietyGrid />
         </div>
       </section>
