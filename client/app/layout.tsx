@@ -1,4 +1,3 @@
-
 // app/layout.tsx
 import type React from "react";
 import type { Metadata } from "next";
@@ -9,7 +8,8 @@ import "./globals.css";
 import { Navbar } from "../components/navbar";
 import { ThemeProvider } from "../components/theme-provider";
 import { AuthProvider } from "../context/auth-context";
-import BottomTicker from "../components/BottomTicker"; // ✅ import it
+import { CartLengthProvider } from "../context/cart-length-context"; // ✅ import it
+import BottomTicker from "../components/BottomTicker";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,15 +38,16 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AuthProvider>
-            <Navbar />
-            <main className="min-h-screen bg-background text-foreground p-4 pb-16"> {/* Leave space for ticker */}
-              {children}
-            </main>
-            <BottomTicker /> {/* ✅ Add this line */}
+            <CartLengthProvider> {/* ✅ Wrap around children */}
+              <Navbar />
+              <main className="min-h-screen bg-background text-foreground p-4 pb-16">
+                {children}
+              </main>
+              <BottomTicker />
+            </CartLengthProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
-
