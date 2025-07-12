@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../components/ui/card"
-import { Button } from "../components/ui/button"
-import { Badge } from "../components/ui/badge"
-import { Users, Calendar, Plus, Check } from "lucide-react"
-import type { Society } from "../types/index"
-import { useAuth } from "../context/auth-context"
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Users, Calendar, Plus, Check } from "lucide-react";
+import type { Society } from "../types/index";
+import { useAuth } from "../context/auth-context";
 
 interface SocietyCardProps {
-  society: Society
-  onViewDetails?: () => void
-  onToggle?: () => void
-  isInCart?: boolean
+  society: Society;
+  onViewDetails?: () => void;
+  onToggle?: () => void;
+  isInCart?: boolean;
 }
 
 export function SocietyCard({
@@ -27,22 +27,22 @@ export function SocietyCard({
   onToggle,
   isInCart = false,
 }: SocietyCardProps) {
-  const { user } = useAuth()
-  const isAuthenticated = !!user
-  const [isToggling, setIsToggling] = useState(false)
+  const { user } = useAuth();
+  const isAuthenticated = !!user;
+  const [isToggling, setIsToggling] = useState(false);
 
   const handleToggleCart = async () => {
-    if (!isAuthenticated || !onToggle) return
+    if (!isAuthenticated || !onToggle) return;
 
-    setIsToggling(true)
+    setIsToggling(true);
     try {
-      await onToggle()
+      await onToggle();
     } catch (error) {
-      console.error("Failed to toggle cart:", error)
+      console.error("Failed to toggle cart:", error);
     } finally {
-      setIsToggling(false)
+      setIsToggling(false);
     }
-  }
+  };
 
   return (
     <Card className="h-full flex flex-col transition-all duration-300 border border-border bg-card text-foreground group hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-white/10">
@@ -64,13 +64,16 @@ export function SocietyCard({
                 </Badge>
               ))}
               {society.socCategory.length > 2 && (
-                <Badge variant="outline" className="text-xs border-border text-muted-foreground rounded-full">
+                <Badge
+                  variant="outline"
+                  className="text-xs border-border text-muted-foreground rounded-full"
+                >
                   +{society.socCategory.length - 2}
                 </Badge>
               )}
             </div>
           </div>
-          
+
           {society.socLogo && (
             <div className="flex-shrink-0">
               <img
@@ -128,10 +131,11 @@ export function SocietyCard({
             onClick={handleToggleCart}
             disabled={isToggling}
             variant={isInCart ? "default" : "outline"}
-            className={`flex-1 rounded-full font-light transition-colors ${isInCart
+            className={`flex-1 rounded-full font-light transition-colors ${
+              isInCart
                 ? "bg-primary text-primary-foreground hover:opacity-90"
                 : "border-border hover:bg-muted text-foreground"
-              }`}
+            }`}
           >
             {isToggling ? (
               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -150,5 +154,5 @@ export function SocietyCard({
         )}
       </CardFooter>
     </Card>
-  )
+  );
 }

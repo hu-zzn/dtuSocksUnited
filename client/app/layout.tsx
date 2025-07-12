@@ -1,8 +1,7 @@
-// app/layout.tsx
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script"; 
+import Script from "next/script";
 import "./globals.css";
 
 import { Navbar } from "../components/navbar";
@@ -37,12 +36,16 @@ export default function RootLayout({
       <body
         className={`
           ${inter.className}
-          bg-white text-black
-          dark:bg-[#393646] dark:text-[#F4EEE0]
+          bg-background text-foreground
           transition-colors duration-300
         `}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
           <AuthProvider>
             <CartProvider>
               <Navbar />

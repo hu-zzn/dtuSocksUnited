@@ -21,7 +21,7 @@ export function Navbar() {
   const isAuthenticated = !!user;
   const { cart } = useCart();
   const cartCount = cart?.length ?? 0;
-  
+
   return (
     <nav className="bg-background text-foreground shadow-sm border-b border-border sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-4">
@@ -89,7 +89,7 @@ export function Navbar() {
                       {user?.name}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="border-border">
+                  <DropdownMenuContent align="end" className="border-border bg-popover text-popover-foreground">
                     <DropdownMenuItem asChild>
                       <Link href="/profile">Profile</Link>
                     </DropdownMenuItem>
@@ -131,7 +131,7 @@ export function Navbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border">
+          <div className="md:hidden py-4 border-t border-border bg-background text-foreground">
             <div className="flex flex-col space-y-3">
               <Link href="/" className="hover:text-primary">
                 Home

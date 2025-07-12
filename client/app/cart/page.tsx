@@ -7,23 +7,27 @@ export default function CartPage() {
   const { cart, toggleCart } = useCart()
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
+    <section className="bg-background text-foreground min-h-screen py-16">
+      <div className="container mx-auto px-4">
+        <h1 className="text-3xl font-semibold mb-8 text-primary">Your Cart</h1>
 
-      {cart.length === 0 ? (
-        <p className="text-gray-600">Your cart is empty.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {cart.map((society) => (
-            <SocietyCard
-              key={society._id}
-              society={society}
-              onToggle={() => toggleCart(society._id)}
-              isInCart={true} 
-            />
-          ))}
-        </div>
-      )}
-    </div>
+        {cart.length === 0 ? (
+          <p className="text-muted-foreground text-lg">
+            Your cart is empty.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {cart.map((society) => (
+              <SocietyCard
+                key={society._id}
+                society={society}
+                onToggle={() => toggleCart(society._id)}
+                isInCart={true}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
   )
 }
