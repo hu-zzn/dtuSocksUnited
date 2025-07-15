@@ -45,15 +45,15 @@ export function SocietyCard({
   };
 
   return (
-    <Card className="h-full flex flex-col transition-all duration-300 border border-border bg-card text-foreground group hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-white/10">
+    <Card className="h-full min-h-[420px] flex flex-col transition-all duration-300 border border-border bg-card text-foreground group hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-white/10">
       <CardHeader className="pb-4">
         <div className="flex justify-between items-start gap-4">
-          <div className="flex-1">
-            <CardTitle className="text-xl font-medium group-hover:text-primary transition-colors line-clamp-2">
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors mb-3 leading-tight">
               {society.socName}
             </CardTitle>
 
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2">
               {society.socCategory.slice(0, 2).map((category) => (
                 <Badge
                   key={category}
@@ -79,7 +79,7 @@ export function SocietyCard({
               <img
                 src={society.socLogo}
                 alt={`${society.socName} logo`}
-                className="w-14 h-14 rounded-full object-cover border border-border shadow-sm"
+                className="w-20 h-20 rounded-full object-cover border border-border shadow-sm"
               />
             </div>
           )}
@@ -87,17 +87,17 @@ export function SocietyCard({
       </CardHeader>
 
       <CardContent className="flex-1 pb-4">
-        <p className="text-sm line-clamp-3 mb-6 leading-relaxed text-muted-foreground">
+        <p className="text-sm mb-6 leading-relaxed text-muted-foreground">
           {society.socAbout}
         </p>
 
         {society.socHighlights?.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="font-medium text-sm">Highlights</h4>
-            <ul className="text-xs space-y-2 text-muted-foreground">
-              {society.socHighlights.slice(0, 2).map((highlight, index) => (
+          <div className="space-y-3 mb-6">
+            <h4 className="font-semibold text-sm text-foreground">Highlights</h4>
+            <ul className="text-sm space-y-2 text-muted-foreground">
+              {society.socHighlights.map((highlight, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 bg-muted rounded-full mt-2 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
                   <span className="leading-relaxed">{highlight}</span>
                 </li>
               ))}
@@ -105,13 +105,13 @@ export function SocietyCard({
           </div>
         )}
 
-        <div className="flex items-center gap-6 mt-6 text-xs text-muted-foreground">
+        <div className="flex items-center gap-6 text-sm text-muted-foreground mt-auto">
           <div className="flex items-center gap-2">
-            <Users className="w-3.5 h-3.5" />
+            <Users className="w-4 h-4" />
             <span>{society.socContact?.team?.length ?? 0} members</span>
           </div>
           <div className="flex items-center gap-2">
-            <Calendar className="w-3.5 h-3.5" />
+            <Calendar className="w-4 h-4" />
             <span>{society.socKeyEvents?.length ?? 0} events</span>
           </div>
         </div>
@@ -121,7 +121,7 @@ export function SocietyCard({
         <Button
           variant="outline"
           onClick={onViewDetails}
-          className="flex-1 rounded-full font-light border-border hover:bg-muted text-foreground"
+          className="flex-1 rounded-full font-medium border-border hover:bg-muted text-foreground"
         >
           View Details
         </Button>
@@ -131,7 +131,7 @@ export function SocietyCard({
             onClick={handleToggleCart}
             disabled={isToggling}
             variant={isInCart ? "default" : "outline"}
-            className={`flex-1 rounded-full font-light transition-colors ${
+            className={`flex-1 rounded-full font-medium transition-colors ${
               isInCart
                 ? "bg-primary text-primary-foreground hover:opacity-90"
                 : "border-border hover:bg-muted text-foreground"
