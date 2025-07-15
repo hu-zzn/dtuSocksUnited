@@ -1,5 +1,3 @@
-//components/society-card.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";

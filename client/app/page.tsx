@@ -1,5 +1,3 @@
-// app/page.tsx
-
 import { SocietyGrid } from "../components/society-grid";
 import { Hero } from "../components/hero";
 
