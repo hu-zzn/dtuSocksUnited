@@ -98,7 +98,7 @@ export function SocietyModal({ society, isOpen, onClose }: SocietyModalProps) {
 
             {society.socContact.team.length > 0 && (
               <div className="mb-6">
-                <h4 className="font-medium mb-4 text-gray-900">Team Members</h4>
+                <h4 className="font-medium mb-4 text-gray-900">Council Members</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {society.socContact.team.map((member, index) => (
                     <div key={index} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
@@ -168,36 +168,48 @@ export function SocietyModal({ society, isOpen, onClose }: SocietyModalProps) {
           </div>
 
           {isAuthenticated && (
-            <div className="flex gap-4 pt-6 border-t border-gray-200">
-              <Button
-                onClick={onClose}
-                variant="outline"
-                className="flex-1 border-gray-300 hover:bg-gray-50 rounded-full"
-              >
-                Close
-              </Button>
-              <Button
-                onClick={handleToggleCart}
-                disabled={isToggling}
-                className={`flex-1 rounded-full ${
-                  inCart ? "bg-black hover:bg-gray-800 text-white" : "bg-black hover:bg-gray-800 text-white"
-                }`}
-              >
-                {isToggling ? (
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                ) : inCart ? (
-                  <>
-                    <Check className="w-4 h-4 mr-2" />
-                    Remove from Cart
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add to Cart
-                  </>
-                )}
-              </Button>
-            </div>
+            <>
+              <div className="flex items-center gap-6 mt-6 text-xs text-muted-foreground border-t pt-6 border-gray-200">
+                <div className="flex items-center gap-2">
+                  <Users className="w-3.5 h-3.5" />
+                  <span>{society.socContact?.team?.length ?? 0} council</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>{society.socKeyEvents?.length ?? 0} events</span>
+                </div>
+              </div>
+
+              <div className="flex gap-4 pt-6">
+                <Button
+                  onClick={onClose}
+                  variant="outline"
+                  className="flex-1 border-gray-300 hover:bg-gray-50 rounded-full"
+                >
+                  Close
+                </Button>
+                <Button
+                  onClick={handleToggleCart}
+                  disabled={isToggling}
+                  className={`flex-1 rounded-full ${inCart ? "bg-black hover:bg-gray-800 text-white" : "bg-black hover:bg-gray-800 text-white"
+                    }`}
+                >
+                  {isToggling ? (
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : inCart ? (
+                    <>
+                      <Check className="w-4 h-4 mr-2" />
+                      Remove from Cart
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add to Cart
+                    </>
+                  )}
+                </Button>
+              </div>
+            </>
           )}
         </div>
       </DialogContent>

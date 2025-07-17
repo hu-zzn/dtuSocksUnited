@@ -108,7 +108,7 @@ export function SocietyCard({
         <div className="flex items-center gap-6 mt-6 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
             <Users className="w-3.5 h-3.5" />
-            <span>{society.socContact?.team?.length ?? 0} members</span>
+            <span>{society.socContact?.team?.length ?? 0} council</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-3.5 h-3.5" />
