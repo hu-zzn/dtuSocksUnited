@@ -133,7 +133,8 @@ export function SocietyCard({
             variant={isInCart ? "default" : "outline"}
             className={`flex-1 rounded-full font-light transition-colors ${
               isInCart
-                ? "bg-primary text-primary-foreground hover:opacity-90"
+                ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
+
                 : "border-border hover:bg-muted text-foreground"
             }`}
           >
