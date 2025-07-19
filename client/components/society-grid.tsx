@@ -44,8 +44,8 @@ export function SocietyGrid() {
   const categories =
     safeSocieties.length > 0
       ? Array.from(
-        new Set(safeSocieties.flatMap((society) => society.socCategory))
-      )
+          new Set(safeSocieties.flatMap((society) => society.socCategory))
+        )
       : [];
 
   // ✅ Fuzzy search using Fuse.js
@@ -70,18 +70,20 @@ export function SocietyGrid() {
     scrollDirectionRef.current = direction;
     scrollCategoryRef.current = category;
 
-    const swiper = swiperRefs.current[category];
-    if (!swiper) return;
-
-    scrollAnimationRef.current = window.setInterval(() => {
-      if (direction === "left") {
-        swiper.slidePrev();
-      } else {
-        swiper.slideNext();
+    const step = () => {
+      const swiper = swiperRefs.current[category];
+      if (swiper) {
+        if (scrollDirectionRef.current === "left") {
+          swiper.slidePrev(200, false);
+        } else {
+          swiper.slideNext(200, false);
+        }
       }
-    }, 4000); // 🐢 400ms delay between each scroll – increase to slow down more
-  };
+      scrollAnimationRef.current = requestAnimationFrame(step);
+    };
 
+    scrollAnimationRef.current = requestAnimationFrame(step);
+  };
 
   const stopScrolling = () => {
     if (scrollAnimationRef.current) {
@@ -174,9 +176,9 @@ export function SocietyGrid() {
                 }
                 freeMode={true}
                 grabCursor={true}
-                touchRatio={1.8}
+                touchRatio={0.8}
                 loop={true}
-                speed={600}
+                speed={1000}
                 spaceBetween={24}
                 slidesPerView="auto"
                 breakpoints={{
