@@ -52,21 +52,21 @@ export function SocietyCard({
   };
 
   return (
-    <Card className="h-[50vh] min-h-[45vh] max-h-[65vh] w-full flex flex-col justify-between border border-border bg-card text-foreground transition-all duration-300 group hover:-translate-y-[0.25rem] hover:shadow-2xl dark:hover:shadow-white/10">
+    <Card className="aspect-[4/5] w-full flex flex-col justify-between border border-border bg-card text-foreground transition-all duration-300 group hover:-translate-y-[0.25rem] hover:shadow-2xl dark:hover:shadow-white/10">
       {/* Header */}
-      <CardHeader className="flex-shrink-0 pb-[1rem]">
-        <div className="flex justify-between items-start gap-[1rem]">
+      <CardHeader className="flex-shrink-0 pb-3 px-4 sm:px-6 pt-4">
+        <div className="flex justify-between items-start gap-3">
           <div className="flex-1">
-            <CardTitle className="text-[1.1rem] font-medium group-hover:text-primary transition-colors line-clamp-2">
+            <CardTitle className="text-sm sm:text-base font-medium group-hover:text-primary transition-colors line-clamp-2">
               {society.socName}
             </CardTitle>
 
-            <div className="flex flex-wrap gap-[0.5rem] mt-[0.5rem]">
+            <div className="flex flex-wrap gap-1 mt-2">
               {society.socCategory.slice(0, 2).map((category) => (
                 <Badge
                   key={category}
                   variant="secondary"
-                  className="text-[0.75rem] bg-muted text-foreground hover:bg-accent border-0 rounded-full"
+                  className="text-xs bg-muted text-foreground hover:bg-accent border-0 rounded-full"
                 >
                   {category}
                 </Badge>
@@ -74,7 +74,7 @@ export function SocietyCard({
               {society.socCategory.length > 2 && (
                 <Badge
                   variant="outline"
-                  className="text-[0.75rem] border-border text-muted-foreground rounded-full"
+                  className="text-xs border-border text-muted-foreground rounded-full"
                 >
                   +{society.socCategory.length - 2}
                 </Badge>
@@ -87,7 +87,7 @@ export function SocietyCard({
               <img
                 src={society.socLogo}
                 alt={`${society.socName} logo`}
-                className="w-[3.5rem] h-[3.5rem] rounded-full object-cover border border-border shadow-sm"
+                className="w-12 h-12 rounded-full object-cover border border-border shadow-sm"
               />
             </div>
           )}
@@ -95,36 +95,35 @@ export function SocietyCard({
       </CardHeader>
 
       {/* Body */}
-      <CardContent className="flex-1 min-h-0 overflow-hidden pb-[1rem]">
+      <CardContent className="flex-1 min-h-0 overflow-hidden px-4 sm:px-6 pb-4">
         <div className="flex flex-col h-full">
-          {/* About (3 lines only) */}
-          <p className="text-[0.9rem] leading-relaxed text-muted-foreground line-clamp-3 mb-[1rem]">
+          <p className="text-sm text-muted-foreground line-clamp-3 mb-2 leading-relaxed">
             {society.socAbout}
           </p>
 
-          {/* Highlights (3 items only) */}
           {society.socHighlights?.length > 0 && (
-            <div className="space-y-[0.75rem]">
-              <h4 className="font-medium text-[0.875rem]">Highlights</h4>
-              <ul className="text-[0.75rem] space-y-[0.5rem] text-muted-foreground overflow-hidden max-h-[10vh]">
+            <div className="space-y-1">
+              <h4 className="font-medium text-xs sm:text-sm">Highlights</h4>
+              <ul className="text-xs space-y-1 text-muted-foreground overflow-hidden max-h-[8vh]">
                 {society.socHighlights.slice(0, 3).map((highlight, index) => (
-                  <li key={index} className="flex items-start gap-[0.75rem]">
-                    <div className="w-[0.375rem] h-[0.375rem] bg-muted rounded-full mt-[0.375rem] flex-shrink-0" />
-                    <span className="leading-relaxed line-clamp-1">{highlight}</span>
+                  <li key={index} className="flex items-start gap-2">
+                    <div className="w-1 h-1 bg-muted rounded-full mt-1 flex-shrink-0" />
+                    <span className="leading-snug line-clamp-1">
+                      {highlight}
+                    </span>
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          {/* Stats */}
-          <div className="flex items-center gap-[1.5rem] mt-auto pt-[1rem] text-[0.75rem] text-muted-foreground">
-            <div className="flex items-center gap-[0.5rem]">
-              <Users className="w-[0.875rem] h-[0.875rem]" />
+          <div className="flex items-center gap-4 mt-auto pt-3 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <Users className="w-3.5 h-3.5" />
               <span>{society.socContact?.team?.length ?? 0} council</span>
             </div>
-            <div className="flex items-center gap-[0.5rem]">
-              <Calendar className="w-[0.875rem] h-[0.875rem]" />
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5" />
               <span>{society.socKeyEvents?.length ?? 0} events</span>
             </div>
           </div>
@@ -132,11 +131,11 @@ export function SocietyCard({
       </CardContent>
 
       {/* Footer */}
-      <CardFooter className="flex-shrink-0 flex gap-[0.75rem] pt-0">
+      <CardFooter className="flex-shrink-0 gap-2 px-4 sm:px-6 pb-4 pt-0">
         <Button
           variant="outline"
           onClick={onViewDetails}
-          className="flex-1 rounded-full font-light border-border hover:bg-muted text-foreground"
+          className="flex-1 rounded-full font-light border-border hover:bg-muted text-foreground text-xs sm:text-sm"
         >
           View Details
         </Button>
@@ -145,21 +144,22 @@ export function SocietyCard({
           onClick={handleToggleCart}
           disabled={isToggling}
           variant={isInCart ? "default" : "outline"}
-          className={`flex-1 rounded-full font-light transition-colors ${isInCart
-            ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
-            : "border-border hover:bg-muted text-foreground"
-            }`}
+          className={`flex-1 rounded-full font-light transition-colors text-xs sm:text-sm ${
+            isInCart
+              ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
+              : "border-border hover:bg-muted text-foreground"
+          }`}
         >
           {isToggling ? (
-            <div className="w-[1rem] h-[1rem] border-[0.125rem] border-current border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-[2px] border-current border-t-transparent rounded-full animate-spin" />
           ) : isInCart ? (
             <>
-              <Check className="w-[1rem] h-[1rem] mr-[0.5rem]" />
+              <Check className="w-4 h-4 mr-1" />
               Added
             </>
           ) : (
             <>
-              <Plus className="w-[1rem] h-[1rem] mr-[0.5rem]" />
+              <Plus className="w-4 h-4 mr-1" />
               Add to Cart
             </>
           )}
