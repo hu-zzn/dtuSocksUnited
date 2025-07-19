@@ -14,8 +14,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "UnifyDTU",
-  description:
-    "Join communities that match your interests and build lifelong connections",
+  description: "Join communities that match your interests and build lifelong connections",
 };
 
 export default function RootLayout({
@@ -35,7 +34,11 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.className} bg-background text-foreground transition-colors duration-300`}
+        className={`
+          ${inter.className}
+          bg-background text-foreground
+          transition-colors duration-300
+        `}
       >
         <ThemeProvider
           attribute="class"
@@ -46,8 +49,9 @@ export default function RootLayout({
           <AuthProvider>
             <CartProvider>
               <Navbar />
-              <main className="p-4 pb-16">{children}</main>
-              {/* ✅ Ticker stays at bottom */}
+              <main className="min-h-screen bg-background text-foreground p-4 pb-16">
+                {children}
+              </main>
               <BottomTicker />
             </CartProvider>
           </AuthProvider>
