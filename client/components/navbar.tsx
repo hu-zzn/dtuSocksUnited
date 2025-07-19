@@ -32,6 +32,12 @@ export function Navbar() {
     }
   };
 
+  const handleHomeClick = () => {
+    // Force refresh of the homepage
+    router.refresh();
+    router.push("/");
+  };
+
   return (
     <nav className="bg-background text-foreground shadow-sm border-b border-border sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-4">
@@ -42,12 +48,12 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/"
+            <button
+              onClick={handleHomeClick}
               className="hover:text-primary transition-colors font-light"
             >
               Home
-            </Link>
+            </button>
             <Link
               href="/eventCalendar"
               className="hover:text-primary transition-colors font-light"
@@ -138,9 +144,15 @@ export function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border bg-background text-foreground">
             <div className="flex flex-col space-y-3">
-              <Link href="/" className="hover:text-primary">
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleHomeClick();
+                }}
+                className="hover:text-primary text-left"
+              >
                 Home
-              </Link>
+              </button>
               <ThemeToggle />
               <Link href="/eventCalendar" className="hover:text-primary">
                 Event Calendar
