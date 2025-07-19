@@ -147,7 +147,7 @@ export function SocietyGrid() {
               key={category}
               className="space-y-4 mb-12 group relative hover:bg-muted/10 p-2 rounded-xl transition"
             >
-              <h2 className="text-3xl font-semibold text-primary">
+              <h2 className="text-3xl font-bold text-primary">
                 {category}
               </h2>
 
@@ -178,8 +178,8 @@ export function SocietyGrid() {
                   enabled: true,
                   momentum: true,
                   momentumBounce: false,
-                  momentumRatio: 1.5,
-                  momentumVelocityRatio: 2,
+                  momentumRatio: 0.3,
+                  momentumVelocityRatio: 0.5,
                   sticky: false,
                 }}
                 grabCursor={true}
