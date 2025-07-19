@@ -178,8 +178,8 @@ export function SocietyGrid() {
                   enabled: true,
                   momentum: true,
                   momentumBounce: false,
-                  momentumRatio: 1.5,
-                  momentumVelocityRatio: 2,
+                  momentumRatio: 0.3,
+                  momentumVelocityRatio: 0.5,
                   sticky: false,
                 }}
                 grabCursor={true}
