@@ -45,12 +45,12 @@ export function SocietyCard({
   };
 
   return (
-    <Card className="h-[45vh] min-h-[40vh] max-h-[60vh] w-full flex flex-col justify-between border border-border bg-card text-foreground transition-all duration-300 group hover:-translate-y-[0.25rem] hover:shadow-2xl dark:hover:shadow-white/10">
-      {/* Fixed Header */}
+    <Card className="h-[50vh] min-h-[45vh] max-h-[65vh] w-full flex flex-col justify-between border border-border bg-card text-foreground transition-all duration-300 group hover:-translate-y-[0.25rem] hover:shadow-2xl dark:hover:shadow-white/10">
+      {/* Header */}
       <CardHeader className="flex-shrink-0 pb-[1rem]">
         <div className="flex justify-between items-start gap-[1rem]">
           <div className="flex-1">
-            <CardTitle className="text-[1.2rem] font-medium group-hover:text-primary transition-colors line-clamp-2">
+            <CardTitle className="text-[1.1rem] font-medium group-hover:text-primary transition-colors line-clamp-2">
               {society.socName}
             </CardTitle>
 
@@ -87,15 +87,15 @@ export function SocietyCard({
         </div>
       </CardHeader>
 
-      {/* Flexible Content */}
+      {/* Body */}
       <CardContent className="flex-1 min-h-0 overflow-hidden pb-[1rem]">
         <div className="flex flex-col h-full">
-          {/* About Text */}
+          {/* About (3 lines only) */}
           <p className="text-[0.9rem] leading-relaxed text-muted-foreground line-clamp-3 mb-[1rem]">
             {society.socAbout}
           </p>
 
-          {/* Highlights */}
+          {/* Highlights (3 items only) */}
           {society.socHighlights?.length > 0 && (
             <div className="space-y-[0.75rem]">
               <h4 className="font-medium text-[0.875rem]">Highlights</h4>
@@ -124,7 +124,7 @@ export function SocietyCard({
         </div>
       </CardContent>
 
-      {/* Fixed Footer */}
+      {/* Footer */}
       <CardFooter className="flex-shrink-0 flex gap-[0.75rem] pt-0">
         <Button
           variant="outline"
