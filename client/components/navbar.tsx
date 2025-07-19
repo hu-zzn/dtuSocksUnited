@@ -32,10 +32,9 @@ export function Navbar() {
     }
   };
 
+  // ✅ Full browser refresh for Home button
   const handleHomeClick = () => {
-    // Force refresh of the homepage
-    router.refresh();
-    router.push("/");
+    window.location.href = "/";
   };
 
   return (
