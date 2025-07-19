@@ -44,8 +44,8 @@ export function SocietyGrid() {
   const categories =
     safeSocieties.length > 0
       ? Array.from(
-          new Set(safeSocieties.flatMap((society) => society.socCategory))
-        )
+        new Set(safeSocieties.flatMap((society) => society.socCategory))
+      )
       : [];
 
   // ✅ Fuzzy search using Fuse.js
@@ -70,20 +70,18 @@ export function SocietyGrid() {
     scrollDirectionRef.current = direction;
     scrollCategoryRef.current = category;
 
-    const step = () => {
-      const swiper = swiperRefs.current[category];
-      if (swiper) {
-        if (scrollDirectionRef.current === "left") {
-          swiper.slidePrev(200, false);
-        } else {
-          swiper.slideNext(200, false);
-        }
-      }
-      scrollAnimationRef.current = requestAnimationFrame(step);
-    };
+    const swiper = swiperRefs.current[category];
+    if (!swiper) return;
 
-    scrollAnimationRef.current = requestAnimationFrame(step);
+    scrollAnimationRef.current = window.setInterval(() => {
+      if (direction === "left") {
+        swiper.slidePrev();
+      } else {
+        swiper.slideNext();
+      }
+    }, 400); // 🐢 400ms delay between each scroll – increase to slow down more
   };
+
 
   const stopScrolling = () => {
     if (scrollAnimationRef.current) {
