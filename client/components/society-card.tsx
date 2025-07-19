@@ -45,7 +45,7 @@ export function SocietyCard({
   };
 
   return (
-    <Card className="h-full flex flex-col transition-all duration-300 border border-border bg-card text-foreground group hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-white/10">
+    <Card className="h-[45vh] min-h-[320px] max-h-[500px] w-full flex flex-col transition-all duration-300 border border-border bg-card text-foreground group hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-white/10">
       <CardHeader className="pb-4">
         <div className="flex justify-between items-start gap-4">
           <div className="flex-1">
@@ -87,18 +87,18 @@ export function SocietyCard({
       </CardHeader>
 
       <CardContent className="flex-1 pb-4">
-        <p className="text-sm line-clamp-3 mb-6 leading-relaxed text-muted-foreground">
+        <p className="text-sm line-clamp-3 mb-4 leading-relaxed text-muted-foreground">
           {society.socAbout}
         </p>
 
         {society.socHighlights?.length > 0 && (
           <div className="space-y-3">
             <h4 className="font-medium text-sm">Highlights</h4>
-            <ul className="text-xs space-y-2 text-muted-foreground">
-              {society.socHighlights.slice(0, 2).map((highlight, index) => (
+            <ul className="text-xs space-y-2 text-muted-foreground max-h-[10vh] overflow-hidden">
+              {society.socHighlights.slice(0, 3).map((highlight, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <div className="w-1.5 h-1.5 bg-muted rounded-full mt-2 flex-shrink-0" />
-                  <span className="leading-relaxed">{highlight}</span>
+                  <div className="w-[0.375rem] h-[0.375rem] bg-muted rounded-full mt-[0.375rem] flex-shrink-0" />
+                  <span className="leading-relaxed line-clamp-1">{highlight}</span>
                 </li>
               ))}
             </ul>
@@ -131,12 +131,10 @@ export function SocietyCard({
             onClick={handleToggleCart}
             disabled={isToggling}
             variant={isInCart ? "default" : "outline"}
-            className={`flex-1 rounded-full font-light transition-colors ${
-              isInCart
+            className={`flex-1 rounded-full font-light transition-colors ${isInCart
                 ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
-
                 : "border-border hover:bg-muted text-foreground"
-            }`}
+              }`}
           >
             {isToggling ? (
               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
