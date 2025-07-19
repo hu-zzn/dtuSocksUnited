@@ -170,18 +170,11 @@ export function SocietyGrid() {
                 onSwiper={(swiper) =>
                   (swiperRefs.current[category] = swiper)
                 }
-                freeMode={{
-                  enabled: true,
-                  momentum: true,
-                  momentumBounce: false,
-                  momentumRatio: 0.3,
-                  momentumVelocityRatio: 0.5,
-                  sticky: false,
-                }}
+                freeMode={true}
                 grabCursor={true}
-                touchRatio={1}
+                touchRatio={0.8}
                 loop={true}
-                speed={25}
+                speed={1000}
                 spaceBetween={24}
                 slidesPerView="auto"
                 breakpoints={{
