@@ -32,15 +32,15 @@ export function SocietyGrid() {
   useEffect(() => {
     getAllSocieties();
   }, []);
-  
+
   const swiperRefs = useRef<Record<string, SwiperType | null>>({});
 
   const safeSocieties = societies ?? [];
   const categories =
     safeSocieties.length > 0
       ? Array.from(
-          new Set(safeSocieties.flatMap((society) => society.socCategory))
-        )
+        new Set(safeSocieties.flatMap((society) => society.socCategory))
+      )
       : [];
 
   const filteredSocieties = safeSocieties.filter((society) => {
@@ -147,10 +147,17 @@ export function SocietyGrid() {
                 onSwiper={(swiper) =>
                   (swiperRefs.current[category] = swiper)
                 }
-                freeMode={true}
+                freeMode={{
+                  enabled: true,
+                  momentum: true,
+                  momentumBounce: false,
+                  momentumRatio: 1.5,       // Speed boost
+                  momentumVelocityRatio: 2, // Acceleration feel
+                  sticky: false,
+                }}
                 grabCursor={true}
                 loop={true}
-                speed={600} // ✅ Smooth transition
+                speed={800} // ✅ Smooth transition
                 spaceBetween={24}
                 slidesPerView={3}
                 breakpoints={{
