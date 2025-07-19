@@ -45,43 +45,87 @@ export function SocietyCard({
   };
 
   return (
-    <Card className="h-[45vh] min-h-[320px] max-h-[500px] w-full flex flex-col justify-between transition-all duration-300 border border-border bg-card text-foreground group hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-white/10">
-      <CardHeader className="pb-4">
-        {/* ... Header remains the same ... */}
+    <Card className="h-[45vh] min-h-[40vh] max-h-[60vh] w-full flex flex-col justify-between border border-border bg-card text-foreground transition-all duration-300 group hover:-translate-y-[0.25rem] hover:shadow-2xl dark:hover:shadow-white/10">
+      {/* Fixed Header */}
+      <CardHeader className="flex-shrink-0 pb-[1rem]">
+        <div className="flex justify-between items-start gap-[1rem]">
+          <div className="flex-1">
+            <CardTitle className="text-[1.2rem] font-medium group-hover:text-primary transition-colors line-clamp-2">
+              {society.socName}
+            </CardTitle>
+
+            <div className="flex flex-wrap gap-[0.5rem] mt-[0.5rem]">
+              {society.socCategory.slice(0, 2).map((category) => (
+                <Badge
+                  key={category}
+                  variant="secondary"
+                  className="text-[0.75rem] bg-muted text-foreground hover:bg-accent border-0 rounded-full"
+                >
+                  {category}
+                </Badge>
+              ))}
+              {society.socCategory.length > 2 && (
+                <Badge
+                  variant="outline"
+                  className="text-[0.75rem] border-border text-muted-foreground rounded-full"
+                >
+                  +{society.socCategory.length - 2}
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          {society.socLogo && (
+            <div className="flex-shrink-0">
+              <img
+                src={society.socLogo}
+                alt={`${society.socName} logo`}
+                className="w-[3.5rem] h-[3.5rem] rounded-full object-cover border border-border shadow-sm"
+              />
+            </div>
+          )}
+        </div>
       </CardHeader>
 
-      <CardContent className="flex-1 pb-4 overflow-hidden">
-        <p className="text-sm line-clamp-3 mb-4 leading-relaxed text-muted-foreground">
-          {society.socAbout}
-        </p>
+      {/* Flexible Content */}
+      <CardContent className="flex-1 min-h-0 overflow-hidden pb-[1rem]">
+        <div className="flex flex-col h-full">
+          {/* About Text */}
+          <p className="text-[0.9rem] leading-relaxed text-muted-foreground line-clamp-3 mb-[1rem]">
+            {society.socAbout}
+          </p>
 
-        {society.socHighlights?.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="font-medium text-sm">Highlights</h4>
-            <ul className="text-xs space-y-2 text-muted-foreground max-h-[10vh] overflow-hidden">
-              {society.socHighlights.slice(0, 3).map((highlight, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <div className="w-[0.375rem] h-[0.375rem] bg-muted rounded-full mt-[0.375rem] flex-shrink-0" />
-                  <span className="leading-relaxed line-clamp-1">{highlight}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+          {/* Highlights */}
+          {society.socHighlights?.length > 0 && (
+            <div className="space-y-[0.75rem]">
+              <h4 className="font-medium text-[0.875rem]">Highlights</h4>
+              <ul className="text-[0.75rem] space-y-[0.5rem] text-muted-foreground overflow-hidden max-h-[10vh]">
+                {society.socHighlights.slice(0, 3).map((highlight, index) => (
+                  <li key={index} className="flex items-start gap-[0.75rem]">
+                    <div className="w-[0.375rem] h-[0.375rem] bg-muted rounded-full mt-[0.375rem] flex-shrink-0" />
+                    <span className="leading-relaxed line-clamp-1">{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-        <div className="flex items-center gap-6 mt-6 text-xs text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Users className="w-3.5 h-3.5" />
-            <span>{society.socContact?.team?.length ?? 0} council</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Calendar className="w-3.5 h-3.5" />
-            <span>{society.socKeyEvents?.length ?? 0} events</span>
+          {/* Stats */}
+          <div className="flex items-center gap-[1.5rem] mt-auto pt-[1rem] text-[0.75rem] text-muted-foreground">
+            <div className="flex items-center gap-[0.5rem]">
+              <Users className="w-[0.875rem] h-[0.875rem]" />
+              <span>{society.socContact?.team?.length ?? 0} council</span>
+            </div>
+            <div className="flex items-center gap-[0.5rem]">
+              <Calendar className="w-[0.875rem] h-[0.875rem]" />
+              <span>{society.socKeyEvents?.length ?? 0} events</span>
+            </div>
           </div>
         </div>
       </CardContent>
 
-      <CardFooter className="flex gap-3 pt-0 mt-auto">
+      {/* Fixed Footer */}
+      <CardFooter className="flex-shrink-0 flex gap-[0.75rem] pt-0">
         <Button
           variant="outline"
           onClick={onViewDetails}
@@ -90,31 +134,32 @@ export function SocietyCard({
           View Details
         </Button>
 
-        <Button
-          onClick={handleToggleCart}
-          disabled={!isAuthenticated || isToggling}
-          variant={isInCart ? "default" : "outline"}
-          className={`flex-1 rounded-full font-light transition-colors ${isInCart
-            ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
-            : "border-border hover:bg-muted text-foreground"
-            }`}
-        >
-          {isToggling ? (
-            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-          ) : isInCart ? (
-            <>
-              <Check className="w-4 h-4 mr-2" />
-              Added
-            </>
-          ) : (
-            <>
-              <Plus className="w-4 h-4 mr-2" />
-              Add to Cart
-            </>
-          )}
-        </Button>
+        {isAuthenticated && (
+          <Button
+            onClick={handleToggleCart}
+            disabled={isToggling}
+            variant={isInCart ? "default" : "outline"}
+            className={`flex-1 rounded-full font-light transition-colors ${isInCart
+              ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
+              : "border-border hover:bg-muted text-foreground"
+              }`}
+          >
+            {isToggling ? (
+              <div className="w-[1rem] h-[1rem] border-[0.125rem] border-current border-t-transparent rounded-full animate-spin" />
+            ) : isInCart ? (
+              <>
+                <Check className="w-[1rem] h-[1rem] mr-[0.5rem]" />
+                Added
+              </>
+            ) : (
+              <>
+                <Plus className="w-[1rem] h-[1rem] mr-[0.5rem]" />
+                Add to Cart
+              </>
+            )}
+          </Button>
+        )}
       </CardFooter>
     </Card>
-
   );
 }
