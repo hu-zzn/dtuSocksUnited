@@ -18,6 +18,7 @@ import { useCart } from "../context/cart-context";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
+import Fuse from "fuse.js"; // ✅ NEW: Fuse.js for fuzzy search
 import "swiper/css";
 import "swiper/css/free-mode";
 
@@ -39,6 +40,7 @@ export function SocietyGrid() {
   }, []);
 
   const safeSocieties = societies ?? [];
+
   const categories =
     safeSocieties.length > 0
       ? Array.from(
@@ -46,31 +48,23 @@ export function SocietyGrid() {
         )
       : [];
 
-  const filteredSocieties = safeSocieties.filter((society) => {
-    const searchWord = searchTerm.trim().toLowerCase();
-    if (!searchWord)
-      return (
-        categoryFilter === "all" ||
-        society.socCategory.includes(categoryFilter)
-      );
-
-    const searchRegex = new RegExp(`\\b${searchWord}\\b`, "i");
-
-    const matchesSearch =
-      searchRegex.test(society.socName) ||
-      society.socCategory.some((cat) => searchRegex.test(cat)) ||
-      (society.socKeyWord ?? []).some((keyword) =>
-        searchRegex.test(keyword)
-      ) ||
-      (society.socKeyEvents ?? []).some((event) =>
-        searchRegex.test(event.name)
-      );
-
-    const matchesCategory =
-      categoryFilter === "all" || society.socCategory.includes(categoryFilter);
-
-    return matchesSearch && matchesCategory;
+  // ✅ Fuzzy search using Fuse.js
+  const fuse = new Fuse(safeSocieties, {
+    keys: ["socName", "socCategory", "socKeyWord", "socKeyEvents.name"],
+    threshold: 0.4,
+    includeScore: true,
   });
+
+  const matches =
+    searchTerm.trim() === ""
+      ? safeSocieties
+      : fuse.search(searchTerm).map((result) => result.item);
+
+  const filteredSocieties = matches.filter((society) =>
+    categoryFilter === "all"
+      ? true
+      : society.socCategory.includes(categoryFilter)
+  );
 
   const startScrolling = (direction: "left" | "right", category: string) => {
     scrollDirectionRef.current = direction;
@@ -140,7 +134,7 @@ export function SocietyGrid() {
       </div>
 
       {/* 🧩 Display by Category Carousel */}
-      {categoryFilter === "all" ? (
+      {categoryFilter === "all" && searchTerm.trim() === "" ? (
         categories.map((category) => {
           const societiesInCategory = filteredSocieties.filter((s) =>
             s.socCategory.includes(category)
