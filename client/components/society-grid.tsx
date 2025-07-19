@@ -134,7 +134,7 @@ export function SocietyGrid() {
       </div>
 
       {/* 🧩 Display by Category Carousel */}
-      {categoryFilter === "all" ? (
+      {categoryFilter === "all" && searchTerm.trim() === "" ? (
         categories.map((category) => {
           const societiesInCategory = filteredSocieties.filter((s) =>
             s.socCategory.includes(category)
