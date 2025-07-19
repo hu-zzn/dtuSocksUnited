@@ -29,25 +29,46 @@ export function SocietyGrid() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
 
+  const swiperRefs = useRef<Record<string, SwiperType | null>>({});
+  const scrollInterval = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     getAllSocieties();
   }, []);
 
-  const swiperRefs = useRef<Record<string, SwiperType | null>>({});
+  const startScrolling = (direction: "left" | "right", category: string) => {
+    const swiper = swiperRefs.current[category];
+    if (!swiper) return;
+
+    stopScrolling();
+
+    scrollInterval.current = setInterval(() => {
+      direction === "left" ? swiper.slidePrev() : swiper.slideNext();
+    }, 250); // Adjust speed here
+  };
+
+  const stopScrolling = () => {
+    if (scrollInterval.current) {
+      clearInterval(scrollInterval.current);
+      scrollInterval.current = null;
+    }
+  };
 
   const safeSocieties = societies ?? [];
   const categories =
     safeSocieties.length > 0
       ? Array.from(
-        new Set(safeSocieties.flatMap((society) => society.socCategory))
-      )
+          new Set(safeSocieties.flatMap((society) => society.socCategory))
+        )
       : [];
 
   const filteredSocieties = safeSocieties.filter((society) => {
     const searchWord = searchTerm.trim().toLowerCase();
     if (!searchWord)
-      return categoryFilter === "all" ||
-        society.socCategory.includes(categoryFilter);
+      return (
+        categoryFilter === "all" ||
+        society.socCategory.includes(categoryFilter)
+      );
 
     const searchRegex = new RegExp(`\\b${searchWord}\\b`, "i");
 
@@ -126,38 +147,40 @@ export function SocietyGrid() {
                 {category}
               </h2>
 
-              {/* ← Arrow */}
+              {/* ⬅️ Left scroll */}
               <button
-                onClick={() => swiperRefs.current[category]?.slidePrev()}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md transition hover:scale-110"
+                onMouseDown={() => startScrolling("left", category)}
+                onMouseUp={stopScrolling}
+                onMouseLeave={stopScrolling}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
 
-              {/* → Arrow */}
+              {/* ➡️ Right scroll */}
               <button
-                onClick={() => swiperRefs.current[category]?.slideNext()}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md transition hover:scale-110"
+                onMouseDown={() => startScrolling("right", category)}
+                onMouseUp={stopScrolling}
+                onMouseLeave={stopScrolling}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
 
               <Swiper
                 modules={[FreeMode]}
-                onSwiper={(swiper) =>
-                  (swiperRefs.current[category] = swiper)
-                }
+                onSwiper={(swiper) => (swiperRefs.current[category] = swiper)}
                 freeMode={{
                   enabled: true,
                   momentum: true,
                   momentumBounce: false,
-                  momentumRatio: 1.5,       // Speed boost
-                  momentumVelocityRatio: 2, // Acceleration feel
+                  momentumRatio: 1.5,
+                  momentumVelocityRatio: 2,
                   sticky: false,
                 }}
                 grabCursor={true}
                 loop={true}
-                speed={800} // ✅ Smooth transition
+                speed={800}
                 spaceBetween={24}
                 slidesPerView={3}
                 breakpoints={{
