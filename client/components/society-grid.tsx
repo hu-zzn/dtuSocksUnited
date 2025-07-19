@@ -178,14 +178,14 @@ export function SocietyGrid() {
                   enabled: true,
                   momentum: true,
                   momentumBounce: false,
-                  momentumRatio: 0.3,
-                  momentumVelocityRatio: 0.5,
+                  momentumRatio: 0.25,
+                  momentumVelocityRatio: 0.35,
                   sticky: false,
                 }}
                 grabCursor={true}
                 touchRatio={1}
                 loop={true}
-                speed={25}
+                speed={600}
                 spaceBetween={24}
                 slidesPerView="auto"
                 breakpoints={{
