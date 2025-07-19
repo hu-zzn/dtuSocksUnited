@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -30,9 +31,15 @@ export function SocietyCard({
   const { user } = useAuth();
   const isAuthenticated = !!user;
   const [isToggling, setIsToggling] = useState(false);
+  const router = useRouter();
 
   const handleToggleCart = async () => {
-    if (!isAuthenticated || !onToggle) return;
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+
+    if (!onToggle) return;
 
     setIsToggling(true);
     try {
@@ -134,31 +141,29 @@ export function SocietyCard({
           View Details
         </Button>
 
-        {isAuthenticated && (
-          <Button
-            onClick={handleToggleCart}
-            disabled={isToggling}
-            variant={isInCart ? "default" : "outline"}
-            className={`flex-1 rounded-full font-light transition-colors ${isInCart
-              ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
-              : "border-border hover:bg-muted text-foreground"
-              }`}
-          >
-            {isToggling ? (
-              <div className="w-[1rem] h-[1rem] border-[0.125rem] border-current border-t-transparent rounded-full animate-spin" />
-            ) : isInCart ? (
-              <>
-                <Check className="w-[1rem] h-[1rem] mr-[0.5rem]" />
-                Added
-              </>
-            ) : (
-              <>
-                <Plus className="w-[1rem] h-[1rem] mr-[0.5rem]" />
-                Add to Cart
-              </>
-            )}
-          </Button>
-        )}
+        <Button
+          onClick={handleToggleCart}
+          disabled={isToggling}
+          variant={isInCart ? "default" : "outline"}
+          className={`flex-1 rounded-full font-light transition-colors ${isInCart
+            ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
+            : "border-border hover:bg-muted text-foreground"
+            }`}
+        >
+          {isToggling ? (
+            <div className="w-[1rem] h-[1rem] border-[0.125rem] border-current border-t-transparent rounded-full animate-spin" />
+          ) : isInCart ? (
+            <>
+              <Check className="w-[1rem] h-[1rem] mr-[0.5rem]" />
+              Added
+            </>
+          ) : (
+            <>
+              <Plus className="w-[1rem] h-[1rem] mr-[0.5rem]" />
+              Add to Cart
+            </>
+          )}
+        </Button>
       </CardFooter>
     </Card>
   );
