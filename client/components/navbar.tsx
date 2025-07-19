@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import {
@@ -21,6 +22,15 @@ export function Navbar() {
   const isAuthenticated = !!user;
   const { cart } = useCart();
   const cartCount = cart?.length ?? 0;
+  const router = useRouter();
+
+  const handleCartClick = () => {
+    if (isAuthenticated) {
+      router.push("/cart");
+    } else {
+      router.push("/login");
+    }
+  };
 
   return (
     <nav className="bg-background text-foreground shadow-sm border-b border-border sticky top-0 z-50 backdrop-blur-md">
@@ -57,46 +67,41 @@ export function Navbar() {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full border-border hover:bg-secondary"
+              onClick={handleCartClick}
+            >
+              <div className="flex items-center gap-2">
+                <ShoppingCart className="w-4 h-4" />
+                Cart
+                {cartCount > 0 && (
+                  <Badge className="ml-1 bg-foreground text-background">
+                    {cartCount}
+                  </Badge>
+                )}
+              </div>
+            </Button>
             {isAuthenticated ? (
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="rounded-full border-border hover:bg-secondary"
-                >
-                  <Link href="/cart" className="flex items-center gap-2">
-                    <ShoppingCart className="w-4 h-4" />
-                    Cart
-                    {cartCount > 0 && (
-                      <Badge
-                        variant="default"
-                        className="ml-1 bg-foreground text-background"
-                      >
-                        {cartCount}
-                      </Badge>
-                    )}
-                  </Link>
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="hover:bg-secondary rounded-full"
-                    >
-                      <User className="w-4 h-4 mr-2" />
-                      {user?.name}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="border-border bg-popover text-popover-foreground">
-                    <DropdownMenuItem asChild>
-                      <Link href="/profile">Profile</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hover:bg-secondary rounded-full"
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    {user?.name}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="border-border bg-popover text-popover-foreground">
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <div className="flex space-x-3">
                 <Button
@@ -145,12 +150,17 @@ export function Navbar() {
                   Admin Panel
                 </Link>
               )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 px-0 hover:text-primary"
+                onClick={handleCartClick}
+              >
+                <ShoppingCart className="w-4 h-4" />
+                Cart ({cartCount})
+              </Button>
               {isAuthenticated ? (
                 <>
-                  <Link href="/cart" className="flex items-center gap-2 hover:text-primary">
-                    <ShoppingCart className="w-4 h-4" />
-                    Cart ({cartCount})
-                  </Link>
                   <Link href="/profile" className="hover:text-primary">
                     Profile
                   </Link>
