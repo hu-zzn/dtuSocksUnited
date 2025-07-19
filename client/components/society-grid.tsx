@@ -30,29 +30,13 @@ export function SocietyGrid() {
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const swiperRefs = useRef<Record<string, SwiperType | null>>({});
-  const scrollInterval = useRef<NodeJS.Timeout | null>(null);
+  const scrollDirectionRef = useRef<"left" | "right" | null>(null);
+  const scrollCategoryRef = useRef<string | null>(null);
+  const scrollAnimationRef = useRef<number | null>(null);
 
   useEffect(() => {
     getAllSocieties();
   }, []);
-
-  const startScrolling = (direction: "left" | "right", category: string) => {
-    const swiper = swiperRefs.current[category];
-    if (!swiper) return;
-
-    stopScrolling();
-
-    scrollInterval.current = setInterval(() => {
-      direction === "left" ? swiper.slidePrev() : swiper.slideNext();
-    }, 250); // Adjust speed here
-  };
-
-  const stopScrolling = () => {
-    if (scrollInterval.current) {
-      clearInterval(scrollInterval.current);
-      scrollInterval.current = null;
-    }
-  };
 
   const safeSocieties = societies ?? [];
   const categories =
@@ -87,6 +71,32 @@ export function SocietyGrid() {
 
     return matchesSearch && matchesCategory;
   });
+
+  const startScrolling = (direction: "left" | "right", category: string) => {
+    scrollDirectionRef.current = direction;
+    scrollCategoryRef.current = category;
+
+    const step = () => {
+      const swiper = swiperRefs.current[category];
+      if (swiper) {
+        if (scrollDirectionRef.current === "left") {
+          swiper.slidePrev(200, false);
+        } else {
+          swiper.slideNext(200, false);
+        }
+      }
+      scrollAnimationRef.current = requestAnimationFrame(step);
+    };
+
+    scrollAnimationRef.current = requestAnimationFrame(step);
+  };
+
+  const stopScrolling = () => {
+    if (scrollAnimationRef.current) {
+      cancelAnimationFrame(scrollAnimationRef.current);
+      scrollAnimationRef.current = null;
+    }
+  };
 
   if (loading) {
     return (
@@ -147,20 +157,18 @@ export function SocietyGrid() {
                 {category}
               </h2>
 
-              {/* ⬅️ Left scroll */}
+              {/* ⬅️ Left scroll (hover) */}
               <button
-                onMouseDown={() => startScrolling("left", category)}
-                onMouseUp={stopScrolling}
+                onMouseEnter={() => startScrolling("left", category)}
                 onMouseLeave={stopScrolling}
                 className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
 
-              {/* ➡️ Right scroll */}
+              {/* ➡️ Right scroll (hover) */}
               <button
-                onMouseDown={() => startScrolling("right", category)}
-                onMouseUp={stopScrolling}
+                onMouseEnter={() => startScrolling("right", category)}
                 onMouseLeave={stopScrolling}
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md"
               >
@@ -169,7 +177,9 @@ export function SocietyGrid() {
 
               <Swiper
                 modules={[FreeMode]}
-                onSwiper={(swiper) => (swiperRefs.current[category] = swiper)}
+                onSwiper={(swiper) =>
+                  (swiperRefs.current[category] = swiper)
+                }
                 freeMode={{
                   enabled: true,
                   momentum: true,
