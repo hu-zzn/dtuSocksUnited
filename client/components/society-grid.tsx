@@ -191,7 +191,7 @@ export function SocietyGrid() {
                 grabCursor={true}
                 touchRatio={1}
                 loop={true}
-                speed={40}
+                speed={25}
                 spaceBetween={24}
                 slidesPerView="auto"
                 breakpoints={{
