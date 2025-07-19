@@ -1,7 +1,14 @@
-import { Button } from "../components/ui/button"
-import { GraduationCap, Users, Calendar } from "lucide-react"
+'use client';
+
+import { Button } from "../components/ui/button";
+import { GraduationCap, Users, Calendar } from "lucide-react";
 
 export function Hero() {
+  const scrollToSocieties = () => {
+    const section = document.getElementById("societies");
+    section?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="bg-black text-white py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black opacity-90" />
@@ -33,10 +40,14 @@ export function Hero() {
             <span className="text-lg font-light">Student-Led</span>
           </div>
         </div>
-        <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-12 py-4 rounded-full font-medium">
+        <Button
+          size="lg"
+          className="bg-white text-black hover:bg-gray-100 text-lg px-12 py-4 rounded-full font-medium"
+          onClick={scrollToSocieties}
+        >
           Explore Societies
         </Button>
       </div>
     </section>
-  )
+  );
 }
