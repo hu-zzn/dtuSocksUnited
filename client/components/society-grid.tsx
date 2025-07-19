@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SocietyCard } from "../components/society-card";
 import { SocietyModal } from "../components/society-modal";
 import { Input } from "../components/ui/input";
@@ -11,10 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
-import { Search } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Society } from "../types/index";
 import { useSocieties } from "../hooks/use-society";
 import { useCart } from "../context/cart-context";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
+import "swiper/css";
+import "swiper/css/free-mode";
 
 export function SocietyGrid() {
   const { societies, loading, getAllSocieties } = useSocieties();
@@ -27,6 +32,8 @@ export function SocietyGrid() {
   useEffect(() => {
     getAllSocieties();
   }, []);
+  
+  const swiperRefs = useRef<Record<string, SwiperType | null>>({});
 
   const safeSocieties = societies ?? [];
   const categories =
@@ -111,37 +118,64 @@ export function SocietyGrid() {
           if (societiesInCategory.length === 0) return null;
 
           return (
-            <div key={category} className="space-y-4 mb-12">
+            <div
+              key={category}
+              className="space-y-4 mb-12 group relative hover:bg-muted/10 p-2 rounded-xl transition"
+            >
               <h2 className="text-3xl font-semibold text-primary">
                 {category}
               </h2>
 
-              <div className="relative">
-                <div className="swiper-container">
-                  <div className="flex overflow-x-auto gap-6 scrollbar-hide snap-x snap-mandatory">
-                    {societiesInCategory.map((society) => (
-                      <div
-                        key={society._id}
-                        className="min-w-[300px] max-w-[320px] snap-start shrink-0"
-                      >
-                        <SocietyCard
-                          society={society}
-                          onViewDetails={() => setSelectedSociety(society)}
-                          onToggle={() => toggleCart(society._id)}
-                          isInCart={cart?.some(
-                            (item) => item._id === society._id
-                          )}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              {/* ← Arrow */}
+              <button
+                onClick={() => swiperRefs.current[category]?.slidePrev()}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md transition hover:scale-110"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              {/* → Arrow */}
+              <button
+                onClick={() => swiperRefs.current[category]?.slideNext()}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md transition hover:scale-110"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+
+              <Swiper
+                modules={[FreeMode]}
+                onSwiper={(swiper) =>
+                  (swiperRefs.current[category] = swiper)
+                }
+                freeMode={true}
+                grabCursor={true}
+                loop={true}
+                speed={600} // ✅ Smooth transition
+                spaceBetween={24}
+                slidesPerView={3}
+                breakpoints={{
+                  0: { slidesPerView: 1.2 },
+                  640: { slidesPerView: 2.1 },
+                  1024: { slidesPerView: 3 },
+                }}
+              >
+                {societiesInCategory.map((society) => (
+                  <SwiperSlide key={society._id}>
+                    <SocietyCard
+                      society={society}
+                      onViewDetails={() => setSelectedSociety(society)}
+                      onToggle={() => toggleCart(society._id)}
+                      isInCart={cart?.some(
+                        (item) => item._id === society._id
+                      )}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
           );
         })
       ) : (
-        // 🔳 Selected category — Grid layout
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredSocieties.map((society) => (
             <SocietyCard
