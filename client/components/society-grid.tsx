@@ -79,7 +79,7 @@ export function SocietyGrid() {
       } else {
         swiper.slideNext();
       }
-    }, 400); // 🐢 400ms delay between each scroll – increase to slow down more
+    }, 4000); // 🐢 400ms delay between each scroll – increase to slow down more
   };
 
 
@@ -174,7 +174,7 @@ export function SocietyGrid() {
                 }
                 freeMode={true}
                 grabCursor={true}
-                touchRatio={0.8}
+                touchRatio={1.8}
                 loop={true}
                 speed={600}
                 spaceBetween={24}
