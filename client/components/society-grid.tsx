@@ -18,7 +18,7 @@ import { useCart } from "../context/cart-context";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
-import Fuse from "fuse.js"; // ✅ NEW: Fuse.js for fuzzy search
+import Fuse from "fuse.js";
 import "swiper/css";
 import "swiper/css/free-mode";
 
@@ -31,9 +31,11 @@ export function SocietyGrid() {
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const swiperRefs = useRef<Record<string, SwiperType | null>>({});
+  const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const scrollDirectionRef = useRef<"left" | "right" | null>(null);
   const scrollCategoryRef = useRef<string | null>(null);
-  const scrollAnimationRef = useRef<number | null>(null);
+
+  const SCROLL_INTERVAL_MS = 250; // ✅ Adjust this to change scroll speed
 
   useEffect(() => {
     getAllSocieties();
@@ -48,7 +50,6 @@ export function SocietyGrid() {
         )
       : [];
 
-  // ✅ Fuzzy search using Fuse.js
   const fuse = new Fuse(safeSocieties, {
     keys: ["socName", "socCategory", "socKeyWord", "socKeyEvents.name"],
     threshold: 0.4,
@@ -70,25 +71,22 @@ export function SocietyGrid() {
     scrollDirectionRef.current = direction;
     scrollCategoryRef.current = category;
 
-    const step = () => {
+    scrollIntervalRef.current = setInterval(() => {
       const swiper = swiperRefs.current[category];
       if (swiper) {
-        if (scrollDirectionRef.current === "left") {
-          swiper.slidePrev(200, false);
+        if (direction === "left") {
+          swiper.slidePrev(300);
         } else {
-          swiper.slideNext(200, false);
+          swiper.slideNext(300);
         }
       }
-      scrollAnimationRef.current = requestAnimationFrame(step);
-    };
-
-    scrollAnimationRef.current = requestAnimationFrame(step);
+    }, SCROLL_INTERVAL_MS);
   };
 
   const stopScrolling = () => {
-    if (scrollAnimationRef.current) {
-      cancelAnimationFrame(scrollAnimationRef.current);
-      scrollAnimationRef.current = null;
+    if (scrollIntervalRef.current) {
+      clearInterval(scrollIntervalRef.current);
+      scrollIntervalRef.current = null;
     }
   };
 
@@ -147,11 +145,9 @@ export function SocietyGrid() {
               key={category}
               className="space-y-4 mb-12 group relative hover:bg-muted/10 p-2 rounded-xl transition"
             >
-              <h2 className="text-3xl font-bold text-primary">
-                {category}
-              </h2>
+              <h2 className="text-3xl font-bold text-primary">{category}</h2>
 
-              {/* ⬅️ Left scroll (hover) */}
+              {/* ⬅️ Left scroll */}
               <button
                 onMouseEnter={() => startScrolling("left", category)}
                 onMouseLeave={stopScrolling}
@@ -160,7 +156,7 @@ export function SocietyGrid() {
                 <ChevronLeft className="w-5 h-5" />
               </button>
 
-              {/* ➡️ Right scroll (hover) */}
+              {/* ➡️ Right scroll */}
               <button
                 onMouseEnter={() => startScrolling("right", category)}
                 onMouseLeave={stopScrolling}
