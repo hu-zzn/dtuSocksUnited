@@ -5,6 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu";
 import { ShoppingCart, User, Menu, X } from "lucide-react";
 import { useAuth } from "../context/auth-context";
 import { useCart } from "../context/cart-context";
@@ -34,14 +40,13 @@ export function Navbar() {
   return (
     <nav className="bg-background text-foreground shadow-sm border-b border-border sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-4">
-        <div className="flex flex-wrap items-center justify-between gap-y-4 py-4">
-          {/* Logo */}
+        <div className="flex items-center justify-between h-20">
           <Link href="/" className="text-3xl font-light tracking-tight">
             Unify<span className="font-bold">DTU</span>
           </Link>
 
-          {/* Navigation Links */}
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
             <button
               onClick={handleHomeClick}
               className="hover:text-primary transition-colors font-light"
@@ -64,8 +69,8 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Actions: ThemeToggle, Cart, Auth */}
-          <div className="flex flex-wrap items-center gap-3">
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
             <Button
               variant="outline"
@@ -84,7 +89,7 @@ export function Navbar() {
               </div>
             </Button>
             {isAuthenticated ? (
-              <>
+              <div className="flex items-center space-x-3">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -104,9 +109,9 @@ export function Navbar() {
                 >
                   Logout
                 </Button>
-              </>
+              </div>
             ) : (
-              <>
+              <div className="flex space-x-3">
                 <Button
                   variant="outline"
                   size="sm"
@@ -122,10 +127,74 @@ export function Navbar() {
                 >
                   <Link href="/register">Register</Link>
                 </Button>
-              </>
+              </div>
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </Button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-border bg-background text-foreground">
+            <div className="flex flex-col space-y-3">
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleHomeClick();
+                }}
+                className="hover:text-primary text-left"
+              >
+                Home
+              </button>
+              <ThemeToggle />
+              <Link href="/eventCalendar" className="hover:text-primary">
+                Event Calendar
+              </Link>
+              {user?.role === "Admin" && (
+                <Link href="/admin" className="hover:text-primary">
+                  Admin Panel
+                </Link>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 px-0 hover:text-primary"
+                onClick={handleCartClick}
+              >
+                <ShoppingCart className="w-4 h-4" />
+                Cart ({cartCount})
+              </Button>
+              {isAuthenticated ? (
+                <>
+                  <Link href="/profile" className="hover:text-primary">
+                    Profile
+                  </Link>
+                  <Button variant="outline" size="sm" onClick={logout}>
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/login">Login</Link>
+                  </Button>
+                  <Button size="sm" asChild>
+                    <Link href="/register">Register</Link>
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
