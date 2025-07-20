@@ -16,14 +16,29 @@ import { Alert, AlertDescription } from "../../components/ui/alert";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../context/auth-context";
 
-export default function RegisterPage() {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+export default function LoginPage() {
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { register } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      await login(formData.email, formData.password);
+      router.refresh();
+      router.push("/");
+    } catch (err: any) {
+      setError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -32,27 +47,13 @@ export default function RegisterPage() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      await register(formData.name, formData.email, formData.password);
-      router.push(`/verify?email=${formData.email}`);
-    } catch (err: any) {
-      setError(err.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-4">
       <Card className="w-full max-w-sm shadow-md border border-border bg-card">
         <CardHeader className="text-center mt-6 space-y-1">
-          <CardTitle className="text-2xl">Create an Account</CardTitle>
+          <CardTitle className="text-2xl">Welcome Back</CardTitle>
           <CardDescription className="text-sm text-muted-foreground">
-            Sign up to get started
+            Please login to continue
           </CardDescription>
         </CardHeader>
 
@@ -64,18 +65,7 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name */}
-            <Input
-              type="text"
-              name="name"
-              placeholder="Your Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="h-11 bg-card text-foreground border-border"
-            />
-
-            {/* Email */}
+            {/* Email Input */}
             <Input
               type="email"
               name="email"
@@ -86,7 +76,7 @@ export default function RegisterPage() {
               className="h-11 bg-card text-foreground border-border"
             />
 
-            {/* Password */}
+            {/* Password Input */}
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
@@ -108,22 +98,31 @@ export default function RegisterPage() {
               </Button>
             </div>
 
+            <div className="flex justify-end">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-muted-foreground hover:text-primary"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
             <Button
               type="submit"
               className="w-full h-11 rounded-full bg-primary text-primary-foreground hover:opacity-90"
               disabled={loading}
             >
-              {loading ? "Registering..." : "Register"}
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
 
           <div className="text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
+            Don’t have an account?{" "}
             <Link
-              href="/login"
+              href="/register"
               className="font-medium text-primary hover:underline"
             >
-              Login
+              Create one
             </Link>
           </div>
         </CardContent>
