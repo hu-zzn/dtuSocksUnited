@@ -178,8 +178,8 @@ export function SocietyGrid() {
                 spaceBetween={24}
                 slidesPerView="auto"
                 breakpoints={{
-                  0: { slidesPerView: 1.2 },
-                  640: { slidesPerView: 2.1 },
+                  0: { slidesPerView: 2 },
+                  640: { slidesPerView: 2.5 },
                   1024: { slidesPerView: 3 },
                 }}
               >
