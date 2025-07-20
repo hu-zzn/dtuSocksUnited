@@ -1,25 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { authApi } from "../lib/apis";
 import type { User } from "../types";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); // start as true
+  const [loading, setLoading] = useState(true);
+  const { data: session, status } = useSession(); // ✅ Google session
 
   useEffect(() => {
     const init = async () => {
       try {
-        await getMe();
+        // ✅ If Google user is signed in, try to sync with backend
+        if (session?.user?.email) {
+          await getMe();
+        }
       } catch (err) {
-        console.log("No user session found");
+        console.log("No backend session found");
       } finally {
         setLoading(false);
       }
     };
     init();
-  }, []); // ✅ Run once on first load
+  }, [session]); // re-run if session changes
 
   const register = async (name: string, email: string, password: string): Promise<void> => {
     setLoading(true);
@@ -52,31 +57,43 @@ export function useAuth() {
   const login = async (email: string, password: string): Promise<void> => {
     setLoading(true);
     try {
-      await authApi.login(email, password); // sets cookie
-      await getMe(); // get user
+      await authApi.login(email, password);
+      await getMe();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loginWithGoogle = async (): Promise<void> => {
+    setLoading(true);
+    try {
+      await signIn("google"); // Will redirect
     } finally {
       setLoading(false);
     }
   };
 
   const logout = async (): Promise<void> => {
-    await authApi.logout();
+    await authApi.logout(); // optional: clear your cookie/session
+    await signOut(); // clears Google session
     setUser(null);
   };
 
   const getMe = async (): Promise<void> => {
-    const res = await authApi.getMe();
+    const res = await authApi.getMe(); // expects session from cookie
     setUser(res.data.user);
   };
 
   return {
     user,
-    loading,
+    loading: loading || status === "loading",
     register,
     verifyOTP,
     resendOTP,
     login,
+    loginWithGoogle,
     logout,
     getMe,
+    googleSession: session?.user ?? null, // expose google session info
   };
 }

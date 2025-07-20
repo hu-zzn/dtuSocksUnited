@@ -288,4 +288,35 @@ export const resendOtp = catchAsyncErrors(async (req, res, next) => {
 });
 
 
+export const googleAuth = catchAsyncErrors(async (req, res, next) => {
+  const { name, email, image } = req.body;
+
+  if (!email || !name) {
+    return next(new ErrorHandler("Name and Email are required", 400));
+  }
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    user = await User.create({
+      name,
+      email,
+      avatar: image || null,
+      accountVerified: true,
+    });
+  }
+
+  // If user exists but wasn't verified yet, verify now
+  if (!user.accountVerified) {
+    user.accountVerified = true;
+    user.verificationCode = null;
+    user.verificationCodeExpire = null;
+    await user.save({ validateModifiedOnly: true });
+  }
+
+  sendToken(user, 200, "Google Sign-In successful", res);
+});
+
+
+
 

@@ -1,14 +1,13 @@
-import type React from "react";
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
 import { Navbar } from "../components/navbar";
-import { ThemeProvider } from "../components/theme-provider";
-import { AuthProvider } from "../context/auth-context";
-import { CartProvider } from "../context/cart-context";
 import BottomTicker from "../components/BottomTicker";
+import { Providers } from "./providers"; // ✅ correct
+ // ✅ Import the Client Providers wrapper
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +24,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* ✅ Google AdSense Script */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3750452404735470"
@@ -40,22 +38,13 @@ export default function RootLayout({
           transition-colors duration-300
         `}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthProvider>
-            <CartProvider>
-              <Navbar />
-              <main className="min-h-screen bg-background text-foreground p-4 pb-16">
-                {children}
-              </main>
-              <BottomTicker />
-            </CartProvider>
-          </AuthProvider>
-        </ThemeProvider>
+        <Providers>
+          <Navbar />
+          <main className="min-h-screen bg-background text-foreground p-4 pb-16">
+            {children}
+          </main>
+          <BottomTicker />
+        </Providers>
       </body>
     </html>
   );
