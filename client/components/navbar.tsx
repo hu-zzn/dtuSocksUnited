@@ -89,27 +89,24 @@ export function Navbar() {
               </div>
             </Button>
             {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  asChild
-                  className="hover:bg-secondary rounded-full"
-                >
-                  <Link href="/profile">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hover:bg-secondary rounded-full"
+                  >
                     <User className="w-4 h-4 mr-2" />
                     {user?.name}
-                  </Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={logout}
-                  className="rounded-full border-border hover:bg-secondary"
-                >
-                  Logout
-                </Button>
-              </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="border-border bg-popover text-popover-foreground">
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <div className="flex space-x-3">
                 <Button
