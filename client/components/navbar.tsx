@@ -129,29 +129,29 @@ export function Navbar() {
                     closeMobileMenu()
                     handleHomeClick()
                   }}
-                  className="flex items-center justify-end w-full px-4 py-3 text-right hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                  className="flex items-center w-full px-8 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                 >
+                  <Home className="w-4 h-4 mr-3" />
                   Home
-                  <Home className="w-4 h-4 ml-3" />
                 </button>
 
                 <Link
                   href="/eventCalendar"
                   onClick={closeMobileMenu}
-                  className="flex items-center justify-end w-full px-4 py-3 text-right hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                  className="flex items-center w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                 >
+                  <Calendar className="w-4 h-4 mr-3" />
                   Event Calendar
-                  <Calendar className="w-4 h-4 ml-3" />
                 </Link>
 
                 {user?.role === "Admin" && (
                   <Link
                     href="/admin"
                     onClick={closeMobileMenu}
-                    className="flex items-center justify-end w-full px-4 py-3 text-right hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                    className="flex items-center w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                   >
+                    <Shield className="w-4 h-4 mr-3" />
                     Admin Panel
-                    <Shield className="w-4 h-4 ml-3" />
                   </Link>
                 )}
               </div>
@@ -164,11 +164,11 @@ export function Navbar() {
                   closeMobileMenu()
                   handleCartClick()
                 }}
-                className="flex items-center justify-end w-full px-4 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                className="flex items-center justify-between w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
               >
                 <div className="flex items-center">
+                  <ShoppingCart className="w-4 h-4 mr-3" />
                   Cart
-                  <ShoppingCart className="w-4 h-4 ml-3" />
                 </div>
                 {cartCount > 0 && <Badge className="bg-primary text-primary-foreground">{cartCount}</Badge>}
               </button>
@@ -181,17 +181,17 @@ export function Navbar() {
                   <Link
                     href="/profile"
                     onClick={closeMobileMenu}
-                    className="flex items-center justify-end w-full px-4 py-3 text-right hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                    className="flex items-center w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                   >
+                    <User className="w-4 h-4 mr-3" />
                     Profile
-                    <User className="w-4 h-4 ml-3" />
                   </Link>
                   <button
                     onClick={() => {
                       closeMobileMenu()
                       logout()
                     }}
-                    className="flex items-center justify-end w-full px-4 py-3 text-right hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors text-destructive"
+                    className="flex items-center w-full px-8 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors text-destructive"
                   >
                     Logout
                   </button>
@@ -215,7 +215,7 @@ export function Navbar() {
 
               {/* Theme Toggle at Bottom */}
               <div className="px-8 py-2">
-                <div className="flex items-center justify-end">
+                <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Theme</span>
                   <ThemeToggle />
                 </div>
