@@ -194,7 +194,7 @@ export default function RegisterPage() {
   );
 }
 
-// ⛱️ Reusable wrapper
+// ✅ Reusable wrapper
 const CenteredCard = ({
   title,
   description,
@@ -217,7 +217,7 @@ const CenteredCard = ({
   </div>
 );
 
-// 🧩 InputField component
+// ✅ Input Field abstraction
 const InputField = ({
   id,
   label,
@@ -261,7 +261,7 @@ const InputField = ({
   </div>
 );
 
-// 👁️ ToggleEye component
+// 👁️ ToggleEye for password show/hide
 const ToggleEye = ({
   onClick,
   visible,

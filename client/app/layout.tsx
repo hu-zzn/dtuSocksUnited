@@ -6,15 +6,16 @@ import "./globals.css";
 
 import { Navbar } from "../components/navbar";
 import { ThemeProvider } from "../components/theme-provider";
-import { AuthProvider } from "../context/auth-context";
 import { CartProvider } from "../context/cart-context";
 import BottomTicker from "../components/BottomTicker";
+import { SessionProvider } from "next-auth/react"; // ✅ Import from next-auth
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "UnifyDTU",
-  description: "Join communities that match your interests and build lifelong connections",
+  description:
+    "Join communities that match your interests and build lifelong connections",
 };
 
 export default function RootLayout({
@@ -25,7 +26,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* ✅ Google AdSense Script */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3750452404735470"
@@ -46,7 +46,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
+          <SessionProvider> {/* ✅ Wrap your app in SessionProvider */}
             <CartProvider>
               <Navbar />
               <main className="min-h-screen bg-background text-foreground p-4 pb-16">
@@ -54,7 +54,7 @@ export default function RootLayout({
               </main>
               <BottomTicker />
             </CartProvider>
-          </AuthProvider>
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>
