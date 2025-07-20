@@ -33,8 +33,9 @@ export function Navbar() {
     }
   }
 
+  // ✅ Full browser refresh for Home button
   const handleHomeClick = () => {
-    router.push("/")
+    window.location.href = "/"
   }
 
   const closeMobileMenu = () => {
@@ -49,6 +50,7 @@ export function Navbar() {
             Unify<span className="font-bold">DTU</span>
           </Link>
 
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <button onClick={handleHomeClick} className="hover:text-primary transition-colors font-light">
               Home
@@ -63,6 +65,7 @@ export function Navbar() {
             )}
           </div>
 
+          {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
             <Button
@@ -109,21 +112,24 @@ export function Navbar() {
             )}
           </div>
 
+          {/* Mobile Menu Button */}
           <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
         </div>
 
+        {/* Mobile Menu - Improved */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-border bg-background">
             <div className="py-4 space-y-1">
+              {/* Navigation Links */}
               <div className="space-y-1">
                 <button
                   onClick={() => {
                     closeMobileMenu()
                     handleHomeClick()
                   }}
-                  className="flex items-center w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                  className="flex items-center w-full px-8 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                 >
                   <Home className="w-4 h-4 mr-3" />
                   Home
@@ -132,7 +138,7 @@ export function Navbar() {
                 <Link
                   href="/eventCalendar"
                   onClick={closeMobileMenu}
-                  className="flex items-center w-full px-4 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                  className="flex items-center w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                 >
                   <Calendar className="w-4 h-4 mr-3" />
                   Event Calendar
@@ -142,7 +148,7 @@ export function Navbar() {
                   <Link
                     href="/admin"
                     onClick={closeMobileMenu}
-                    className="flex items-center w-full px-4 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                    className="flex items-center w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                   >
                     <Shield className="w-4 h-4 mr-3" />
                     Admin Panel
@@ -152,12 +158,13 @@ export function Navbar() {
 
               <Separator className="my-3" />
 
+              {/* Cart */}
               <button
                 onClick={() => {
                   closeMobileMenu()
                   handleCartClick()
                 }}
-                className="flex items-center justify-between w-full px-4 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                className="flex items-center justify-between w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
               >
                 <div className="flex items-center">
                   <ShoppingCart className="w-4 h-4 mr-3" />
@@ -168,12 +175,13 @@ export function Navbar() {
 
               <Separator className="my-3" />
 
+              {/* User Actions */}
               {isAuthenticated ? (
                 <div className="space-y-1">
                   <Link
                     href="/profile"
                     onClick={closeMobileMenu}
-                    className="flex items-center w-full px-4 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                    className="flex items-center w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                   >
                     <User className="w-4 h-4 mr-3" />
                     Profile
@@ -183,13 +191,13 @@ export function Navbar() {
                       closeMobileMenu()
                       logout()
                     }}
-                    className="flex items-center w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors text-destructive"
+                    className="flex items-center w-full px-8 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors text-destructive"
                   >
                     Logout
                   </button>
                 </div>
               ) : (
-                <div className="px-4 space-y-3">
+                <div className="px-8 space-y-3">
                   <Button variant="outline" size="sm" asChild className="w-full justify-center bg-transparent">
                     <Link href="/login" onClick={closeMobileMenu}>
                       Login
@@ -205,7 +213,8 @@ export function Navbar() {
 
               <Separator className="my-3" />
 
-              <div className="px-4 py-2">
+              {/* Theme Toggle at Bottom */}
+              <div className="px-8 py-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Theme</span>
                   <ThemeToggle />
