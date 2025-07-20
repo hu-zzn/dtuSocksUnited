@@ -1,41 +1,45 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
+import { useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Button } from "../components/ui/button"
+import { Badge } from "../components/ui/badge"
+import { Separator } from "../components/ui/separator"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
-import { ShoppingCart, User, Menu, X } from "lucide-react";
-import { useAuth } from "../context/auth-context";
-import { useCart } from "../context/cart-context";
-import { ThemeToggle } from "../components/theme-toggle";
+} from "../components/ui/dropdown-menu"
+import { ShoppingCart, User, Menu, X, Home, Calendar, Shield } from "lucide-react"
+import { useAuth } from "../context/auth-context"
+import { useCart } from "../context/cart-context"
+import { ThemeToggle } from "../components/theme-toggle"
 
 export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
-  const isAuthenticated = !!user;
-  const { cart } = useCart();
-  const cartCount = cart?.length ?? 0;
-  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { user, logout } = useAuth()
+  const isAuthenticated = !!user
+  const { cart } = useCart()
+  const cartCount = cart?.length ?? 0
+  const router = useRouter()
 
   const handleCartClick = () => {
     if (isAuthenticated) {
-      router.push("/cart");
+      router.push("/cart")
     } else {
-      router.push("/login");
+      router.push("/login")
     }
-  };
+  }
 
-  // ✅ Full browser refresh for Home button
   const handleHomeClick = () => {
-    window.location.href = "/";
-  };
+    router.push("/")
+  }
+
+  const closeMobileMenu = () => {
+    setIsMenuOpen(false)
+  }
 
   return (
     <nav className="bg-background text-foreground shadow-sm border-b border-border sticky top-0 z-50 backdrop-blur-md">
@@ -45,57 +49,38 @@ export function Navbar() {
             Unify<span className="font-bold">DTU</span>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={handleHomeClick}
-              className="hover:text-primary transition-colors font-light"
-            >
+            <button onClick={handleHomeClick} className="hover:text-primary transition-colors font-light">
               Home
             </button>
-            <Link
-              href="/eventCalendar"
-              className="hover:text-primary transition-colors font-light"
-            >
+            <Link href="/eventCalendar" className="hover:text-primary transition-colors font-light">
               Event Calendar
             </Link>
             {user?.role === "Admin" && (
-              <Link
-                href="/admin"
-                className="hover:text-primary transition-colors font-light"
-              >
+              <Link href="/admin" className="hover:text-primary transition-colors font-light">
                 Admin Panel
               </Link>
             )}
           </div>
 
-          {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full border-border hover:bg-secondary"
+              className="rounded-full border-border hover:bg-secondary bg-transparent"
               onClick={handleCartClick}
             >
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-4 h-4" />
                 Cart
-                {cartCount > 0 && (
-                  <Badge className="ml-1 bg-foreground text-background">
-                    {cartCount}
-                  </Badge>
-                )}
+                {cartCount > 0 && <Badge className="ml-1 bg-foreground text-background">{cartCount}</Badge>}
               </div>
             </Button>
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hover:bg-secondary rounded-full"
-                  >
+                  <Button variant="ghost" size="sm" className="hover:bg-secondary rounded-full">
                     <User className="w-4 h-4 mr-2" />
                     {user?.name}
                   </Button>
@@ -113,86 +98,123 @@ export function Navbar() {
                   variant="outline"
                   size="sm"
                   asChild
-                  className="border-border hover:bg-secondary rounded-full"
+                  className="border-border hover:bg-secondary rounded-full bg-transparent"
                 >
                   <Link href="/login">Login</Link>
                 </Button>
-                <Button
-                  size="sm"
-                  asChild
-                  className="bg-primary text-primary-foreground hover:bg-muted rounded-full"
-                >
+                <Button size="sm" asChild className="bg-primary text-primary-foreground hover:bg-muted rounded-full">
                   <Link href="/register">Register</Link>
                 </Button>
               </div>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
+          <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border bg-background text-foreground">
-            <div className="flex flex-col space-y-3">
+          <div className="md:hidden border-t border-border bg-background">
+            <div className="py-4 space-y-1">
+              <div className="space-y-1">
+                <button
+                  onClick={() => {
+                    closeMobileMenu()
+                    handleHomeClick()
+                  }}
+                  className="flex items-center w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                >
+                  <Home className="w-4 h-4 mr-3" />
+                  Home
+                </button>
+
+                <Link
+                  href="/eventCalendar"
+                  onClick={closeMobileMenu}
+                  className="flex items-center w-full px-4 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                >
+                  <Calendar className="w-4 h-4 mr-3" />
+                  Event Calendar
+                </Link>
+
+                {user?.role === "Admin" && (
+                  <Link
+                    href="/admin"
+                    onClick={closeMobileMenu}
+                    className="flex items-center w-full px-4 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                  >
+                    <Shield className="w-4 h-4 mr-3" />
+                    Admin Panel
+                  </Link>
+                )}
+              </div>
+
+              <Separator className="my-3" />
+
               <button
                 onClick={() => {
-                  setIsMenuOpen(false);
-                  handleHomeClick();
+                  closeMobileMenu()
+                  handleCartClick()
                 }}
-                className="hover:text-primary text-left"
+                className="flex items-center justify-between w-full px-4 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
               >
-                Home
+                <div className="flex items-center">
+                  <ShoppingCart className="w-4 h-4 mr-3" />
+                  Cart
+                </div>
+                {cartCount > 0 && <Badge className="bg-primary text-primary-foreground">{cartCount}</Badge>}
               </button>
-              <ThemeToggle />
-              <Link href="/eventCalendar" className="hover:text-primary">
-                Event Calendar
-              </Link>
-              {user?.role === "Admin" && (
-                <Link href="/admin" className="hover:text-primary">
-                  Admin Panel
-                </Link>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center gap-2 px-0 hover:text-primary"
-                onClick={handleCartClick}
-              >
-                <ShoppingCart className="w-4 h-4" />
-                Cart ({cartCount})
-              </Button>
+
+              <Separator className="my-3" />
+
               {isAuthenticated ? (
-                <>
-                  <Link href="/profile" className="hover:text-primary">
+                <div className="space-y-1">
+                  <Link
+                    href="/profile"
+                    onClick={closeMobileMenu}
+                    className="flex items-center w-full px-4 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                  >
+                    <User className="w-4 h-4 mr-3" />
                     Profile
                   </Link>
-                  <Button variant="outline" size="sm" onClick={logout}>
+                  <button
+                    onClick={() => {
+                      closeMobileMenu()
+                      logout()
+                    }}
+                    className="flex items-center w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors text-destructive"
+                  >
                     Logout
-                  </Button>
-                </>
+                  </button>
+                </div>
               ) : (
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href="/login">Login</Link>
+                <div className="px-4 space-y-3">
+                  <Button variant="outline" size="sm" asChild className="w-full justify-center bg-transparent">
+                    <Link href="/login" onClick={closeMobileMenu}>
+                      Login
+                    </Link>
                   </Button>
-                  <Button size="sm" asChild>
-                    <Link href="/register">Register</Link>
+                  <Button size="sm" asChild className="w-full justify-center">
+                    <Link href="/register" onClick={closeMobileMenu}>
+                      Register
+                    </Link>
                   </Button>
                 </div>
               )}
+
+              <Separator className="my-3" />
+
+              <div className="px-4 py-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Theme</span>
+                  <ThemeToggle />
+                </div>
+              </div>
             </div>
           </div>
         )}
       </div>
     </nav>
-  );
+  )
 }
