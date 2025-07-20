@@ -11,12 +11,6 @@ import{
     resendOtp
 } from "../controllers/authController.js";
 import{ isAuthenticated } from "../middlewares/authMiddleware.js";
-import { googleAuth } from "../controllers/authController.js";
-
-
-
-
-
 
 const router = express.Router();
 
@@ -29,6 +23,5 @@ router.get("/me",isAuthenticated,getUser);
 router.post("/password/forgot",forgotPassword);
 router.put("/reset-password/:token",resetPassword);
 router.put("/password/update",isAuthenticated, updatePassword);
-router.post("/google-login", googleAuth);
 
 export default router;

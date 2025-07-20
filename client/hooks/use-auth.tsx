@@ -1,30 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
 import { authApi } from "../lib/apis";
 import type { User } from "../types";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { data: session, status } = useSession(); // ✅ Google session
+  const [loading, setLoading] = useState(true); // start as true
 
   useEffect(() => {
     const init = async () => {
       try {
-        // ✅ If Google user is signed in, try to sync with backend
-        if (session?.user?.email) {
-          await getMe();
-        }
+        await getMe();
       } catch (err) {
-        console.log("No backend session found");
+        console.log("No user session found");
       } finally {
         setLoading(false);
       }
     };
     init();
-  }, [session]); // re-run if session changes
+  }, []); // ✅ Run once on first load
 
   const register = async (name: string, email: string, password: string): Promise<void> => {
     setLoading(true);
@@ -57,43 +52,31 @@ export function useAuth() {
   const login = async (email: string, password: string): Promise<void> => {
     setLoading(true);
     try {
-      await authApi.login(email, password);
-      await getMe();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loginWithGoogle = async (): Promise<void> => {
-    setLoading(true);
-    try {
-      await signIn("google"); // Will redirect
+      await authApi.login(email, password); // sets cookie
+      await getMe(); // get user
     } finally {
       setLoading(false);
     }
   };
 
   const logout = async (): Promise<void> => {
-    await authApi.logout(); // optional: clear your cookie/session
-    await signOut(); // clears Google session
+    await authApi.logout();
     setUser(null);
   };
 
   const getMe = async (): Promise<void> => {
-    const res = await authApi.getMe(); // expects session from cookie
+    const res = await authApi.getMe();
     setUser(res.data.user);
   };
 
   return {
     user,
-    loading: loading || status === "loading",
+    loading,
     register,
     verifyOTP,
     resendOTP,
     login,
-    loginWithGoogle,
     logout,
     getMe,
-    googleSession: session?.user ?? null, // expose google session info
   };
 }
