@@ -32,10 +32,6 @@ export function SocietyGrid() {
 
   const swiperRefs = useRef<Record<string, SwiperType | null>>({});
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const scrollDirectionRef = useRef<"left" | "right" | null>(null);
-  const scrollCategoryRef = useRef<string | null>(null);
-
-  const SCROLL_INTERVAL_MS = 250; // ✅ Adjust this to change scroll speed
 
   useEffect(() => {
     getAllSocieties();
@@ -43,12 +39,9 @@ export function SocietyGrid() {
 
   const safeSocieties = societies ?? [];
 
-  const categories =
-    safeSocieties.length > 0
-      ? Array.from(
-          new Set(safeSocieties.flatMap((society) => society.socCategory))
-        )
-      : [];
+  const categories = safeSocieties.length > 0
+    ? Array.from(new Set(safeSocieties.flatMap((society) => society.socCategory)))
+    : [];
 
   const fuse = new Fuse(safeSocieties, {
     keys: ["socName", "socCategory", "socKeyWord", "socKeyEvents.name"],
@@ -56,31 +49,21 @@ export function SocietyGrid() {
     includeScore: true,
   });
 
-  const matches =
-    searchTerm.trim() === ""
-      ? safeSocieties
-      : fuse.search(searchTerm).map((result) => result.item);
+  const matches = searchTerm.trim() === ""
+    ? safeSocieties
+    : fuse.search(searchTerm).map((result) => result.item);
 
   const filteredSocieties = matches.filter((society) =>
-    categoryFilter === "all"
-      ? true
-      : society.socCategory.includes(categoryFilter)
+    categoryFilter === "all" ? true : society.socCategory.includes(categoryFilter)
   );
 
   const startScrolling = (direction: "left" | "right", category: string) => {
-    scrollDirectionRef.current = direction;
-    scrollCategoryRef.current = category;
-
     scrollIntervalRef.current = setInterval(() => {
       const swiper = swiperRefs.current[category];
       if (swiper) {
-        if (direction === "left") {
-          swiper.slidePrev(300);
-        } else {
-          swiper.slideNext(300);
-        }
+        direction === "left" ? swiper.slidePrev(300) : swiper.slideNext(300);
       }
-    }, SCROLL_INTERVAL_MS);
+    }, 250);
   };
 
   const stopScrolling = () => {
@@ -92,35 +75,32 @@ export function SocietyGrid() {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-64 bg-muted animate-pulse rounded-lg" />
+          <div key={i} className="h-36 bg-muted animate-pulse rounded-lg" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* 🔍 Search + Filter */}
-      <div className="flex flex-col md:flex-row gap-6 mb-12">
+    <div className="space-y-4">
+      {/* Search + Filter */}
+      <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
-            id="search"
-            name="search"
             placeholder="Search societies..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 h-12 border border-border rounded-full bg-card text-foreground placeholder:text-muted-foreground"
+            className="pl-10 h-10 border border-border rounded-full bg-card text-foreground placeholder:text-muted-foreground text-xs"
           />
         </div>
-
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full md:w-64 h-12 border border-border rounded-full bg-card text-foreground">
+          <SelectTrigger className="w-full md:w-48 h-10 border border-border rounded-full bg-card text-xs">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
-          <SelectContent className="border border-border bg-card text-foreground">
+          <SelectContent className="border border-border bg-card text-xs">
             <SelectItem value="all">All Categories</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category} value={category}>
@@ -131,51 +111,42 @@ export function SocietyGrid() {
         </Select>
       </div>
 
-      {/* 🧩 Display by Category Carousel */}
+      {/* Display */}
       {categoryFilter === "all" && searchTerm.trim() === "" ? (
         categories.map((category) => {
           const societiesInCategory = filteredSocieties.filter((s) =>
             s.socCategory.includes(category)
           );
-
           if (societiesInCategory.length === 0) return null;
-
           return (
             <div
               key={category}
-              className="space-y-4 mb-12 group relative hover:bg-muted/10 p-2 rounded-xl transition"
+              className="space-y-2 mb-6 group relative hover:bg-muted/10 p-2 rounded-xl transition"
             >
-              <h2 className="text-3xl font-bold text-primary">{category}</h2>
-
-              {/* ⬅️ Left scroll */}
+              <h2 className="text-sm md:text-lg font-medium text-primary">{category}</h2>
               <button
                 onMouseEnter={() => startScrolling("left", category)}
                 onMouseLeave={stopScrolling}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-1 bg-card border border-border rounded-full shadow-md"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
-
-              {/* ➡️ Right scroll */}
               <button
                 onMouseEnter={() => startScrolling("right", category)}
                 onMouseLeave={stopScrolling}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-1 bg-card border border-border rounded-full shadow-md"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
-
               <Swiper
                 modules={[FreeMode]}
-                onSwiper={(swiper) =>
-                  (swiperRefs.current[category] = swiper)
-                }
-                freeMode={true}
-                grabCursor={true}
+                onSwiper={(swiper) => (swiperRefs.current[category] = swiper)}
+                freeMode
+                grabCursor
                 touchRatio={0.8}
-                loop={true}
+                loop
                 speed={1000}
-                spaceBetween={24}
+                spaceBetween={16}
                 slidesPerView="auto"
                 breakpoints={{
                   0: { slidesPerView: 2 },
@@ -189,9 +160,7 @@ export function SocietyGrid() {
                       society={society}
                       onViewDetails={() => setSelectedSociety(society)}
                       onToggle={() => toggleCart(society._id)}
-                      isInCart={cart?.some(
-                        (item) => item._id === society._id
-                      )}
+                      isInCart={cart?.some((item) => item._id === society._id)}
                     />
                   </SwiperSlide>
                 ))}
@@ -200,7 +169,7 @@ export function SocietyGrid() {
           );
         })
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredSocieties.map((society) => (
             <SocietyCard
               key={society._id}
@@ -213,16 +182,12 @@ export function SocietyGrid() {
         </div>
       )}
 
-      {/* ❌ No Results */}
       {filteredSocieties.length === 0 && (
-        <div className="text-center py-20">
-          <p className="text-muted-foreground text-xl font-light">
-            No societies found matching your criteria.
-          </p>
+        <div className="text-center py-10 text-xs text-muted-foreground">
+          No societies found matching your criteria.
         </div>
       )}
 
-      {/* 🔍 Modal */}
       <SocietyModal
         society={selectedSociety}
         isOpen={!!selectedSociety}
