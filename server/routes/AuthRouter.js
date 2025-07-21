@@ -21,7 +21,8 @@ router.post("/verify-otp", verifyOTP);
 router.post("/resend-otp", resendOtp);
 router.post("/login", login);
 
-// NEW ROUTE for Google login (frontend will POST the ID token here)
+// THIS IS THE CORRECT ROUTE FOR GOOGLE LOGIN
+// The full path will be /api/v1/auth/google/login because of app.use("/api/v1/auth", authRouter); in app.js
 router.post("/google/login", googleLogin);
 
 router.get("/logout", isAuthenticated, logout);
@@ -29,5 +30,9 @@ router.get("/me", isAuthenticated, getUser);
 router.post("/password/forgot", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
 router.put("/password/update", isAuthenticated, updatePassword);
+
+// Add other admin routes if you have them, e.g.:
+// router.route("/admin/users").get(isAuthenticated, authorizeRoles("admin"), getAllUser);
+// ...
 
 export default router;
