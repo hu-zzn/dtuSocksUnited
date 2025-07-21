@@ -23,13 +23,15 @@ const allowedOrigins = process.env.FRONTEND_URL
 
 console.log("✅ Allowed Origins:", allowedOrigins);
 
-// ✅ CORS Middleware
+// ✅ CORS Middleware with safer fallback
 app.use(
   cors({
     origin: function (origin, callback) {
+      // Allow requests with no origin (curl, mobile apps, internal proxies)
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error("❌ Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
