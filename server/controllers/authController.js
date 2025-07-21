@@ -332,7 +332,7 @@ export const resendOtp = catchAsyncErrors(async (req, res, next) => {
 
 // NEW FUNCTION: Google Sign-In/Sign-Up
 export const googleLogin = catchAsyncErrors(async (req, res, next) => {
-    const { id_token } = req.body; // Expecting the ID token from the frontend
+    const { token: id_token } = req.body;// Expecting the ID token from the frontend
 
     if (!id_token) {
         return next(new ErrorHandler("Google ID token is required", 400));
