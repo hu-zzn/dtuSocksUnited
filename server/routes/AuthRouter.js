@@ -22,7 +22,7 @@ router.post("/resend-otp", resendOtp);
 router.post("/login", login);
 
 // NEW ROUTE for Google login (frontend will POST the ID token here)
-router.post("/auth/google/login", googleLogin);
+router.post("/google/login", googleLogin);
 
 router.get("/logout", isAuthenticated, logout);
 router.get("/me", isAuthenticated, getUser);
