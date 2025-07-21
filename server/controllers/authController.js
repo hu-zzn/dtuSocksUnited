@@ -332,83 +332,62 @@ export const resendOtp = catchAsyncErrors(async (req, res, next) => {
 
 // NEW FUNCTION: Google Sign-In/Sign-Up
 export const googleLogin = catchAsyncErrors(async (req, res, next) => {
-    const { token: id_token } = req.body;// Expecting the ID token from the frontend
+    const { token: id_token } = req.body;
+    console.log("🟢 Received Google login request", id_token ? "Token received" : "No token provided");
 
     if (!id_token) {
+        console.error("❌ Google login failed: ID token missing");
         return next(new ErrorHandler("Google ID token is required", 400));
     }
 
     try {
         const ticket = await googleClient.verifyIdToken({
             idToken: id_token,
-            audience: process.env.GOOGLE_CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+            audience: process.env.GOOGLE_CLIENT_ID,
         });
 
         const payload = ticket.getPayload();
-        // Check if payload or required fields are missing
+        console.log("🟢 Google payload received:", payload);
+
         if (!payload || !payload.sub || !payload.email || !payload.name) {
-            console.error("Incomplete Google payload:", payload);
+            console.error("❌ Incomplete Google payload:", payload);
             return next(new ErrorHandler("Google login failed: Incomplete user data from Google.", 401));
         }
 
         const { sub: googleId, email, name, picture: avatarUrl } = payload;
 
-        // 1. Check if user exists with this Google ID
+        console.log(`🟢 Checking user existence: googleId=${googleId}, email=${email}`);
+
         let user = await User.findOne({ googleId });
-
         if (user) {
-            // User exists, log them in
-            sendToken(user, 200, "Logged in with Google successfully.", res);
-        } else {
-            // 2. User with Google ID not found, check if user exists with this email
-            let existingUserByEmail = null;
-            if (email) {
-                existingUserByEmail = await User.findOne({ email });
-            }
-
-            if (existingUserByEmail) {
-                // If a user with this email already exists, link the Google ID to their account
-                existingUserByEmail.googleId = googleId;
-                // Optionally update name/avatar if they are empty
-                if (!existingUserByEmail.name) existingUserByEmail.name = name;
-                if (!existingUserByEmail.avatar || !existingUserByEmail.avatar.url) {
-                    existingUserByEmail.avatar = { public_id: "google_avatar", url: avatarUrl };
-                }
-                // Mark account as verified if it wasn't
-                existingUserByEmail.accountVerified = true;
-                // Clear any lingering OTP data if linking an unverified local account
-                existingUserByEmail.verificationCode = undefined;
-                existingUserByEmail.verificationCodeExpire = undefined;
-
-                await existingUserByEmail.save({ validateBeforeSave: false }); // Bypass password validation
-                user = existingUserByEmail;
-            } else {
-                // 3. Neither Google ID nor email found, create a new user
-                user = await User.create({
-                    googleId: googleId,
-                    name: name,
-                    email: email,
-                    // Password can be omitted or set to undefined, as it's a Google login
-                    password: undefined, // Explicitly set to undefined
-                    avatar: {
-                        public_id: "google_avatar",
-                        url: avatarUrl,
-                    },
-                    role: "User", // Default role
-                    accountVerified: true, // Google accounts are considered verified
-                });
-            }
-            sendToken(user, 200, "Logged in with Google successfully.", res);
+            console.log("🟢 Existing Google user found, logging in.");
+            return sendToken(user, 200, "Logged in with Google successfully.", res);
         }
+
+        let existingUserByEmail = await User.findOne({ email });
+        if (existingUserByEmail) {
+            console.log("🟢 Email found without GoogleId, linking account.");
+            existingUserByEmail.googleId = googleId;
+            existingUserByEmail.accountVerified = true;
+            await existingUserByEmail.save({ validateBeforeSave: false });
+            return sendToken(existingUserByEmail, 200, "Logged in with Google successfully.", res);
+        }
+
+        console.log("🟢 New Google user, creating account.");
+        user = await User.create({
+            googleId,
+            name,
+            email,
+            password: undefined,
+            avatar: { public_id: "google_avatar", url: avatarUrl },
+            role: "User",
+            accountVerified: true,
+        });
+
+        console.log("🟢 New Google account created.");
+        return sendToken(user, 200, "Logged in with Google successfully.", res);
     } catch (error) {
-        console.error("Google Token Verification Error:", error);
-        // More specific error messages for debugging
-        if (error.code === 'ERR_JWT_EXPIRED') {
-            return next(new ErrorHandler("Google login failed: Token expired.", 401));
-        }
-        if (error.code === 'ERR_JWT_AUDIENCE') {
-            return next(new ErrorHandler("Google login failed: Invalid client ID.", 401));
-        }
+        console.error("❌ Google Token Verification Error:", error);
         return next(new ErrorHandler("Google login failed: Invalid token or server error.", 401));
     }
 });
