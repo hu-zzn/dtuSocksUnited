@@ -23,7 +23,7 @@ router.post("/login", login);
 
 // THIS IS THE CORRECT ROUTE FOR GOOGLE LOGIN
 // The full path will be /api/v1/auth/google/login because of app.use("/api/v1/auth", authRouter); in app.js
-router.post("/google/login", googleLogin);
+router.post("/auth/google/login", googleLogin);
 
 router.get("/logout", isAuthenticated, logout);
 router.get("/me", isAuthenticated, getUser);
