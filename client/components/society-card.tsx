@@ -96,7 +96,7 @@ export function SocietyCard({
       {/* Body */}
       <CardContent className="flex-1 overflow-hidden pb-4">
         <div className="flex flex-col h-full">
-          <p className="text-[clamp(0.85rem,2vw,0.95rem)] leading-relaxed text-muted-foreground line-clamp-3 mb-4">
+          <p className="line-clamp-3 text-[clamp(0.85rem,2vw,0.95rem)] leading-relaxed text-muted-foreground mb-4">
             {society.socAbout}
           </p>
 
