@@ -52,7 +52,7 @@ export function SocietyGrid() {
 
   const fuse = new Fuse(safeSocieties, {
     keys: ["socName", "socCategory", "socKeyWord", "socKeyEvents.name"],
-    threshold: 0.25,
+    threshold: 0.20,
     includeScore: true,
   });
 
