@@ -46,8 +46,8 @@ export function SocietyGrid() {
   const categories =
     safeSocieties.length > 0
       ? Array.from(
-          new Set(safeSocieties.flatMap((society) => society.socCategory))
-        )
+        new Set(safeSocieties.flatMap((society) => society.socCategory))
+      )
       : [];
 
   const fuse = new Fuse(safeSocieties, {
@@ -166,26 +166,25 @@ export function SocietyGrid() {
 
               <Swiper
                 modules={[FreeMode]}
-                onSwiper={(swiper) =>
-                  (swiperRefs.current[category] = swiper)
-                }
+                onSwiper={(swiper) => (swiperRefs.current[category] = swiper)}
                 freeMode={true}
                 grabCursor={true}
                 touchRatio={0.8}
                 loop={true}
                 speed={1000}
                 spaceBetween={16}
-                slidesPerView="auto"
+                breakpoints={{
+                  0: { slidesPerView: 2 },
+                  768: { slidesPerView: 3 },
+                }}
               >
                 {societiesInCategory.map((society) => (
-                  <SwiperSlide key={society._id} style={{ width: "auto" }}>
+                  <SwiperSlide key={society._id}>
                     <SocietyCard
                       society={society}
                       onViewDetails={() => setSelectedSociety(society)}
                       onToggle={() => toggleCart(society._id)}
-                      isInCart={cart?.some(
-                        (item) => item._id === society._id
-                      )}
+                      isInCart={cart?.some((item) => item._id === society._id)}
                     />
                   </SwiperSlide>
                 ))}
