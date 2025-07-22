@@ -10,7 +10,7 @@ import {
     resetPassword,
     updatePassword,
     resendOtp,
-    googleLogin, // NEW IMPORT for Google login
+    googleLogin, // ✅ Google login controller
 } from "../controllers/authController.js";
 import { isAuthenticated } from "../middlewares/authMiddleware.js";
 
@@ -21,18 +21,14 @@ router.post("/verify-otp", verifyOTP);
 router.post("/resend-otp", resendOtp);
 router.post("/login", login);
 
-// THIS IS THE CORRECT ROUTE FOR GOOGLE LOGIN
-// The full path will be /api/v1/auth/google/login because of app.use("/api/v1/auth", authRouter); in app.js
-router.post("/auth/google/login", googleLogin);
+// ✅ FIXED: Removed extra `/auth`
+// Final path = /api/v1/auth/google/login
+router.post("/google/login", googleLogin);
 
 router.get("/logout", isAuthenticated, logout);
 router.get("/me", isAuthenticated, getUser);
 router.post("/password/forgot", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
 router.put("/password/update", isAuthenticated, updatePassword);
-
-// Add other admin routes if you have them, e.g.:
-// router.route("/admin/users").get(isAuthenticated, authorizeRoles("admin"), getAllUser);
-// ...
 
 export default router;
