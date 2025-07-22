@@ -194,7 +194,7 @@ export function SocietyGrid() {
           );
         })
       ) : (
-        <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(clamp(220px,25%,300px),1fr))]">
+        <div className="grid gap-6 grid-cols-2 md:grid-cols-3 transition-all duration-300">
           {filteredSocieties.map((society) => (
             <SocietyCard
               key={society._id}
