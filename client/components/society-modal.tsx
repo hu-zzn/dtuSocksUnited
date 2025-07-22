@@ -20,6 +20,7 @@ export function SocietyModal({ society, isOpen, onClose }: SocietyModalProps) {
   const { user } = useAuth();
   const isAuthenticated = !!user;
   const [isToggling, setIsToggling] = useState(false);
+  const [showFullAbout, setShowFullAbout] = useState(false);
 
   if (!society) return null;
 
@@ -61,7 +62,21 @@ export function SocietyModal({ society, isOpen, onClose }: SocietyModalProps) {
         <div className="space-y-8 text-[clamp(0.85rem,2vw,1rem)]">
           <div>
             <h3 className="font-medium mb-3 text-gray-900 text-[clamp(1rem,2.5vw,1.25rem)]">About</h3>
-            <p className="text-gray-600 leading-relaxed">{society.socAbout}</p>
+            <p
+              className={`text-gray-600 leading-relaxed text-justify transition-all duration-300 ${
+                showFullAbout ? '' : 'line-clamp-3'
+              }`}
+            >
+              {society.socAbout}
+            </p>
+            {society.socAbout.length > 150 && (
+              <button
+                onClick={() => setShowFullAbout(!showFullAbout)}
+                className="mt-2 text-primary hover:underline text-sm font-medium"
+              >
+                {showFullAbout ? "View Less" : "View More"}
+              </button>
+            )}
           </div>
 
           {society.socHighlights.length > 0 && (
