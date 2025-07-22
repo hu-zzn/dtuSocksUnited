@@ -173,13 +173,20 @@ export function SocietyGrid() {
                 loop={true}
                 speed={1000}
                 spaceBetween={16}
+                centeredSlides={true} // ensures peeking effect
                 breakpoints={{
-                  0: { slidesPerView: 2 },
-                  768: { slidesPerView: 3 },
+                  0: {
+                    slidesPerView: 1.2,
+                    centeredSlides: true,
+                  },
+                  768: {
+                    slidesPerView: 3,
+                    centeredSlides: false,
+                  },
                 }}
               >
                 {societiesInCategory.map((society) => (
-                  <SwiperSlide key={society._id}>
+                  <SwiperSlide key={society._id} style={{ width: "auto" }}>
                     <SocietyCard
                       society={society}
                       onViewDetails={() => setSelectedSociety(society)}
