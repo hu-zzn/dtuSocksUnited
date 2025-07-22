@@ -332,7 +332,7 @@ export const resendOtp = catchAsyncErrors(async (req, res, next) => {
 
 // NEW FUNCTION: Google Sign-In/Sign-Up
 export const googleLogin = catchAsyncErrors(async (req, res, next) => {
-    const { token: id_token } = req.body;
+    const { id_token } = req.body;
     console.log("🟢 Received Google login request", id_token ? "Token received" : "No token provided");
 
     if (!id_token) {

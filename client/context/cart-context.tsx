@@ -21,7 +21,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     try {
       const res = await cartApi.getCart();
-      setCart(res.data.cart);
+      setCart(res.cart);
     } catch (error) {
       console.error("Error fetching cart:", error);
     } finally {

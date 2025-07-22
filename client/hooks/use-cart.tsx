@@ -10,7 +10,7 @@ export function useCart() {
     setLoading(true);
     try {
       const res = await cartApi.getCart();
-      setCart(res.data.cart); // ✅ Ensure backend returns { cart: [...] }
+      setCart(res.cart); // ✅ Ensure backend returns { cart: [...] }
     } catch (error) {
       console.error("Error fetching cart:", error);
     } finally {

@@ -35,7 +35,7 @@ export function SocietyGrid() {
   const scrollDirectionRef = useRef<"left" | "right" | null>(null);
   const scrollCategoryRef = useRef<string | null>(null);
 
-  const SCROLL_INTERVAL_MS = 250; // ✅ Adjust this to change scroll speed
+  const SCROLL_INTERVAL_MS = 250;
 
   useEffect(() => {
     getAllSocieties();
@@ -46,13 +46,13 @@ export function SocietyGrid() {
   const categories =
     safeSocieties.length > 0
       ? Array.from(
-          new Set(safeSocieties.flatMap((society) => society.socCategory))
-        )
+        new Set(safeSocieties.flatMap((society) => society.socCategory))
+      )
       : [];
 
   const fuse = new Fuse(safeSocieties, {
     keys: ["socName", "socCategory", "socKeyWord", "socKeyEvents.name"],
-    threshold: 0.4,
+    threshold: 0.25,
     includeScore: true,
   });
 
@@ -92,7 +92,7 @@ export function SocietyGrid() {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(clamp(200px,25%,300px),1fr))]">
         {[...Array(6)].map((_, i) => (
           <div key={i} className="h-64 bg-muted animate-pulse rounded-lg" />
         ))}
@@ -103,8 +103,8 @@ export function SocietyGrid() {
   return (
     <div className="space-y-6">
       {/* 🔍 Search + Filter */}
-      <div className="flex flex-col md:flex-row gap-6 mb-12">
-        <div className="relative flex-1">
+      <div className="flex flex-col md:flex-row gap-4 mb-12">
+        <div className="relative flex-grow min-w-[200px]">
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <Input
             id="search"
@@ -112,18 +112,18 @@ export function SocietyGrid() {
             placeholder="Search societies..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 h-12 border border-border rounded-full bg-card text-foreground placeholder:text-muted-foreground"
+            className="pl-12 h-12 w-full border border-border rounded-full bg-card text-foreground placeholder:text-muted-foreground text-[clamp(0.9rem,2vw,1rem)]"
           />
         </div>
 
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full md:w-64 h-12 border border-border rounded-full bg-card text-foreground">
+          <SelectTrigger className="w-full md:w-[clamp(180px,30vw,240px)] h-12 border border-border rounded-full bg-card text-foreground text-[clamp(0.9rem,2vw,1rem)]">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent className="border border-border bg-card text-foreground">
-            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="all" className="text-[clamp(0.9rem,2vw,1rem)]">All Categories</SelectItem>
             {categories.map((category) => (
-              <SelectItem key={category} value={category}>
+              <SelectItem key={category} value={category} className="text-[clamp(0.9rem,2vw,1rem)]">
                 {category}
               </SelectItem>
             ))}
@@ -137,7 +137,6 @@ export function SocietyGrid() {
           const societiesInCategory = filteredSocieties.filter((s) =>
             s.socCategory.includes(category)
           );
-
           if (societiesInCategory.length === 0) return null;
 
           return (
@@ -145,7 +144,7 @@ export function SocietyGrid() {
               key={category}
               className="space-y-4 mb-12 group relative hover:bg-muted/10 p-2 rounded-xl transition"
             >
-              <h2 className="text-3xl font-bold text-primary">{category}</h2>
+              <h2 className="font-bold text-[clamp(1.5rem,3vw,2.5rem)] text-primary">{category}</h2>
 
               {/* ⬅️ Left scroll */}
               <button
@@ -167,31 +166,32 @@ export function SocietyGrid() {
 
               <Swiper
                 modules={[FreeMode]}
-                onSwiper={(swiper) =>
-                  (swiperRefs.current[category] = swiper)
-                }
+                onSwiper={(swiper) => (swiperRefs.current[category] = swiper)}
                 freeMode={true}
                 grabCursor={true}
                 touchRatio={0.8}
                 loop={true}
                 speed={1000}
-                spaceBetween={24}
-                slidesPerView="auto"
+                spaceBetween={16}
+                centeredSlides={true} // ensures peeking effect
                 breakpoints={{
-                  0: { slidesPerView: 2 },
-                  640: { slidesPerView: 2.5 },
-                  1024: { slidesPerView: 3 },
+                  0: {
+                    slidesPerView: 1.2,
+                    centeredSlides: true,
+                  },
+                  768: {
+                    slidesPerView: 3,
+                    centeredSlides: false,
+                  },
                 }}
               >
                 {societiesInCategory.map((society) => (
-                  <SwiperSlide key={society._id}>
+                  <SwiperSlide key={society._id} style={{ width: "auto" }}>
                     <SocietyCard
                       society={society}
                       onViewDetails={() => setSelectedSociety(society)}
                       onToggle={() => toggleCart(society._id)}
-                      isInCart={cart?.some(
-                        (item) => item._id === society._id
-                      )}
+                      isInCart={cart?.some((item) => item._id === society._id)}
                     />
                   </SwiperSlide>
                 ))}
@@ -200,7 +200,7 @@ export function SocietyGrid() {
           );
         })
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(clamp(220px,25%,300px),1fr))]">
           {filteredSocieties.map((society) => (
             <SocietyCard
               key={society._id}
@@ -216,7 +216,7 @@ export function SocietyGrid() {
       {/* ❌ No Results */}
       {filteredSocieties.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-muted-foreground text-xl font-light">
+          <p className="text-muted-foreground text-[clamp(1rem,2vw,1.5rem)] font-light">
             No societies found matching your criteria.
           </p>
         </div>
