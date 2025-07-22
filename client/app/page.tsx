@@ -11,7 +11,7 @@ export default function HomePage() {
         id="societies"
         className="py-16 bg-card text-card-foreground transition-colors duration-300"
       >
-        <div className="container mx-auto px-4 scale-[0.90] origin-top">
+        <div className="container mx-auto px-4 scale-[ 1 ] origin-top">
           <SocietyGrid />
         </div>
       </section>
