@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(true); // Set loading to true while fetching user
         try {
             const res = await authApi.getMe();
-            setUser(res.data.user);
+            setUser(res.user);
         } catch (err: any) {
             // If getMe fails (e.g., no token, expired token), user is not authenticated
             setUser(null);
@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Helper to extract error message from API response
     const extractErrorMessage = (error: any): string => {
-        return error.response?.data?.message || error.message || "An unexpected error occurred.";
+        return error.response?.message || error.message || "An unexpected error occurred.";
     };
 
     const register = async (name: string, email: string, password: string) => {
@@ -71,8 +71,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setActionLoading(true);
         try {
             const res = await authApi.verifyOTP(email, otp);
-            setUser(res.data.user); // Update user immediately on successful OTP verification
-            toast.success(res.data.message || "Account verified successfully!");
+            setUser(res.user); // Update user immediately on successful OTP verification
+            toast.success(res.message || "Account verified successfully!");
         } catch (err: any) {
             const errorMessage = extractErrorMessage(err);
             toast.error(errorMessage);

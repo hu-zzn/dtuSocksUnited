@@ -34,7 +34,7 @@ export function useAuth() {
     setLoading(true);
     try {
       const res = await authApi.verifyOTP(email, otp);
-      setUser(res.data.user);
+      setUser(res.user);
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ export function useAuth() {
 
   const getMe = async (): Promise<void> => {
     const res = await authApi.getMe();
-    setUser(res.data.user);
+    setUser(res.user);
   };
 
   return {

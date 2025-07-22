@@ -12,7 +12,7 @@ export function useSocieties() {
   setLoading(true);
     try {
       const res = await societyApi.getAll();
-      setSocieties(res.data?.socs ?? []);
+      setSocieties(res.socs ?? []);
     } finally {
       setLoading(false);
     }

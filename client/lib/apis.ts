@@ -1,5 +1,6 @@
-import { apiClient } from "./apiClient";
+// client/lib/apis.ts
 
+import { apiClient } from "./apiClient";
 import { User, LoginResponse, GenericResponse, Society } from "../types";
 
 // AUTH API
@@ -10,7 +11,7 @@ export const authApi = {
   verifyOTP: (email: string, otp: string) =>
     apiClient.post<LoginResponse>("/auth/verify-otp", { email, otp }),
 
-  resendOTP: (email: string) => apiClient.post("/auth/resend-otp", { email }),
+  resendOTP: (email: string) => apiClient.post<GenericResponse>("/auth/resend-otp", { email }),
 
   login: (email: string, password: string) =>
     apiClient.post<LoginResponse>("/auth/login", { email, password }),
@@ -37,15 +38,12 @@ export const authApi = {
 };
 
 // SOCIETY API
-
 export const societyApi = {
-  getAll: () => apiClient.get<{ success: boolean; socs: Society[] }>("/soc/all"),
+  getAll: () =>
+    apiClient.get<{ success: boolean; socs: Society[] }>("/soc/all"),
 
   add: (data: Partial<Society>) =>
-    apiClient.post<{ success: boolean; message: string; soc: Society }>(
-      "/soc/admin/add",
-      data
-    ),
+    apiClient.post<{ success: boolean; message: string; soc: Society }>("/soc/admin/add", data),
 
   update: (id: string, data: Partial<Society>) =>
     apiClient.patch<{ success: boolean; message: string; soc: Society }>(
@@ -58,7 +56,6 @@ export const societyApi = {
 };
 
 // CART API
-
 export const cartApi = {
   getCart: () =>
     apiClient.get<{ success: boolean; cart: Society[] }>("/cart/show"),
