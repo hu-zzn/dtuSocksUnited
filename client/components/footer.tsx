@@ -110,7 +110,7 @@ export function Footer() {
 
           {/* Council Section */}
           <div className="border-t border-border pt-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Council</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Our Team</h2>
 
             {/* Desktop */}
             <div className="hidden md:grid md:grid-cols-3 gap-8 lg:gap-12 max-w-6xl mx-auto">
