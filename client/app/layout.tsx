@@ -27,7 +27,7 @@ const inter = Inter({ subsets: ["latin"] });
 // For example, create client/app/metadata.ts with:
 //
 // export const metadata: Metadata = {
-//   title: "UnifyDTU",
+//   title: "InfoSOC",
 //   description: "Join communities that match your interests and build lifelong connections",
 // };
 //

@@ -47,7 +47,7 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="text-3xl font-light tracking-tight">
-            Unify<span className="font-bold">DTU</span>
+            Info<span className="font-bold">SOC</span>
           </Link>
 
           {/* Desktop Navigation */}
