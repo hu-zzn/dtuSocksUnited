@@ -224,7 +224,7 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
     try {
         await sendEmail({
             email: user.email,
-            subject: "Password Recovery (InfoSOC)",
+            subject: "Password Recovery (InfoSoc)",
             message,
         });
         res.status(200).json({

@@ -9,7 +9,7 @@ export function generateVerificationOtpEmailTemplate(otpCode) {
     <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 0; background-color: #ffffff;">
       <!-- Header -->
       <div style="background-color:rgb(0, 0, 0); padding: 20px; text-align: center; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-        <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">InfoSOC</h1>
+        <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">InfoSoc</h1>
       </div>
 
       <!-- Body -->
@@ -39,7 +39,7 @@ export function generateVerificationOtpEmailTemplate(otpCode) {
         <div style="border-top: 1px solid #dddddd; padding-top: 20px;">
           <p style="color: #666666; font-size: 14px; margin: 0;">
             Best regards,<br>
-            <strong>InfoSOC Team</strong>
+            <strong>InfoSoc Team</strong>
           </p>
           <p style="color: #999999; font-size: 12px; margin: 10px 0 0;">
             This is an automated message. Please do not reply to this email.

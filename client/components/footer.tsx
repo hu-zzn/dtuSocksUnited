@@ -169,7 +169,7 @@ export function Footer() {
 
           {/* Copyright */}
           <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground text-sm">
-            © 2024 InfoSOC. All rights reserved. | Delhi Technological University
+            © 2024 InfoSoc. All rights reserved. | Delhi Technological University
           </div>
         </div>
       </footer>
@@ -218,12 +218,12 @@ export function Footer() {
             <h3 className="text-xl font-bold mb-4">About Us</h3>
             <div className="space-y-4 text-muted-foreground">
               <p>
-                InfoSOC is the central platform connecting students with various societies and clubs at Delhi
+                InfoSoc is the central platform connecting students with various societies and clubs at Delhi
                 Technological University. Our mission is to foster a vibrant campus community where every student can
                 find their passion and build meaningful connections.
               </p>
               <p>
-                Whether you're interested in technical clubs, cultural societies, or sports teams, InfoSOC helps you
+                Whether you're interested in technical clubs, cultural societies, or sports teams, InfoSoc helps you
                 discover and join the communities that align with your interests.
               </p>
               <p>
