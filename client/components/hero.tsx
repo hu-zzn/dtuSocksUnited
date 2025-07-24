@@ -18,7 +18,7 @@ export function Hero() {
           <span className="block font-bold">Perfect Society</span>
         </h1>
         <p className="text-base md:text-xl lg:text-2xl mb-6 md:mb-12 max-w-2xl md:max-w-3xl mx-auto text-gray-300 font-light">
-          Join communities that match your interests and build lifelong connections
+          Explore communities that match your interests and build lifelong connections
         </p>
         <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 md:gap-12 mb-6 md:mb-12">
           <div className="flex items-center justify-center gap-2 md:gap-3">

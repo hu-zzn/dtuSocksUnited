@@ -51,18 +51,18 @@ const coreMembers = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background text-foreground py-16 px-4 sm:px-8 max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold mb-8 text-center">About InfoSOC</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center">About infoSoc</h1>
 
       <div className="text-muted-foreground text-lg max-w-3xl mx-auto text-center mb-12">
         <p className="mb-4">
-          InfoSoc is the central platform connecting students with all the societies and clubs at Delhi Technological University.
+          infoSoc is the central platform connecting students with all the societies and clubs at Delhi Technological University.
         </p>
         <p className="mb-4">
           Our goal is to build a vibrant, inclusive, and collaborative campus environment where students can explore interests,
           build skills, and make meaningful connections.
         </p>
         <p>
-          Whether you're into tech, culture, art, debate, music, or sports — there's a place for you at InfoSoc.
+          Whether you're into tech, culture, art, debate, music, or sports — there's a place for you at infoSoc.
         </p>
       </div>
 
@@ -70,12 +70,12 @@ export default function AboutPage() {
       <div className="text-center mb-16">
         <p className="text-lg font-medium mb-2">Follow us on Instagram</p>
         <a
-          href="https://www.instagram.com/infosoc_dtu"
+          href="https://www.instagram.com/infosoc.dtu"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block text-primary font-semibold underline"
         >
-          @infosoc_dtu
+          @infosoc.dtu
         </a>
       </div>
 

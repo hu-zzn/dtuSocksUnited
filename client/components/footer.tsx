@@ -24,12 +24,8 @@ export function Footer() {
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-primary" />
-                  <span>+91 XXX XXX XXXX</span>
-                </div>
-                <div className="flex items-center gap-3">
                   <MapPin className="w-5 h-5 text-primary" />
-                  <span>Delhi Technological University</span>
+                  <span>Delhi, India</span>
                 </div>
               </div>
             </div>
@@ -37,9 +33,6 @@ export function Footer() {
             <div className="space-y-6">
               <h3 className="text-2xl font-bold">Quick Links</h3>
               <div className="flex flex-col gap-3">
-                <Button variant="outline" onClick={() => setShowContactModal(true)} className="justify-start">
-                  Contact Us
-                </Button>
                 <Link href="/about">
                   <Button variant="outline" className="justify-start w-full">
                     About Us
@@ -49,7 +42,7 @@ export function Footer() {
             </div>
 
             <div className="space-y-6">
-              <h3 className="text-2xl font-bold">InfoSOC</h3>
+              <h3 className="text-2xl font-bold">infoSoc</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Connecting students with societies and building a vibrant campus community at DTU.
               </p>
@@ -58,7 +51,7 @@ export function Footer() {
 
           {/* Copyright */}
           <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground text-sm">
-            © 2024 InfoSoc. All rights reserved. | Delhi Technological University
+            © 2025 infoSoc. All rights reserved.
           </div>
         </div>
       </footer>
@@ -76,13 +69,6 @@ export function Footer() {
                   <a href="mailto:infosoc.queries@gmail.com" className="text-primary">
                     infosoc.queries@gmail.com
                   </a>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-primary" />
-                <div>
-                  <p className="font-medium">Phone</p>
-                  <p>+91 XXX XXX XXXX</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">

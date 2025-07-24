@@ -7,7 +7,7 @@ export async function sendverificationCode(verificationCode, email, res, meta = 
 
     await sendEmail({
       email,
-      subject: "Verification Code (InfoSoc)",
+      subject: "Verification Code (infoSoc)",
       message,
     });
 

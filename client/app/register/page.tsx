@@ -181,7 +181,7 @@ export default function RegisterPage() {
     return (
         <CenteredCard
             title="Create Account"
-            description="Join InfoSoc and explore societies"
+            description="Join infoSoc and explore societies"
         >
             <form onSubmit={handleSubmit} className="space-y-6">
                 {renderError()}
