@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "../components/ui/button"
 import { Badge } from "../components/ui/badge"
@@ -34,6 +33,7 @@ export function Navbar() {
     }
   }
 
+  // ✅ Full browser refresh for Home button
   const handleHomeClick = () => {
     window.location.href = "/"
   }
@@ -46,17 +46,8 @@ export function Navbar() {
     <nav className="bg-background text-foreground shadow-sm border-b border-border sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          {/* ✅ Logo Section */}
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="infoSoc.png"
-              alt="InfoSoc Logo"
-              width={40}
-              height={40}
-              className="object-contain"
-              priority
-            />
-            <span className="sr-only">InfoSoc</span>
+          <Link href="/" className="text-3xl font-light tracking-tight">
+            info<span className="font-bold">Soc</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -127,10 +118,11 @@ export function Navbar() {
           </Button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Improved */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-border bg-background">
             <div className="py-4 space-y-1">
+              {/* Navigation Links */}
               <div className="space-y-1">
                 <button
                   onClick={() => {
@@ -166,6 +158,7 @@ export function Navbar() {
 
               <Separator className="my-3" />
 
+              {/* Cart */}
               <button
                 onClick={() => {
                   closeMobileMenu()
@@ -182,6 +175,7 @@ export function Navbar() {
 
               <Separator className="my-3" />
 
+              {/* User Actions */}
               {isAuthenticated ? (
                 <div className="space-y-1">
                   <Link
@@ -219,6 +213,7 @@ export function Navbar() {
 
               <Separator className="my-3" />
 
+              {/* Theme Toggle at Bottom */}
               <div className="px-8 py-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Theme</span>
