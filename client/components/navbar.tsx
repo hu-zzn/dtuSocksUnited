@@ -1,65 +1,85 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Button } from "../components/ui/button"
-import { Badge } from "../components/ui/badge"
-import { Separator } from "../components/ui/separator"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Separator } from "../components/ui/separator";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu"
-import { ShoppingCart, User, Menu, X, Home, Calendar, Shield } from "lucide-react"
-import { useAuth } from "../context/auth-context"
-import { useCart } from "../context/cart-context"
-import { ThemeToggle } from "../components/theme-toggle"
+} from "../components/ui/dropdown-menu";
+
+import {
+  ShoppingCart,
+  User,
+  Menu,
+  X,
+  Home,
+  Calendar,
+  Shield,
+} from "lucide-react";
+
+import { useAuth } from "../context/auth-context";
+import { useCart } from "../context/cart-context";
+import { ThemeToggle } from "../components/theme-toggle";
 
 export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { user, logout } = useAuth()
-  const isAuthenticated = !!user
-  const { cart } = useCart()
-  const cartCount = cart?.length ?? 0
-  const router = useRouter()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const isAuthenticated = !!user;
+  const { cart } = useCart();
+  const cartCount = cart?.length ?? 0;
+  const router = useRouter();
 
   const handleCartClick = () => {
-    if (isAuthenticated) {
-      router.push("/cart")
-    } else {
-      router.push("/login")
-    }
-  }
+    isAuthenticated ? router.push("/cart") : router.push("/login");
+  };
 
-  // ✅ Full browser refresh for Home button
   const handleHomeClick = () => {
-    window.location.href = "/"
-  }
+    window.location.href = "/";
+  };
 
   const closeMobileMenu = () => {
-    setIsMenuOpen(false)
-  }
+    setIsMenuOpen(false);
+  };
 
   return (
     <nav className="bg-background text-foreground shadow-sm border-b border-border sticky top-0 z-50 backdrop-blur-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" className="text-3xl font-light tracking-tight">
-            info<span className="font-bold">Soc</span>
+          {/* Logo */}
+          <Link
+            href="/"
+            className="text-3xl font-light tracking-tight flex items-center space-x-1"
+          >
+            <span className="text-[#001A72]">info</span>
+            <span className="font-bold text-[#000B33]">Soc</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <button onClick={handleHomeClick} className="hover:text-primary transition-colors font-light">
+            <button
+              onClick={handleHomeClick}
+              className="hover:text-primary transition-colors font-light"
+            >
               Home
             </button>
-            <Link href="/eventCalendar" className="hover:text-primary transition-colors font-light">
+            <Link
+              href="/eventCalendar"
+              className="hover:text-primary transition-colors font-light"
+            >
               Event Calendar
             </Link>
             {user?.role === "Admin" && (
-              <Link href="/admin" className="hover:text-primary transition-colors font-light">
+              <Link
+                href="/admin"
+                className="hover:text-primary transition-colors font-light"
+              >
                 Admin Panel
               </Link>
             )}
@@ -77,18 +97,30 @@ export function Navbar() {
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-4 h-4" />
                 Cart
-                {cartCount > 0 && <Badge className="ml-1 bg-foreground text-background">{cartCount}</Badge>}
+                {cartCount > 0 && (
+                  <Badge className="ml-1 bg-foreground text-background">
+                    {cartCount}
+                  </Badge>
+                )}
               </div>
             </Button>
+
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="hover:bg-secondary rounded-full">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hover:bg-secondary rounded-full"
+                  >
                     <User className="w-4 h-4 mr-2" />
                     {user?.name}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="border-border bg-popover text-popover-foreground">
+                <DropdownMenuContent
+                  align="end"
+                  className="border-border bg-popover text-popover-foreground"
+                >
                   <DropdownMenuItem asChild>
                     <Link href="/profile">Profile</Link>
                   </DropdownMenuItem>
@@ -105,7 +137,11 @@ export function Navbar() {
                 >
                   <Link href="/login">Login</Link>
                 </Button>
-                <Button size="sm" asChild className="bg-primary text-primary-foreground hover:bg-muted rounded-full">
+                <Button
+                  size="sm"
+                  asChild
+                  className="bg-primary text-primary-foreground hover:bg-muted rounded-full"
+                >
                   <Link href="/register">Register</Link>
                 </Button>
               </div>
@@ -113,21 +149,26 @@ export function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
             {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
         </div>
 
-        {/* Mobile Menu - Improved */}
+        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-border bg-background">
             <div className="py-4 space-y-1">
-              {/* Navigation Links */}
+              {/* Links */}
               <div className="space-y-1">
                 <button
                   onClick={() => {
-                    closeMobileMenu()
-                    handleHomeClick()
+                    closeMobileMenu();
+                    handleHomeClick();
                   }}
                   className="flex items-center w-full px-8 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                 >
@@ -161,8 +202,8 @@ export function Navbar() {
               {/* Cart */}
               <button
                 onClick={() => {
-                  closeMobileMenu()
-                  handleCartClick()
+                  closeMobileMenu();
+                  handleCartClick();
                 }}
                 className="flex items-center justify-between w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
               >
@@ -170,12 +211,16 @@ export function Navbar() {
                   <ShoppingCart className="w-4 h-4 mr-3" />
                   Cart
                 </div>
-                {cartCount > 0 && <Badge className="bg-primary text-primary-foreground">{cartCount}</Badge>}
+                {cartCount > 0 && (
+                  <Badge className="bg-primary text-primary-foreground">
+                    {cartCount}
+                  </Badge>
+                )}
               </button>
 
               <Separator className="my-3" />
 
-              {/* User Actions */}
+              {/* User */}
               {isAuthenticated ? (
                 <div className="space-y-1">
                   <Link
@@ -188,8 +233,8 @@ export function Navbar() {
                   </Link>
                   <button
                     onClick={() => {
-                      closeMobileMenu()
-                      logout()
+                      closeMobileMenu();
+                      logout();
                     }}
                     className="flex items-center w-full px-8 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors text-destructive"
                   >
@@ -198,7 +243,12 @@ export function Navbar() {
                 </div>
               ) : (
                 <div className="px-8 space-y-3">
-                  <Button variant="outline" size="sm" asChild className="w-full justify-center bg-transparent">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="w-full justify-center bg-transparent"
+                  >
                     <Link href="/login" onClick={closeMobileMenu}>
                       Login
                     </Link>
@@ -213,7 +263,7 @@ export function Navbar() {
 
               <Separator className="my-3" />
 
-              {/* Theme Toggle at Bottom */}
+              {/* Theme Toggle */}
               <div className="px-8 py-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Theme</span>
@@ -225,5 +275,5 @@ export function Navbar() {
         )}
       </div>
     </nav>
-  )
+  );
 }
