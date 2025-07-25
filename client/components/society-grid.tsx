@@ -118,7 +118,7 @@ export function SocietyGrid() {
         </div>
 
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-full md:w-[clamp(180px,30vw,240px)] h-12 border border-border rounded-full bg-card text-foreground text-[clamp(0.9rem,2vw,1rem)]">
+          <SelectTrigger className="w-full md:w-[clamp(180px,30vw,240px)] h-12 border-2 border-primary rounded-full bg-card text-foreground text-[clamp(0.9rem,2vw,1rem)]">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent className="border border-border bg-card text-foreground">
