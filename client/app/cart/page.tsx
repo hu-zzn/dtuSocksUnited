@@ -1,12 +1,10 @@
 "use client"
 
-import { useRouter } from "next/navigation"; // ✅ Add this import
 import { useCart } from "../../hooks/use-cart"
 import { SocietyCard } from "../../components/society-card"
 
 export default function CartPage() {
   const { cart, toggleCart } = useCart()
-  const router = useRouter(); // ✅ Initialize router
 
   return (
     <section className="bg-background text-foreground min-h-screen py-16">
@@ -25,7 +23,6 @@ export default function CartPage() {
                 society={society}
                 onToggle={() => toggleCart(society._id)}
                 isInCart={true}
-                onViewDetails={() => router.push(`/societies/${society._id}`)} // ✅ Now works
               />
             ))}
           </div>
