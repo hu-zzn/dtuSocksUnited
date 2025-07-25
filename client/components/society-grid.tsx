@@ -170,7 +170,7 @@ export function SocietyGrid() {
                 freeMode={true}
                 grabCursor={true}
                 touchRatio={0.8}
-                loop={true}
+                loop={false}
                 speed={1000}
                 spaceBetween={16}
                 centeredSlides={true} // ensures peeking effect
