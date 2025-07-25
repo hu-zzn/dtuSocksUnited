@@ -1,50 +1,33 @@
-"use client";
+"use client"
 
-import { usePathname, useRouter } from "next/navigation";
-import { Button } from "../../components/ui/button";
-import type { Society } from "../../types/index"; // adjust the path if your types are elsewhere
+import { useCart } from "../../hooks/use-cart"
+import { SocietyCard } from "../../components/society-card"
 
-interface SocietyCardProps {
-  society: Society;
-  onViewDetails?: () => void;
-  onToggle: () => void;
-  isInCart: boolean;
-}
-
-export function SocietyCard({
-  society,
-  onViewDetails,
-  onToggle,
-  isInCart,
-}: SocietyCardProps) {
-  const pathname = usePathname();
-  const router = useRouter();
+export default function CartPage() {
+  const { cart, toggleCart } = useCart()
 
   return (
-    <div className="p-4 rounded-xl border border-border bg-card space-y-3 shadow hover:shadow-md transition">
-      <h3 className="text-xl font-semibold">{society.socName}</h3>
+    <section className="bg-background text-foreground min-h-screen py-16">
+      <div className="container mx-auto px-4">
+        <h1 className="text-3xl font-semibold mb-8 text-primary">Your Cart</h1>
 
-      {/* Example optional detail button */}
-      {onViewDetails && (
-        <Button onClick={onViewDetails} variant="ghost" className="w-full">
-          View Details
-        </Button>
-      )}
-
-      <Button onClick={onToggle} variant="outline" className="w-full">
-        {isInCart ? "Remove from Cart" : "Add to Cart"}
-      </Button>
-
-      {/* Hide this on /cart page */}
-      {pathname !== "/cart" && (
-        <Button
-          onClick={() => router.push("/cart")}
-          variant="default"
-          className="w-full"
-        >
-          View Cart
-        </Button>
-      )}
-    </div>
-  );
+        {cart.length === 0 ? (
+          <p className="text-muted-foreground text-lg">
+            Your cart is empty.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {cart.map((society) => (
+              <SocietyCard
+                key={society._id}
+                society={society}
+                onToggle={() => toggleCart(society._id)}
+                isInCart={true}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )
 }
