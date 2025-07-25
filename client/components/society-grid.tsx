@@ -112,7 +112,8 @@ export function SocietyGrid() {
             placeholder="Search societies..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-12 h-12 w-full border-3 border-primary rounded-full bg-card text-foreground placeholder:text-muted-foreground text-[clamp(0.9rem,2vw,1rem)]"
+            className="pl-12 h-12 w-full border-2 border-primary rounded-full bg-card text-foreground placeholder:text-muted-foreground text-[clamp(0.9rem,2vw,1rem)]"
+
           />
         </div>
 
