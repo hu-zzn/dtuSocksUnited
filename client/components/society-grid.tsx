@@ -31,11 +31,6 @@ export function SocietyGrid() {
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const swiperRefs = useRef<Record<string, SwiperType | null>>({});
-  const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const scrollDirectionRef = useRef<"left" | "right" | null>(null);
-  const scrollCategoryRef = useRef<string | null>(null);
-
-  const SCROLL_INTERVAL_MS = 250;
 
   useEffect(() => {
     getAllSocieties();
@@ -46,8 +41,8 @@ export function SocietyGrid() {
   const categories =
     safeSocieties.length > 0
       ? Array.from(
-        new Set(safeSocieties.flatMap((society) => society.socCategory))
-      )
+          new Set(safeSocieties.flatMap((society) => society.socCategory))
+        )
       : [];
 
   const fuse = new Fuse(safeSocieties, {
@@ -67,26 +62,15 @@ export function SocietyGrid() {
       : society.socCategory.includes(categoryFilter)
   );
 
-  const startScrolling = (direction: "left" | "right", category: string) => {
-    scrollDirectionRef.current = direction;
-    scrollCategoryRef.current = category;
-
-    scrollIntervalRef.current = setInterval(() => {
-      const swiper = swiperRefs.current[category];
-      if (swiper) {
-        if (direction === "left") {
-          swiper.slidePrev(300);
-        } else {
-          swiper.slideNext(300);
-        }
+  // New function to handle single scroll on click
+  const handleScrollClick = (direction: "left" | "right", category: string) => {
+    const swiper = swiperRefs.current[category];
+    if (swiper) {
+      if (direction === "left") {
+        swiper.slidePrev(300);
+      } else {
+        swiper.slideNext(300);
       }
-    }, SCROLL_INTERVAL_MS);
-  };
-
-  const stopScrolling = () => {
-    if (scrollIntervalRef.current) {
-      clearInterval(scrollIntervalRef.current);
-      scrollIntervalRef.current = null;
     }
   };
 
@@ -113,7 +97,6 @@ export function SocietyGrid() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-12 h-12 w-full border-2 border-primary rounded-full bg-card text-foreground placeholder:text-muted-foreground text-[clamp(0.9rem,2vw,1rem)]"
-
           />
         </div>
 
@@ -122,9 +105,15 @@ export function SocietyGrid() {
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent className="border border-border bg-card text-foreground">
-            <SelectItem value="all" className="text-[clamp(0.9rem,2vw,1rem)]">All Categories</SelectItem>
+            <SelectItem value="all" className="text-[clamp(0.9rem,2vw,1rem)]">
+              All Categories
+            </SelectItem>
             {categories.map((category) => (
-              <SelectItem key={category} value={category} className="text-[clamp(0.9rem,2vw,1rem)]">
+              <SelectItem
+                key={category}
+                value={category}
+                className="text-[clamp(0.9rem,2vw,1rem)]"
+              >
                 {category}
               </SelectItem>
             ))}
@@ -145,12 +134,13 @@ export function SocietyGrid() {
               key={category}
               className="space-y-4 mb-12 group relative hover:bg-muted/10 p-2 rounded-xl transition"
             >
-              <h2 className="font-bold text-[clamp(1.5rem,3vw,2.5rem)] text-primary">{category}</h2>
+              <h2 className="font-bold text-[clamp(1.5rem,3vw,2.5rem)] text-primary">
+                {category}
+              </h2>
 
               {/* ⬅️ Left scroll */}
               <button
-                onMouseEnter={() => startScrolling("left", category)}
-                onMouseLeave={stopScrolling}
+                onClick={() => handleScrollClick("left", category)} // Changed to onClick
                 className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -158,8 +148,7 @@ export function SocietyGrid() {
 
               {/* ➡️ Right scroll */}
               <button
-                onMouseEnter={() => startScrolling("right", category)}
-                onMouseLeave={stopScrolling}
+                onClick={() => handleScrollClick("right", category)} // Changed to onClick
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex p-2 bg-card border border-border rounded-full shadow-md"
               >
                 <ChevronRight className="w-5 h-5" />
