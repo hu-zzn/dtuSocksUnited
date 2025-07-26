@@ -34,6 +34,5 @@ export function useCart() {
     fetchCart(); // load cart on first mount
   }, []);
 
-return { cart, loading, toggleCart, fetchCart };
-
+  return { cart, loading, toggleCart };
 }

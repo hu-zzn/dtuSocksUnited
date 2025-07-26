@@ -1,19 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCart } from "../../hooks/use-cart";
 import { SocietyCard } from "../../components/society-card";
-import { SocietyModal } from "../../components/society-modal";
+import { SocietyModal } from "../../components/society-modal"; // ✅ Import
 import type { Society } from "../../types/index";
 
 export default function CartPage() {
-  const { cart, loading, toggleCart, fetchCart } = useCart();
-  const [selectedSociety, setSelectedSociety] = useState<Society | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    fetchCart(); // 💡 ensure freshest data on page load
-  }, []);
+  const { cart, toggleCart } = useCart();
+  const [selectedSociety, setSelectedSociety] = useState<Society | null>(null); // ✅ Track selected society
+  const [isModalOpen, setIsModalOpen] = useState(false); // ✅ Track modal state
 
   const openModal = (society: Society) => {
     setSelectedSociety(society);
@@ -24,14 +20,6 @@ export default function CartPage() {
     setSelectedSociety(null);
     setIsModalOpen(false);
   };
-
-  if (loading) {
-    return (
-      <section className="min-h-screen flex justify-center items-center">
-        <p className="text-muted-foreground text-lg">Loading your cart...</p>
-      </section>
-    );
-  }
 
   return (
     <section className="bg-background text-foreground min-h-screen py-16">
@@ -48,13 +36,14 @@ export default function CartPage() {
                 society={society}
                 isInCart={true}
                 onToggle={() => toggleCart(society._id)}
-                onViewDetails={() => openModal(society)}
+                onViewDetails={() => openModal(society)} // ✅ Open modal on view
               />
             ))}
           </div>
         )}
       </div>
 
+      {/* ✅ Render modal */}
       <SocietyModal
         society={selectedSociety}
         isOpen={isModalOpen}
