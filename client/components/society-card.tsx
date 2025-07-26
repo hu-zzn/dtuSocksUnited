@@ -101,8 +101,7 @@ export function SocietyCard({
             <p
               className={cn(
                 "text-[clamp(0.85rem,2vw,0.95rem)] text-muted-foreground mb-4",
-                "leading-relaxed overflow-hidden",
-                "line-clamp-2 sm:line-clamp-3"
+                "leading-relaxed overflow-hidden line-clamp-3"
               )}
             >
               {society.socAbout}
@@ -117,11 +116,10 @@ export function SocietyCard({
               <ul
                 className={cn(
                   "text-[clamp(0.7rem,1.8vw,0.85rem)] space-y-2 text-muted-foreground",
-                  "overflow-hidden",
-                  "max-h-[4.2rem] sm:max-h-[6.3rem]" // 2 items on mobile, 3 on desktop
+                  "overflow-hidden max-h-[4.2rem]"
                 )}
               >
-                {society.socHighlights.slice(0, 3).map((highlight, index) => (
+                {society.socHighlights.slice(0, 2).map((highlight, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-muted rounded-full mt-1 flex-shrink-0" />
                     <span className="leading-relaxed line-clamp-1">
