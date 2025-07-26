@@ -145,40 +145,42 @@ export function SocietyCard({
       </CardContent>
 
       {/* Footer */}
-      <CardFooter className="flex-shrink-0 flex gap-3 pt-0">
-        <Button
-          variant="outline"
-          onClick={onViewDetails}
-          className="flex-1 rounded-full font-light border-border hover:bg-muted text-foreground text-[clamp(0.8rem,1.8vw,0.95rem)]"
-        >
-          View Details
-        </Button>
+      <CardFooter className="pt-0">
+        <div className="grid grid-cols-2 gap-3 w-full">
+          <Button
+            variant="outline"
+            onClick={onViewDetails}
+            className="w-full rounded-full font-light border-border hover:bg-muted text-foreground text-[clamp(0.8rem,1.8vw,0.95rem)]"
+          >
+            View Details
+          </Button>
 
-        <Button
-          onClick={handleToggleCart}
-          disabled={isToggling}
-          variant={isInCart ? "default" : "outline"}
-          className={cn(
-            "flex-1 min-w-0 truncate rounded-full font-light transition-colors text-[clamp(0.7rem,1.5vw,0.9rem)]",
-            isInCart
-              ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
-              : "border-border hover:bg-muted text-foreground"
-          )}
-        >
-          {isToggling ? (
-            <div className="w-4 h-4 border-[2px] border-current border-t-transparent rounded-full animate-spin" />
-          ) : isInCart ? (
-            <>
-              <Check className="w-4 h-4 mr-2" />
-              Added
-            </>
-          ) : (
-            <>
-              <Plus className="w-4 h-4 mr-2" />
-              Add to Cart
-            </>
-          )}
-        </Button>
+          <Button
+            onClick={handleToggleCart}
+            disabled={isToggling}
+            variant={isInCart ? "default" : "outline"}
+            className={cn(
+              "w-full truncate rounded-full font-light transition-colors text-[clamp(0.7rem,1.5vw,0.9rem)]",
+              isInCart
+                ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
+                : "border-border hover:bg-muted text-foreground"
+            )}
+          >
+            {isToggling ? (
+              <div className="w-4 h-4 border-[2px] border-current border-t-transparent rounded-full animate-spin" />
+            ) : isInCart ? (
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                Added
+              </>
+            ) : (
+              <>
+                <Plus className="w-4 h-4 mr-2" />
+                Add to Cart
+              </>
+            )}
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
