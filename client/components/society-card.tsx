@@ -145,12 +145,12 @@ export function SocietyCard({
       </CardContent>
 
       {/* Footer */}
-      <CardFooter className="pt-0">
+      <CardFooter className="p-0">
         <div className="grid grid-cols-2 gap-3 w-full">
           <Button
             variant="outline"
             onClick={onViewDetails}
-            className="w-full rounded-md font-light border-border hover:bg-muted text-foreground text-xs"
+            className="w-full rounded-md font-light border-border hover:bg-muted text-foreground text-sm"
           >
             View Details
           </Button>
@@ -160,7 +160,7 @@ export function SocietyCard({
             disabled={isToggling}
             variant={isInCart ? "default" : "outline"}
             className={cn(
-              "w-full truncate rounded-lg font-light transition-colors text-xs",
+              "w-full truncate rounded-md font-light transition-colors text-sm",
               isInCart
                 ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
                 : "border-border hover:bg-muted text-foreground"
