@@ -52,7 +52,7 @@ export function SocietyCard({
   };
 
   return (
-    <Card className="h-full min-h-[22rem] sm:min-h-[26rem] flex flex-col justify-between border border-border bg-muted/20 rounded-2xl p-4 shadow-sm transition-all duration-300 group hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-white/10">
+    <Card className="min-h-[28rem] flex flex-col justify-between border border-border bg-muted/20 rounded-2xl p-4 shadow-sm transition-all duration-300 group hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-white/10">
       {/* Header */}
       <CardHeader className="pb-4">
         <div className="flex justify-between items-start gap-4">
