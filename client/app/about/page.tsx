@@ -66,19 +66,6 @@ export default function AboutPage() {
         </p>
       </div>
 
-      {/* Instagram Section */}
-      <div className="text-center mb-16">
-        <p className="text-lg font-medium mb-2">Follow us on Instagram</p>
-        <a
-          href="https://www.instagram.com/infosoc.dtu"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block text-primary font-semibold underline"
-        >
-          @infosoc.dtu
-        </a>
-      </div>
-
       {/* Core Team */}
       <h2 className="text-3xl font-bold text-center mb-8">Our Core Team</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
@@ -107,6 +94,19 @@ export default function AboutPage() {
             <p className="text-muted-foreground text-sm">{member.designation}</p>
           </div>
         ))}
+      </div>
+
+      {/* Instagram Section */}
+      <div className="text-center mb-16">
+        <p className="text-lg font-medium mb-2">Follow us on Instagram</p>
+        <a
+          href="https://www.instagram.com/infosoc.dtu"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block text-primary font-semibold underline"
+        >
+          @infosoc.dtu
+        </a>
       </div>
     </div>
   )
