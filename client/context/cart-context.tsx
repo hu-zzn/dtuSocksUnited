@@ -9,6 +9,7 @@ interface CartContextProps {
   loading: boolean;
   toggleCart: (id: string) => Promise<void>;
   fetchCart: () => Promise<void>;
+  setCart: React.Dispatch<React.SetStateAction<Society[]>>; // ✅ added
 }
 
 const CartContext = createContext<CartContextProps | undefined>(undefined);
@@ -46,7 +47,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <CartContext.Provider value={{ cart, loading, toggleCart, fetchCart }}>
+    <CartContext.Provider value={{ cart, loading, toggleCart, fetchCart, setCart }}>
       {children}
     </CartContext.Provider>
   );

@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useCart } from "../../hooks/use-cart";
+import { useCart } from "../../context/cart-context";
 import { SocietyCard } from "../../components/society-card";
-import { SocietyModal } from "../../components/society-modal"; // ✅ Import
-import type { Society } from "../../types/index";
+import { SocietyModal } from "../../components/society-modal";
+import type { Society } from "../../types";
 
 export default function CartPage() {
-  const { cart, toggleCart } = useCart();
-  const [selectedSociety, setSelectedSociety] = useState<Society | null>(null); // ✅ Track selected society
-  const [isModalOpen, setIsModalOpen] = useState(false); // ✅ Track modal state
+  const { cart, setCart, toggleCart } = useCart(); // ✅ ensure `setCart` is exposed
+  const [selectedSociety, setSelectedSociety] = useState<Society | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = (society: Society) => {
     setSelectedSociety(society);
@@ -19,6 +19,10 @@ export default function CartPage() {
   const closeModal = () => {
     setSelectedSociety(null);
     setIsModalOpen(false);
+  };
+
+  const removeFromCart = (id: string) => {
+    setCart(prev => prev.filter(item => item._id !== id));
   };
 
   return (
@@ -35,15 +39,14 @@ export default function CartPage() {
                 key={society._id}
                 society={society}
                 isInCart={true}
-                onToggle={() => toggleCart(society._id)}
-                onViewDetails={() => openModal(society)} // ✅ Open modal on view
+                onToggle={() => removeFromCart(society._id)}
+                onViewDetails={() => openModal(society)}
               />
             ))}
           </div>
         )}
       </div>
 
-      {/* ✅ Render modal */}
       <SocietyModal
         society={selectedSociety}
         isOpen={isModalOpen}
