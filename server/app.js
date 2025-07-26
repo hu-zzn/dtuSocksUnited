@@ -26,19 +26,20 @@ console.log("✅ Backend starting. Allowed CORS Origins:", allowedOrigins); // I
 // ✅ CORS Middleware - IMPORTANT: This must be before other middlewares and routes
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (e.g., Postman, mobile apps, internal proxies)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.error(
-          `❌ CORS Blocked Request from Origin: ${origin}. Allowed: ${allowedOrigins.join(
-            ", "
-          )}`
-        );
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    // origin: function (origin, callback) {
+    //   // Allow requests with no origin (e.g., Postman, mobile apps, internal proxies)
+    //   if (!origin || allowedOrigins.includes(origin)) {
+    //     callback(null, true);
+    //   } else {
+    //     console.error(
+    //       `❌ CORS Blocked Request from Origin: ${origin}. Allowed: ${allowedOrigins.join(
+    //         ", "
+    //       )}`
+    //     );
+    //     callback(new Error("Not allowed by CORS"));
+    //   }
+    // },
+    origin: "*",
     credentials: true, // Allow cookies (your httpOnly JWT token) to be sent cross-origin
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Explicitly allow common methods
     allowedHeaders: ["Content-Type", "Authorization"], // Explicitly allow common headers
