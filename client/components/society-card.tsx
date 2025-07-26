@@ -170,12 +170,12 @@ export function SocietyCard({
               <div className="w-4 h-4 border-[2px] border-current border-t-transparent rounded-full animate-spin" />
             ) : isInCart ? (
               <>
-                <Check className="w-4 h-4 mr-2" />
+                <Check className="w-4 h-4 mr-1" />
                 Added
               </>
             ) : (
               <>
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="w-4 h-4 mr-1" />
                 Add to Cart
               </>
             )}
