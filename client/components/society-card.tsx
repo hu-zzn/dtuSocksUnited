@@ -150,7 +150,7 @@ export function SocietyCard({
           <Button
             variant="outline"
             onClick={onViewDetails}
-            className="w-full rounded-full font-light border-border hover:bg-muted text-foreground text-[clamp(0.8rem,1.8vw,0.95rem)]"
+            className="w-full rounded-md font-light border-border hover:bg-muted text-foreground text-sm"
           >
             View Details
           </Button>
@@ -160,7 +160,7 @@ export function SocietyCard({
             disabled={isToggling}
             variant={isInCart ? "default" : "outline"}
             className={cn(
-              "w-full truncate rounded-full font-light transition-colors text-[clamp(0.7rem,1.5vw,0.9rem)]",
+              "w-full truncate rounded-lg font-light transition-colors text-sm",
               isInCart
                 ? "bg-[hsl(var(--sidebar-primary))] text-[hsl(var(--sidebar-primary-foreground))] hover:opacity-90"
                 : "border-border hover:bg-muted text-foreground"
@@ -182,6 +182,7 @@ export function SocietyCard({
           </Button>
         </div>
       </CardFooter>
+
     </Card>
   );
 }
