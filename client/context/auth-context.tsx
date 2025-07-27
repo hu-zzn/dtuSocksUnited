@@ -1,67 +1,71 @@
-// client/context/auth-context.tsx
 "use client";
 
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { authApi } from "../lib/apis"; // Assuming authApi uses axios with withCredentials: true
+import { authApi } from "../lib/apis";
 import type { User } from "../types";
-import toast from "react-hot-toast"; // NEW IMPORT: For showing notifications
+import toast from "react-hot-toast";
 
 interface AuthContextProps {
     user: User | null;
-    loading: boolean; // Indicates if initial user loading is complete
-    isAuthenticated: boolean; // Convenience derived state
+    loading: boolean;
+    isAuthenticated: boolean;
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
+    logoutUser: () => void;
     register: (name: string, email: string, password: string) => Promise<void>;
     verifyOTP: (email: string, otp: string) => Promise<void>;
     resendOTP: (email: string) => Promise<void>;
-    getMe: () => Promise<void>; // Renamed from loadUser for clarity, matches API call
+    getMe: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
+// ✅ Token utils (since utils.ts isn't a folder)
+const TOKEN_KEY = "token";
+
+const setToken = (token: string) => localStorage.setItem(TOKEN_KEY, token);
+const getToken = () => localStorage.getItem(TOKEN_KEY);
+const removeToken = () => localStorage.removeItem(TOKEN_KEY);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true); // Initial loading of user
-    const [actionLoading, setActionLoading] = useState(false); // New state for ongoing auth actions (login, register etc.)
+    const [loading, setLoading] = useState(true);
+    const [actionLoading, setActionLoading] = useState(false);
+    const router = useRouter();
 
-    // Derived state for convenience
-    const isAuthenticated = user !== null;
+    const isAuthenticated = !!user;
 
-    // Function to fetch current user details (used on initial load and after login/register)
+    const extractErrorMessage = (error: any): string =>
+        error?.response?.data?.message || error?.message || "An unexpected error occurred.";
+
     const getMe = async () => {
-        setLoading(true); // Set loading to true while fetching user
+        setLoading(true);
         try {
             const res = await authApi.getMe();
             setUser(res.user);
-        } catch (err: any) {
-            // If getMe fails (e.g., no token, expired token), user is not authenticated
+        } catch {
             setUser(null);
-            // console.error("Error fetching user data:", err); // Log for debugging, but don't show to user unless specific
         } finally {
-            setLoading(false); // Always set loading to false when done
+            setLoading(false);
         }
     };
 
-    // Effect to run getMe on component mount
     useEffect(() => {
-        getMe();
+        const token = getToken();
+        if (token) getMe();
+        else setLoading(false);
     }, []);
-
-    // Helper to extract error message from API response
-    const extractErrorMessage = (error: any): string => {
-        return error.response?.message || error.message || "An unexpected error occurred.";
-    };
 
     const register = async (name: string, email: string, password: string) => {
         setActionLoading(true);
         try {
             await authApi.register({ name, email, password });
-            toast.success("Registration successful! Please check your email for verification.");
+            toast.success("Registration successful! Check your email.");
         } catch (err: any) {
-            const errorMessage = extractErrorMessage(err);
-            toast.error(errorMessage);
-            throw new Error(errorMessage); // Re-throw to allow component to catch and set local error state if needed
+            const msg = extractErrorMessage(err);
+            toast.error(msg);
+            throw new Error(msg);
         } finally {
             setActionLoading(false);
         }
@@ -71,12 +75,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setActionLoading(true);
         try {
             const res = await authApi.verifyOTP(email, otp);
-            setUser(res.user); // Update user immediately on successful OTP verification
-            toast.success(res.message || "Account verified successfully!");
+            setUser(res.user);
+            if (res.token) setToken(res.token); // ✅ Store token
+            toast.success(res.message || "Verified!");
         } catch (err: any) {
-            const errorMessage = extractErrorMessage(err);
-            toast.error(errorMessage);
-            throw new Error(errorMessage);
+            const msg = extractErrorMessage(err);
+            toast.error(msg);
+            throw new Error(msg);
         } finally {
             setActionLoading(false);
         }
@@ -86,11 +91,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setActionLoading(true);
         try {
             await authApi.resendOTP(email);
-            toast.success("Verification code resent to your email.");
+            toast.success("OTP resent to your email.");
         } catch (err: any) {
-            const errorMessage = extractErrorMessage(err);
-            toast.error(errorMessage);
-            throw new Error(errorMessage);
+            const msg = extractErrorMessage(err);
+            toast.error(msg);
+            throw new Error(msg);
         } finally {
             setActionLoading(false);
         }
@@ -99,13 +104,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = async (email: string, password: string) => {
         setActionLoading(true);
         try {
-            await authApi.login(email, password); // This should set the httpOnly cookie on backend
-            await getMe(); // Re-fetch user details, which will now pick up the cookie
+            const res = await authApi.login(email, password);
+            if (res.token) setToken(res.token); // ✅ Store token
+            await getMe();
             toast.success("Logged in successfully!");
         } catch (err: any) {
-            const errorMessage = extractErrorMessage(err);
-            toast.error(errorMessage);
-            throw new Error(errorMessage);
+            const msg = extractErrorMessage(err);
+            toast.error(msg);
+            throw new Error(msg);
         } finally {
             setActionLoading(false);
         }
@@ -115,15 +121,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setActionLoading(true);
         try {
             await authApi.logout();
+            removeToken();
             setUser(null);
-            toast.success("Logged out successfully.");
+            toast.success("Logged out.");
+            router.push("/login");
         } catch (err: any) {
-            const errorMessage = extractErrorMessage(err);
-            toast.error(errorMessage);
-            throw new Error(errorMessage);
+            const msg = extractErrorMessage(err);
+            toast.error(msg);
+            throw new Error(msg);
         } finally {
             setActionLoading(false);
         }
+    };
+
+    const logoutUser = () => {
+        removeToken();
+        setUser(null);
+        toast.error("Session expired. Please log in again.");
+        router.push("/login");
     };
 
     return (
@@ -134,10 +149,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 isAuthenticated,
                 login,
                 logout,
+                logoutUser,
                 register,
                 verifyOTP,
                 resendOTP,
-                getMe, // Expose getMe for explicit refreshing (e.g., after Google login)
+                getMe,
             }}
         >
             {children}
@@ -147,8 +163,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export const useAuth = () => {
     const ctx = useContext(AuthContext);
-    if (!ctx) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
+    if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
     return ctx;
 };

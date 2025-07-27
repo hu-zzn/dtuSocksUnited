@@ -392,3 +392,18 @@ export const googleLogin = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Google login failed: Invalid token or server error.", 401));
     }
 });
+
+// server/controllers/authController.js
+export const refreshAccessToken = async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
+
+    const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const newAccessToken = jwt.sign({ id: payload.id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+
+    res.json({ token: newAccessToken });
+  } catch (err) {
+    res.status(403).json({ message: "Forbidden" });
+  }
+};

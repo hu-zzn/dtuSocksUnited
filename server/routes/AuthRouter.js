@@ -35,4 +35,7 @@ router.put("/password/update", isAuthenticated, updatePassword);
 // router.route("/admin/users").get(isAuthenticated, authorizeRoles("admin"), getAllUser);
 // ...
 
+// server/routes/authRouter.js
+router.get("/refresh-token", refreshAccessToken);
+
 export default router;
