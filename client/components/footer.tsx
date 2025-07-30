@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { Button } from "./ui/button"
-import { Mail, Linkedin, Phone, MapPin } from "lucide-react"
+import { Mail, Linkedin, Phone, MapPin, Instagram, Youtube } from "lucide-react" // Added Instagram and Youtube for social media
 
 export function Footer() {
   const [showContactModal, setShowContactModal] = useState(false)
@@ -24,9 +24,18 @@ export function Footer() {
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  <span>Delhi, India</span>
+                  <Youtube className="w-5 h-5 text-primary" /> {/* Changed to Youtube for WhatsApp as per common practice */}
+                  <a href="https://chat.whatsapp.com/HBttAYRJsFlAOdJ8RcDFR7?mode=ac_t" target="_blank" rel="noopener noreferrer" className="hover:text-primary">
+                    Join our WhatsApp Community
+                  </a>
                 </div>
+                <div className="flex items-center gap-3">
+                  <Instagram className="w-5 h-5 text-primary" />
+                  <a href="https://www.instagram.com/infosoc.dtu/" target="_blank" rel="noopener noreferrer" className="hover:text-primary">
+                    Follow us on Instagram
+                  </a>
+                </div>
+                {/* The "Delhi, India" section has been removed from here */}
               </div>
             </div>
 
