@@ -97,7 +97,8 @@ export default function AboutPage() {
       </div>
 
       {/* Instagram Section */}
-      <div className="text-center mb-16">
+      {/* Added mt-16 for more space above this section */}
+      <div className="text-center mt-16 mb-16">
         <p className="text-lg font-medium mb-2">Follow us on Instagram</p>
         <a
           href="https://www.instagram.com/infosoc.dtu"
