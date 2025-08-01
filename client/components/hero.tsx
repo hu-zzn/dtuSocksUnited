@@ -25,7 +25,7 @@ export function Hero() {
             <div className="w-8 h-8 md:w-12 md:h-12 bg-white bg-opacity-10 rounded-full flex items-center justify-center">
               <Users className="w-4 h-4 md:w-6 md:h-6" />
             </div>
-            <span className="text-sm md:text-lg font-light">50+ Active Societies</span>
+            <span className="text-sm md:text-lg font-light">70+ Active Societies</span>
           </div>
           <div className="flex items-center justify-center gap-2 md:gap-3">
             <div className="w-8 h-8 md:w-12 md:h-12 bg-white bg-opacity-10 rounded-full flex items-center justify-center">

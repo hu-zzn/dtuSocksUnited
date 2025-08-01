@@ -1,6 +1,8 @@
 "use client"
 
-import { Linkedin } from "lucide-react"
+// Removed MessageCircle from lucide-react, added FaWhatsapp from react-icons/fa
+import { Linkedin, Mail, Instagram } from "lucide-react"
+import { FaWhatsapp } from "react-icons/fa" // Correct import for FaWhatsapp
 import Image from "next/image"
 
 const coreMembers = [
@@ -96,18 +98,47 @@ export default function AboutPage() {
         ))}
       </div>
 
-      {/* Instagram Section */}
-      {/* Added mt-16 for more space above this section */}
+      {/* Social Media Section */}
       <div className="text-center mt-16 mb-16">
-        <p className="text-lg font-medium mb-2">Follow us on Instagram</p>
-        <a
-          href="https://www.instagram.com/infosoc.dtu"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block text-primary font-semibold underline"
-        >
-          @infosoc.dtu
-        </a>
+        <h2 className="text-2xl font-bold mb-4">Connect with Us!</h2>
+        <div className="flex justify-center space-x-6">
+          {/* Instagram */}
+          <a
+            href="https://www.instagram.com/infosoc.dtu/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:text-blue-600 transition-colors flex flex-col items-center"
+            aria-label="Follow us on Instagram"
+          >
+            <Instagram className="w-10 h-10 mb-1" />
+            <span className="text-sm">Instagram</span>
+          </a>
+
+          {/* WhatsApp */}
+          {/* Replace XXXXXXXXXX with your WhatsApp number */}
+          <a
+            href="https://chat.whatsapp.com/HBttAYRJsFlAOdJ8RcDFR7?mode=ac_t"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:text-green-600 transition-colors flex flex-col items-center"
+            aria-label="Message us on WhatsApp"
+          >
+            {/* Using FaWhatsapp imported from react-icons/fa */}
+            <FaWhatsapp className="w-10 h-10 mb-1" />
+            <span className="text-sm">WhatsApp</span>
+          </a>
+
+          {/* Email */}
+          {/* Replace with your actual email address */}
+          <a
+            href="mailto:infosoc.queries@gmail.com"
+            className="text-primary hover:text-red-600 transition-colors flex flex-col items-center"
+            aria-label="Send us an email"
+          >
+            <Mail className="w-10 h-10 mb-1" />
+            <span className="text-sm">Email</span>
+          </a>
+        </div>
       </div>
     </div>
   )

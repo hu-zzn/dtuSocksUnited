@@ -3,7 +3,10 @@
 import Link from "next/link"
 import { useState } from "react"
 import { Button } from "./ui/button"
-import { Mail, Linkedin, Phone, MapPin, Instagram, Youtube } from "lucide-react" // Added Instagram and Youtube for social media
+// Corrected imports: Added MessageCircle back (if you want to keep it somewhere else)
+// Removed Youtube as it's not used for the social links in your provided image.
+import { Mail, Linkedin, Phone, MapPin, Instagram } from "lucide-react"
+import { FaWhatsapp } from "react-icons/fa" // Import FaWhatsapp for the correct logo
 
 export function Footer() {
   const [showContactModal, setShowContactModal] = useState(false)
@@ -24,7 +27,8 @@ export function Footer() {
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Youtube className="w-5 h-5 text-primary" /> {/* Changed to Youtube for WhatsApp as per common practice */}
+                  {/* Using FaWhatsapp for the correct WhatsApp logo */}
+                  <FaWhatsapp className="w-5 h-5 text-primary" />
                   <a href="https://chat.whatsapp.com/HBttAYRJsFlAOdJ8RcDFR7?mode=ac_t" target="_blank" rel="noopener noreferrer" className="hover:text-primary">
                     Join our WhatsApp Community
                   </a>
@@ -35,7 +39,6 @@ export function Footer() {
                     Follow us on Instagram
                   </a>
                 </div>
-                {/* The "Delhi, India" section has been removed from here */}
               </div>
             </div>
 
@@ -47,6 +50,7 @@ export function Footer() {
                     About Us
                   </Button>
                 </Link>
+                {/* Add other quick links here if needed, e.g., to clubs, events, etc. */}
               </div>
             </div>
 
@@ -80,6 +84,16 @@ export function Footer() {
                   </a>
                 </div>
               </div>
+              {/* If you want a phone number in the modal, uncomment this */}
+              {/* <div className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="font-medium">Phone</p>
+                  <a href="tel:+919876543210" className="text-primary">
+                    +91 98765 43210
+                  </a>
+                </div>
+              </div> */}
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-primary" />
                 <div>
