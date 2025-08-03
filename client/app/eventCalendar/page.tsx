@@ -13,7 +13,7 @@ type Event = {
 
 const App = () => {
   const initialEvents: Event[] = [
-    { societyName: "AUV", eventDate: "03-08-2025", venue: "ONLINE MODE", time: "7:30 pm", isNew: true },
+    { societyName: "AUV", eventDate: "03-08-2025", venue: "Online Mode", time: "7:30 pm", isNew: true },
     { societyName: "EHAX", eventDate: "11-08-2025", venue: "SPS-11", time: "4:00 pm", isNew: true },
     { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR Audi", time: "2:00 pm", isNew: true },
     { societyName: "IPI-DTU", eventDate: "13-08-2025", venue: "SPS-13", time: "2:00 pm", isNew: true },
