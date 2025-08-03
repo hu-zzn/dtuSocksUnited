@@ -95,17 +95,17 @@ const App = () => {
                 </span>
               </button>
 
-              {/* Accordion Content */}
+              {/* Accordion Content (Updated Transparency) */}
               {openIndex === index && (
-                <div className="p-4 border-t border-gray-600 text-sm space-y-1">
+                <div className="p-4 border-t border-gray-300 text-sm space-y-1 text-gray-700">
                   <p>
-                    <span className="font-semibold">Date:</span> {event.eventDate}
+                    <span className="font-semibold text-gray-800">Date:</span> {event.eventDate}
                   </p>
                   <p>
-                    <span className="font-semibold">Time:</span> {event.time}
+                    <span className="font-semibold text-gray-800">Time:</span> {event.time}
                   </p>
                   <p>
-                    <span className="font-semibold">Venue:</span> {event.venue}
+                    <span className="font-semibold text-gray-800">Venue:</span> {event.venue}
                   </p>
                 </div>
               )}
