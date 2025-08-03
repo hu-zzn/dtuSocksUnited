@@ -97,7 +97,7 @@ const App = () => {
 
               {/* Accordion Content */}
               {openIndex === index && (
-                <div className="p-4 border-t border-gray-200 text-sm space-y-1">
+                <div className="p-4 border-t border-gray-600 text-sm space-y-1">
                   <p>
                     <span className="font-semibold">Date:</span> {event.eventDate}
                   </p>
