@@ -56,7 +56,7 @@ export function Navbar() {
               Home
             </button>
             <Link href="/eventCalendar" className="hover:text-primary transition-colors font-light">
-              Event Calendar
+              Orientation Calendar
             </Link>
             {user?.role === "Admin" && (
               <Link href="/admin" className="hover:text-primary transition-colors font-light">
