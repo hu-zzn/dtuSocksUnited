@@ -19,7 +19,7 @@ const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(",").map((origin) =>
       origin.trim().replace(/\/$/, "")
     )
-  : ["http://localhost:3000"];
+  : ["http://16.170.206.239:8000"];
 
 console.log("✅ Backend starting. Allowed CORS Origins:", allowedOrigins); // Improved log
 
