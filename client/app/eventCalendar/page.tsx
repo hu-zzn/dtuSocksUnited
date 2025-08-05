@@ -17,6 +17,7 @@ const App = () => {
     { societyName: "EHAX", eventDate: "11-08-2025", venue: "SPS-11", time: "4:00 pm", isNew: true },
     { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR Audi", time: "2:00 pm", isNew: true },
     { societyName: "IPI-DTU", eventDate: "13-08-2025", venue: "SPS-13", time: "2:00 pm", isNew: true },
+    { societyName: "IFSA-DTU", eventDate: "10-08-2025", venue: "Online Mode", time: "8:00 pm", isNew: true },
   ];
 
   const [events, setEvents] = useState<Event[]>(initialEvents);
