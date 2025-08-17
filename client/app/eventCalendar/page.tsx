@@ -20,6 +20,9 @@ const App = () => {
     { societyName: "IFSA-DTU", eventDate: "10-08-2025", venue: "Online Mode", time: "8:00 pm", isNew: true },
     { societyName: "SATTVA", eventDate: "10-08-2025", venue: "Online Mode", time: "9:00 pm", isNew: true },
     { societyName: "Team Inferno", eventDate: "20-08-2025", venue: "SPS-11", time: "4:00 pm", isNew: true },
+    { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR AUDI", time: "2:00 pm", isNew: true },
+    { societyName: "UGV-DTU", eventDate: "20-08-2025", venue: "SPS-6", time: "4:00 pm", isNew: true },
+    { societyName: "TEAM DEFINZ RACING", eventDate: "19-08-2025", venue: "SPS-10", time: "4:00 pm", isNew: true },
     
 
     
