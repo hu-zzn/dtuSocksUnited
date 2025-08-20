@@ -23,7 +23,9 @@ const App = () => {
     { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR AUDI", time: "2:00 pm", isNew: true },
     { societyName: "UGV-DTU", eventDate: "20-08-2025", venue: "SPS-6", time: "4:00 pm", isNew: true },
     { societyName: "TEAM DEFINZ RACING", eventDate: "19-08-2025", venue: "SPS-10", time: "4:00 pm", isNew: true },
-    
+    { societyName: "DTU NCC", eventDate: "22-08-2025", venue: "BR AUDI", time: "12:00 pm", isNew: true },
+    { societyName: "SAHITYA", eventDate: "21-08-2025", venue: "CONVOCATION HALL", time: "3:00 pm", isNew: true },
+    { societyName: "COGNITIVE MINDS", eventDate: "20-08-2025", venue: "AB3 218", time: "4:00 pm", isNew: true },
 
     
   ];
