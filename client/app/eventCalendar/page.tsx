@@ -26,7 +26,7 @@ const App = () => {
     { societyName: "DTU NCC", eventDate: "22-08-2025", venue: "BR AUDI", time: "12:00 pm", isNew: true },
     { societyName: "SAHITYA", eventDate: "21-08-2025", venue: "CONVOCATION HALL", time: "3:00 pm", isNew: true },
     { societyName: "COGNITIVE MINDS", eventDate: "20-08-2025", venue: "AB3 218", time: "4:00 pm", isNew: true },
-    { societyName: "", eventDate: "20-08-2025", venue: "AB3 218", time: "4:00 pm", isNew: true },
+    { societyName: "DTU Bhangra", eventDate: "27-08-2025", venue: "Windpoint (Science Block)", time: "3:30 pm", isNew: true },
 
     
   ];
