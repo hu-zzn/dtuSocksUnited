@@ -13,26 +13,161 @@ type Event = {
 
 const App = () => {
   const initialEvents: Event[] = [
-    { societyName: "AUV", eventDate: "03-08-2025", venue: "Online Mode", time: "7:30 pm", isNew: true },
-    { societyName: "EHAX", eventDate: "11-08-2025", venue: "SPS-11", time: "4:00 pm", isNew: true },
-    { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR Audi", time: "2:00 pm", isNew: true },
-    { societyName: "IPI-DTU", eventDate: "13-08-2025", venue: "SPS-13", time: "2:00 pm", isNew: true },
-    { societyName: "IFSA-DTU", eventDate: "10-08-2025", venue: "Online Mode", time: "8:00 pm", isNew: true },
-    { societyName: "SATTVA", eventDate: "10-08-2025", venue: "Online Mode", time: "9:00 pm", isNew: true },
-    { societyName: "Team Inferno", eventDate: "20-08-2025", venue: "SPS-11", time: "4:00 pm", isNew: true },
-    { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR AUDI", time: "2:00 pm", isNew: true },
-    { societyName: "UGV-DTU", eventDate: "20-08-2025", venue: "SPS-6", time: "4:00 pm", isNew: true },
-    { societyName: "TEAM DEFINZ RACING", eventDate: "19-08-2025", venue: "SPS-10", time: "4:00 pm", isNew: true },
-    { societyName: "DTU NCC", eventDate: "22-08-2025", venue: "BR AUDI", time: "12:00 pm", isNew: true },
-    { societyName: "SAHITYA", eventDate: "21-08-2025", venue: "CONVOCATION HALL", time: "3:00 pm", isNew: true },
-    { societyName: "COGNITIVE MINDS", eventDate: "20-08-2025", venue: "AB3 218", time: "4:00 pm", isNew: true },
-    { societyName: "DTU Bhangra", eventDate: "27-08-2025", venue: "Windpoint (Science Block)", time: "3:30 pm", isNew: true },
-     { societyName: "DelTech MUN and Debsoc ", eventDate: "28-08-2025", venue: "AB", time: "12:00 pm", isNew: true },
-     { societyName: "IGTS-DTU ", eventDate: "28-08-2025", venue: "AB", time: "12:00 pm", isNew: true },
-     
+    {
+      societyName: "AUV",
+      eventDate: "03-08-2025",
+      venue: "Online Mode",
+      time: "7:30 pm",
+      isNew: false,
+    },
+    {
+      societyName: "EHAX",
+      eventDate: "11-08-2025",
+      venue: "SPS-11",
+      time: "4:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "AIMS-DTU",
+      eventDate: "18-08-2025",
+      venue: "BR Audi",
+      time: "2:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "IPI-DTU",
+      eventDate: "13-08-2025",
+      venue: "SPS-13",
+      time: "2:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "IFSA-DTU",
+      eventDate: "10-08-2025",
+      venue: "Online Mode",
+      time: "8:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "SATTVA",
+      eventDate: "10-08-2025",
+      venue: "Online Mode",
+      time: "9:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "Team Inferno",
+      eventDate: "20-08-2025",
+      venue: "SPS-11",
+      time: "4:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "AIMS-DTU",
+      eventDate: "18-08-2025",
+      venue: "BR AUDI",
+      time: "2:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "UGV-DTU",
+      eventDate: "20-08-2025",
+      venue: "SPS-6",
+      time: "4:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "TEAM DEFINZ RACING",
+      eventDate: "19-08-2025",
+      venue: "SPS-10",
+      time: "4:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "DTU NCC",
+      eventDate: "22-08-2025",
+      venue: "BR AUDI",
+      time: "12:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "SAHITYA",
+      eventDate: "21-08-2025",
+      venue: "CONVOCATION HALL",
+      time: "3:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "COGNITIVE MINDS",
+      eventDate: "20-08-2025",
+      venue: "AB3 218",
+      time: "4:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "DTU Bhangra",
+      eventDate: "27-08-2025",
+      venue: "Windpoint (Science Block)",
+      time: "3:30 pm",
+      isNew: false,
+    },
+    {
+      societyName: "DelTech MUN and Debsoc ",
+      eventDate: "28-08-2025",
+      venue: "AB",
+      time: "12:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "IGTS-DTU ",
+      eventDate: "28-08-2025",
+      venue: "AB",
+      time: "12:00 pm",
+      isNew: false,
+    },
+    {
+      societyName: "KALAKRITI ",
+      eventDate: "29-08-2025",
+      venue: "BR AUDI",
+      time: "12:30 pm",
+      isNew: false,
+    },
+    {
+      societyName: "PARCHHAYI DTU  ",
+      eventDate: "04-09-2025",
+      venue: "BR AUDI",
+      time: "2:00pm",
+      isNew: true,
+    },
 
-
-    
+    {
+      societyName: "Panache DTU",
+      eventDate: "03-09-2025",
+      venue: "BR Auditorium",
+      time: "12:00 PM onwards",
+      isNew: true,
+    },
+    {
+      societyName: "STEP DTU",
+      eventDate: "28-08-2025",
+      venue: "BR Auditorium",
+      time: "11:00 AM",
+      isNew: false,
+    },
+    {
+      societyName: "Let’s Talk - The Communication & Soft Skills Society",
+      eventDate: "09-09-2025",
+      venue: "BR Auditorium",
+      time: "2:00 PM",
+      isNew: true,
+    },
+    {
+      societyName: "BioSoc DTU",
+      eventDate: "04-09-2025",
+      venue: "Convocation Hall",
+      time: "12:00 PM - 2:00 PM",
+      isNew: true,
+    },
   ];
 
   const [events, setEvents] = useState<Event[]>(initialEvents);
@@ -92,7 +227,10 @@ const App = () => {
         {/* ✅ Mobile Accordion View */}
         <div className="md:hidden space-y-3">
           {events.sort(sortEventsByDate).map((event, index) => (
-            <div key={index} className="border border-gray-300 rounded-lg bg-white shadow-sm">
+            <div
+              key={index}
+              className="border border-gray-300 rounded-lg bg-white shadow-sm"
+            >
               {/* Accordion Header */}
               <button
                 className="w-full flex justify-between items-center p-4 text-left text-gray-900 font-semibold"
@@ -106,7 +244,11 @@ const App = () => {
                     </span>
                   )}
                 </span>
-                <span className={`transform transition-transform ${openIndex === index ? "rotate-180" : ""}`}>
+                <span
+                  className={`transform transition-transform ${
+                    openIndex === index ? "rotate-180" : ""
+                  }`}
+                >
                   ▼
                 </span>
               </button>
@@ -115,13 +257,16 @@ const App = () => {
               {openIndex === index && (
                 <div className="p-4 border-t border-gray-300 text-sm space-y-1 text-gray-700">
                   <p>
-                    <span className="font-semibold text-gray-800">Date:</span> {event.eventDate}
+                    <span className="font-semibold text-gray-800">Date:</span>{" "}
+                    {event.eventDate}
                   </p>
                   <p>
-                    <span className="font-semibold text-gray-800">Time:</span> {event.time}
+                    <span className="font-semibold text-gray-800">Time:</span>{" "}
+                    {event.time}
                   </p>
                   <p>
-                    <span className="font-semibold text-gray-800">Venue:</span> {event.venue}
+                    <span className="font-semibold text-gray-800">Venue:</span>{" "}
+                    {event.venue}
                   </p>
                 </div>
               )}
