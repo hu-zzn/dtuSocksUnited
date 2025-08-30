@@ -29,6 +29,7 @@ const App = () => {
     { societyName: "DTU Bhangra", eventDate: "27-08-2025", venue: "Windpoint (Science Block)", time: "3:30 pm", isNew: true },
      { societyName: "DelTech MUN and Debsoc ", eventDate: "28-08-2025", venue: "AB", time: "12:00 pm", isNew: true },
      { societyName: "IGTS-DTU ", eventDate: "28-08-2025", venue: "AB", time: "12:00 pm", isNew: true },
+     
 
 
     
