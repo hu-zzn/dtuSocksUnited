@@ -13,166 +13,36 @@ type Event = {
 
 const App = () => {
   const initialEvents: Event[] = [
-    {
-      societyName: "AUV",
-      eventDate: "03-08-2025",
-      venue: "Online Mode",
-      time: "7:30 pm",
-      isNew: false,
-    },
-    {
-      societyName: "EHAX",
-      eventDate: "11-08-2025",
-      venue: "SPS-11",
-      time: "4:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "AIMS-DTU",
-      eventDate: "18-08-2025",
-      venue: "BR Audi",
-      time: "2:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "IPI-DTU",
-      eventDate: "13-08-2025",
-      venue: "SPS-13",
-      time: "2:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "IFSA-DTU",
-      eventDate: "10-08-2025",
-      venue: "Online Mode",
-      time: "8:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "SATTVA",
-      eventDate: "10-08-2025",
-      venue: "Online Mode",
-      time: "9:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "Team Inferno",
-      eventDate: "20-08-2025",
-      venue: "SPS-11",
-      time: "4:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "AIMS-DTU",
-      eventDate: "18-08-2025",
-      venue: "BR AUDI",
-      time: "2:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "UGV-DTU",
-      eventDate: "20-08-2025",
-      venue: "SPS-6",
-      time: "4:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "TEAM DEFINZ RACING",
-      eventDate: "19-08-2025",
-      venue: "SPS-10",
-      time: "4:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "DTU NCC",
-      eventDate: "22-08-2025",
-      venue: "BR AUDI",
-      time: "12:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "SAHITYA",
-      eventDate: "21-08-2025",
-      venue: "CONVOCATION HALL",
-      time: "3:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "COGNITIVE MINDS",
-      eventDate: "20-08-2025",
-      venue: "AB3 218",
-      time: "4:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "DTU Bhangra",
-      eventDate: "27-08-2025",
-      venue: "Windpoint (Science Block)",
-      time: "3:30 pm",
-      isNew: false,
-    },
-    {
-      societyName: "DelTech MUN and Debsoc ",
-      eventDate: "28-08-2025",
-      venue: "AB",
-      time: "12:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "IGTS-DTU ",
-      eventDate: "28-08-2025",
-      venue: "AB",
-      time: "12:00 pm",
-      isNew: false,
-    },
-    {
-      societyName: "KALAKRITI ",
-      eventDate: "29-08-2025",
-      venue: "BR AUDI",
-      time: "12:30 pm",
-      isNew: false,
-    },
-    {
-      societyName: "PARCHHAYI DTU  ",
-      eventDate: "04-09-2025",
-      venue: "BR AUDI",
-      time: "2:00pm",
-      isNew: true,
-    },
-
-    {
-      societyName: "Panache DTU",
-      eventDate: "03-09-2025",
-      venue: "BR Auditorium",
-      time: "12:00 PM onwards",
-      isNew: true,
-    },
-    {
-      societyName: "STEP DTU",
-      eventDate: "28-08-2025",
-      venue: "BR Auditorium",
-      time: "11:00 AM",
-      isNew: false,
-    },
-    {
-      societyName: "Let’s Talk - The Communication & Soft Skills Society",
-      eventDate: "09-09-2025",
-      venue: "BR Auditorium",
-      time: "2:00 PM",
-      isNew: true,
-    },
-    {
-      societyName: "BioSoc DTU",
-      eventDate: "04-09-2025",
-      venue: "Convocation Hall",
-      time: "12:00 PM - 2:00 PM",
-      isNew: true,
-    },
+    { societyName: "AUV", eventDate: "03-08-2025", venue: "Online Mode", time: "7:30 pm", isNew: false },
+    { societyName: "EHAX", eventDate: "11-08-2025", venue: "SPS-11", time: "4:00 pm", isNew: false },
+    { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR Audi", time: "2:00 pm", isNew: false },
+    { societyName: "IPI-DTU", eventDate: "13-08-2025", venue: "SPS-13", time: "2:00 pm", isNew: false },
+    { societyName: "IFSA-DTU", eventDate: "10-08-2025", venue: "Online Mode", time: "8:00 pm", isNew: false },
+    { societyName: "SATTVA", eventDate: "10-08-2025", venue: "Online Mode", time: "9:00 pm", isNew: false },
+    { societyName: "Team Inferno", eventDate: "20-08-2025", venue: "SPS-11", time: "4:00 pm", isNew: false },
+    { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR AUDI", time: "2:00 pm", isNew: false },
+    { societyName: "UGV-DTU", eventDate: "20-08-2025", venue: "SPS-6", time: "4:00 pm", isNew: false },
+    { societyName: "TEAM DEFINZ RACING", eventDate: "19-08-2025", venue: "SPS-10", time: "4:00 pm", isNew: false },
+    { societyName: "DTU NCC", eventDate: "22-08-2025", venue: "BR AUDI", time: "12:00 pm", isNew: false },
+    { societyName: "SAHITYA", eventDate: "21-08-2025", venue: "CONVOCATION HALL", time: "3:00 pm", isNew: false },
+    { societyName: "COGNITIVE MINDS", eventDate: "20-08-2025", venue: "AB3 218", time: "4:00 pm", isNew: false },
+    { societyName: "DTU Bhangra", eventDate: "27-08-2025", venue: "Windpoint (Science Block)", time: "3:30 pm", isNew: false },
+    { societyName: "DelTech MUN and Debsoc ", eventDate: "28-08-2025", venue: "AB", time: "12:00 pm", isNew: false },
+    { societyName: "IGTS-DTU ", eventDate: "28-08-2025", venue: "AB", time: "12:00 pm", isNew: false },
+    { societyName: "KALAKRITI ", eventDate: "29-08-2025", venue: "BR AUDI", time: "12:30 pm", isNew: false },
+    { societyName: "PARCHHAYI DTU  ", eventDate: "04-09-2025", venue: "BR AUDI", time: "2:00pm", isNew: true },
+    { societyName: "Panache DTU", eventDate: "03-09-2025", venue: "BR Auditorium", time: "12:00 PM onwards", isNew: true },
+    { societyName: "STEP DTU", eventDate: "28-08-2025", venue: "BR Auditorium", time: "11:00 AM", isNew: false },
+    { societyName: "Let’s Talk - The Communication & Soft Skills Society", eventDate: "09-09-2025", venue: "BR Auditorium", time: "2:00 PM", isNew: true },
+    { societyName: "BioSoc DTU", eventDate: "04-09-2025", venue: "Convocation Hall", time: "12:00 PM - 2:00 PM", isNew: false },
+    { societyName: "SIAM DTU ", eventDate: "10-09-2025", venue: "SPS-10", time: "3PM", isNew: true },
+    { societyName: "Madhurima Auditions", eventDate: "10-09-2025", venue: "Convocation Hall", time: "11PM-5PM", isNew: true },
   ];
 
   const [events, setEvents] = useState<Event[]>(initialEvents);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  // Sort by latest first
   const sortEventsByDate = (a: Event, b: Event): number => {
     if (a.eventDate === "TBA") return 1;
     if (b.eventDate === "TBA") return -1;
@@ -180,7 +50,7 @@ const App = () => {
     const [dayB, monthB, yearB] = b.eventDate.split("-").map(Number);
     const dateA = new Date(yearA, monthA - 1, dayA);
     const dateB = new Date(yearB, monthB - 1, dayB);
-    return dateA.getTime() - dateB.getTime();
+    return dateB.getTime() - dateA.getTime(); // latest first
   };
 
   return (
@@ -191,7 +61,7 @@ const App = () => {
           Society Orientations and Recruitment
         </h1>
 
-        {/* ✅ Desktop Table View */}
+        {/* Desktop Table View */}
         <div className="hidden md:block">
           <div className="grid grid-cols-4 bg-gray-50 py-3 px-6 border border-gray-200 text-sm md:text-base font-semibold text-gray-700 rounded-t-lg">
             <div>Society Name</div>
@@ -224,7 +94,7 @@ const App = () => {
           </div>
         </div>
 
-        {/* ✅ Mobile Accordion View */}
+        {/* Mobile Accordion View */}
         <div className="md:hidden space-y-3">
           {events.sort(sortEventsByDate).map((event, index) => (
             <div
@@ -253,7 +123,7 @@ const App = () => {
                 </span>
               </button>
 
-              {/* Accordion Content (Updated Transparency) */}
+              {/* Accordion Content */}
               {openIndex === index && (
                 <div className="p-4 border-t border-gray-300 text-sm space-y-1 text-gray-700">
                   <p>
