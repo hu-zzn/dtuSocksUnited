@@ -36,7 +36,7 @@ export default function ResetPasswordPage() {
     setLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/reset-password/${token}`,
+        `/api/auth/reset-password/${token}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
