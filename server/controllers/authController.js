@@ -1,18 +1,27 @@
 // server/controllers/authController.js
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../middlewares/errorMiddlewares.js";
-import { User } from "../models/userModel.js";
+import { 
+  mapUserFromDb, 
+  generateVerificationCode, 
+  getResetPasswordToken 
+} from "../models/userModel.js";
 import bcrypt from "bcrypt";
-import crypto from "crypto"; // Removed generateKey as it's not used directly from crypto
+import crypto from "crypto";
 import { sendverificationCode } from "../utils/sendVerificationCode.js";
 import { sendToken } from "../utils/sendToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { generateForgotPasswordEmailTemplate } from "../utils/emailTemplates.js";
-import { OAuth2Client } from "google-auth-library"; // NEW IMPORT for Google OAuth
+import { OAuth2Client } from "google-auth-library";
+import { supabase } from "../database/supabaseClient.js";
 
-// Initialize Google OAuth2Client with your client ID
-// Ensure process.env.GOOGLE_CLIENT_ID is loaded in your app.js or server.js
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const generateMongoId = () => {
+  return Array.from({ length: 24 }, () =>
+    Math.floor(Math.random() * 16).toString(16)
+  ).join("");
+};
 
 export const register = catchAsyncErrors(async (req, res, next) => {
     try {
@@ -22,41 +31,46 @@ export const register = catchAsyncErrors(async (req, res, next) => {
             return next(new ErrorHandler("Please enter all fields.", 400));
         }
 
-        // ✅ Block if already registered and verified
-        // Also check if a googleId exists for this email, indicating it's a social account
-        const isRegistered = await User.findOne({
-            email,
-            $or: [{ accountVerified: true }, { googleId: { $exists: true, $ne: null } }],
-        });
+        // Find user by email to check if already registered
+        const { data: existingUser, error: findError } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", email)
+          .maybeSingle();
 
-        if (isRegistered) {
-            return next(new ErrorHandler("User already exists", 400));
+        if (findError) {
+          return next(new ErrorHandler(findError.message, 500));
         }
 
-        // ✅ Check if unverified user already exists (for local signup)
-        const unverifiedUser = await User.findOne({ email, accountVerified: false });
+        if (existingUser) {
+            if (existingUser.account_verified || existingUser.google_id) {
+                return next(new ErrorHandler("User already exists", 400));
+            }
 
-        if (unverifiedUser) {
-            // ✅ Resend OTP
-            const verificationCode = await unverifiedUser.generateVerificationCode();
-            await unverifiedUser.save();
+            // Resend OTP for existing unverified local account
+            const { verificationCode, verificationCodeExpire } = generateVerificationCode();
+            const hashedPassword = await bcrypt.hash(password, 10);
+            
+            const { error: updateError } = await supabase
+              .from("users")
+              .update({
+                name,
+                password: hashedPassword,
+                verification_code: verificationCode,
+                verification_code_expire: verificationCodeExpire.toISOString(),
+                updated_at: new Date().toISOString()
+              })
+              .eq("id", existingUser.id);
+
+            if (updateError) {
+              return next(new ErrorHandler(updateError.message, 500));
+            }
 
             sendverificationCode(verificationCode, email, res, {
                 message: "Verification code resent. Please verify your email.",
-                userAlreadyExists: true, // helpful for frontend redirect logic
+                userAlreadyExists: true,
             });
             return;
-        }
-
-        // ✅ Limit registration attempts
-        const registrationAttemptsByUser = await User.find({ email, accountVerified: false });
-        if (registrationAttemptsByUser.length >= 500) {
-            return next(
-                new ErrorHandler(
-                    "You have exceeded the number of registration attempts. Please contact support.",
-                    400
-                )
-            );
         }
 
         if (password.length < 4 || password.length > 16) {
@@ -65,17 +79,30 @@ export const register = catchAsyncErrors(async (req, res, next) => {
             );
         }
 
-        // ✅ Register new user (local signup)
+        // Register new user (local signup)
+        const id = generateMongoId();
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({
+        const { verificationCode, verificationCodeExpire } = generateVerificationCode();
+
+        const dbUser = {
+            id,
             name,
             email,
             password: hashedPassword,
-            // avatar: { public_id: "...", url: "..." } // You might want to add default avatar logic here
-        });
+            role: "User",
+            account_verified: false,
+            verification_code: verificationCode,
+            verification_code_expire: verificationCodeExpire.toISOString()
+        };
 
-        const verificationCode = await user.generateVerificationCode();
-        await user.save();
+        const { error: insertError } = await supabase
+          .from("users")
+          .insert(dbUser);
+
+        if (insertError) {
+          return next(new ErrorHandler(insertError.message, 500));
+        }
+
         sendverificationCode(verificationCode, email, res, {
             message: "Registered successfully. Please verify your email.",
             userAlreadyExists: false,
@@ -85,109 +112,101 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     }
 });
 
-
 export const verifyOTP = catchAsyncErrors(async (req, res, next) => {
     const { email, otp } = req.body;
     if (!email || !otp) {
         return next(new ErrorHandler("Email or otp is missing.", 400));
     }
     try {
-        // Find the most recent unverified user entry for this email
-        const userAllEntries = await User.find({
-            email,
-            accountVerified: false,
-            googleId: { $exists: false }, // Only target local unverified accounts
-        }).sort({ createdAt: -1 });
+        const { data: dbUser, error: findError } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", email)
+          .eq("account_verified", false)
+          .is("google_id", null)
+          .maybeSingle();
 
-        if (!userAllEntries || userAllEntries.length === 0) {
+        if (findError || !dbUser) {
             return next(new ErrorHandler("User not found or already verified.", 400));
         }
 
-        let user;
-        // If multiple unverified entries, take the latest and clean up others
-        if (userAllEntries.length > 1) {
-            user = userAllEntries[0];
-            await User.deleteMany({
-                _id: { $ne: user._id },
-                email,
-                accountVerified: false,
-                googleId: { $exists: false },
-            });
+        if (dbUser.verification_code !== Number(otp)) {
+            return next(new ErrorHandler("Invalid OTP", 400));
         }
-        else {
-            user = userAllEntries[0];
-        }
-
-        if (user.verificationCode !== Number(otp)) {
-            return next(new ErrorHandler("Invalid OTP", 400))
-        }
+        
         const currentTime = Date.now();
-
-        const verificationCodeExpire = new Date(
-            user.verificationCodeExpire
-        ).getTime();
+        const verificationCodeExpire = new Date(dbUser.verification_code_expire).getTime();
 
         if (currentTime > verificationCodeExpire) {
             return next(new ErrorHandler("OTP expired.", 400));
         }
-        user.accountVerified = true;
-        user.verificationCode = null;
-        user.verificationCodeExpire = null;
 
-        await user.save({ validateModifiedOnly: true });
+        const { data: updatedUser, error: updateError } = await supabase
+          .from("users")
+          .update({
+            account_verified: true,
+            verification_code: null,
+            verification_code_expire: null,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", dbUser.id)
+          .select()
+          .single();
 
-        sendToken(user, 200, "Account Verified.", res);
+        if (updateError) {
+          return next(new ErrorHandler(updateError.message, 500));
+        }
 
-
+        sendToken(mapUserFromDb(updatedUser), 200, "Account Verified.", res);
     } catch (error) {
         return next(new ErrorHandler("Internal Server error", 500));
     }
 });
 
-// Wrapped login with catchAsyncErrors for consistency
 export const login = catchAsyncErrors(async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
         return next(new ErrorHandler("Please enter all fields.", 400));
     }
 
-    // Find user with email and ensured they are accountVerified or are a Google user
-    const user = await User.findOne({
-        email,
-        $or: [{ accountVerified: true }, { googleId: { $exists: true, $ne: null } }],
-    }).select("+password"); // Select password for comparison
+    const { data: dbUser, error: findError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .maybeSingle();
 
-    if (!user) {
+    if (findError || !dbUser) {
         return next(new ErrorHandler("Invalid email or password.", 400));
     }
 
-    // If user has a googleId but no password, they can't log in locally
-    if (user.googleId && !user.password) {
+    if (!dbUser.account_verified && !dbUser.google_id) {
+        return next(new ErrorHandler("Invalid email or password.", 400));
+    }
+
+    if (dbUser.google_id && !dbUser.password) {
         return next(new ErrorHandler("Please log in with Google for this account.", 400));
     }
 
-    // If user has a password, compare it
-    const isPasswordMatched = await bcrypt.compare(password, user.password);
+    const isPasswordMatched = await bcrypt.compare(password, dbUser.password);
     if (!isPasswordMatched) {
         return next(new ErrorHandler("Invalid email or password.", 400));
     }
 
-    sendToken(user, 200, "User login successfully.", res);
+    sendToken(mapUserFromDb(dbUser), 200, "User login successfully.", res);
 });
-
 
 export const logout = (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        secure:true,
+        secure: true,
         sameSite: "None",
-        secure: process.env.NODE_ENV === "production",
+        domain: ".infosoc.in",
     });
     res.status(200).json({ success: true, message: "Logged out" });
 };
 
 export const getUser = catchAsyncErrors(async (req, res, next) => {
-    const user = req.user; // Assuming req.user is set by your authentication middleware
+    const user = req.user;
     if (!user) {
         return next(new ErrorHandler("User not found or not logged in.", 404));
     }
@@ -201,41 +220,63 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
     if (!req.body.email) {
         return next(new ErrorHandler("Email is required.", 400));
     }
-    // Ensure that only verified accounts (local or Google) can request password reset
-    const user = await User.findOne({
-        email: req.body.email,
-        $or: [{ accountVerified: true }, { googleId: { $exists: true, $ne: null } }],
-    });
-    if (!user) {
+
+    const { data: dbUser, error: findError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", req.body.email)
+      .maybeSingle();
+
+    if (findError || !dbUser) {
         return next(new ErrorHandler("Invalid email.", 400));
     }
 
-    // If it's a Google-only account (no password), inform user to use Google login
-    if (user.googleId && !user.password) {
+    if (!dbUser.account_verified && !dbUser.google_id) {
+        return next(new ErrorHandler("Invalid email.", 400));
+    }
+
+    if (dbUser.google_id && !dbUser.password) {
         return next(new ErrorHandler("This account is registered via Google. Please use Google login.", 400));
     }
 
-    const resetToken = user.getResetPasswordToken();
+    const { resetToken, resetPasswordToken, resetPasswordExpire } = getResetPasswordToken();
 
-    await user.save({ validateBeforeSave: false }); // Typo fix: validationBeforeSave -> validateBeforeSave
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({
+        reset_password_token: resetPasswordToken,
+        reset_password_expire: resetPasswordExpire.toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", dbUser.id);
+
+    if (updateError) {
+      return next(new ErrorHandler(updateError.message, 500));
+    }
+
     const resetPasswordUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
     const message = generateForgotPasswordEmailTemplate(resetPasswordUrl);
 
     try {
         await sendEmail({
-            email: user.email,
+            email: dbUser.email,
             subject: "Password Recovery (infoSoc)",
             message,
         });
         res.status(200).json({
             success: true,
-            message: `Email sent to ${user.email} successfully.`,
+            message: `Email sent to ${dbUser.email} successfully.`,
         });
     } catch (error) {
-        user.resetPasswordToken = undefined,
-            user.resetPasswordExpire = undefined,
-            await user.save({ validateBeforeSave: false });
+        await supabase
+          .from("users")
+          .update({
+            reset_password_token: null,
+            reset_password_expire: null,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", dbUser.id);
+
         return next(new ErrorHandler(error.message, 500));
     }
 });
@@ -244,12 +285,14 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
     const { token } = req.params;
     const resetPasswordToken = crypto.createHash("sha256").update(token).digest("hex");
 
-    const user = await User.findOne({
-        resetPasswordToken,
-        resetPasswordExpire: { $gt: Date.now() },
-    });
+    const { data: dbUser, error: findError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("reset_password_token", resetPasswordToken)
+      .gt("reset_password_expire", new Date().toISOString())
+      .maybeSingle();
 
-    if (!user) {
+    if (findError || !dbUser) {
         return next(
             new ErrorHandler("Reset password token is invalid or has been expired.", 400)
         );
@@ -262,32 +305,49 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
     if (req.body.password.length < 4 || req.body.password.length > 16 || req.body.confirmPassword.length < 4 || req.body.confirmPassword.length > 16) {
         return next(new ErrorHandler("Password must be between 4 and 16.", 400));
     }
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    user.password = hashedPassword;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
 
-    await user.save();
-    sendToken(user, 200, "Password reset successfully.", res);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const { data: updatedUser, error: updateError } = await supabase
+      .from("users")
+      .update({
+        password: hashedPassword,
+        reset_password_token: null,
+        reset_password_expire: null,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", dbUser.id)
+      .select()
+      .single();
+
+    if (updateError) {
+      return next(new ErrorHandler(updateError.message, 500));
+    }
+
+    sendToken(mapUserFromDb(updatedUser), 200, "Password reset successfully.", res);
 });
 
 export const updatePassword = catchAsyncErrors(async (req, res, next) => {
-
-    const user = await User.findById(req.user._id).select("+password");
-    if (!user) { // Added a check for user existence
-        return next(new ErrorHandler("User not found.", 404));
-    }
-
     const { currentPassword, newPassword, confirmNewPassword } = req.body;
     if (!currentPassword || !newPassword || !confirmNewPassword) {
         return next(new ErrorHandler("Please enter all fields.", 400));
     }
-    // If the user has a googleId but no local password, they can't change password
-    if (user.googleId && !user.password) {
+
+    const { data: dbUser, error: findError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", req.user._id)
+      .maybeSingle();
+
+    if (findError || !dbUser) {
+        return next(new ErrorHandler("User not found.", 404));
+    }
+
+    if (dbUser.google_id && !dbUser.password) {
         return next(new ErrorHandler("This account does not have a local password to update. Please use Google login.", 400));
     }
 
-    const isPasswordMatched = await bcrypt.compare(currentPassword, user.password);
+    const isPasswordMatched = await bcrypt.compare(currentPassword, dbUser.password);
     if (!isPasswordMatched) {
         return next(new ErrorHandler("Current password is incorrect.", 400));
     }
@@ -299,9 +359,21 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
             new ErrorHandler("New Password & confirm new password do not match.", 400)
         );
     }
+
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    await user.save();
+    
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({
+        password: hashedPassword,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", dbUser.id);
+
+    if (updateError) {
+      return next(new ErrorHandler(updateError.message, 500));
+    }
+
     res.status(200).json({
         success: true,
         message: "password updated.",
@@ -315,23 +387,36 @@ export const resendOtp = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Email is required.", 400));
     }
 
-    // Only resend OTP for accounts that are not verified and don't have a googleId
-    const user = await User.findOne({ email, accountVerified: false, googleId: { $exists: false } });
+    const { data: dbUser, error: findError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .eq("account_verified", false)
+      .is("google_id", null)
+      .maybeSingle();
 
-    if (!user) {
+    if (findError || !dbUser) {
         return next(new ErrorHandler("No unverified local account found with this email.", 400));
     }
 
-    // Optional: add cooldown check here if you want (not required for now)
+    const { verificationCode, verificationCodeExpire } = generateVerificationCode();
+    
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({
+        verification_code: verificationCode,
+        verification_code_expire: verificationCodeExpire.toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", dbUser.id);
 
-    const newOtp = await user.generateVerificationCode();
-    await user.save();
+    if (updateError) {
+      return next(new ErrorHandler(updateError.message, 500));
+    }
 
-    sendverificationCode(newOtp, email, res);
+    sendverificationCode(verificationCode, email, res);
 });
 
-
-// NEW FUNCTION: Google Sign-In/Sign-Up
 export const googleLogin = catchAsyncErrors(async (req, res, next) => {
     const { id_token } = req.body;
     console.log("🟢 Received Google login request", id_token ? "Token received" : "No token provided");
@@ -359,34 +444,70 @@ export const googleLogin = catchAsyncErrors(async (req, res, next) => {
 
         console.log(`🟢 Checking user existence: googleId=${googleId}, email=${email}`);
 
-        let user = await User.findOne({ googleId });
-        if (user) {
+        const { data: userByGoogle, error: err1 } = await supabase
+          .from("users")
+          .select("*")
+          .eq("google_id", googleId)
+          .maybeSingle();
+
+        if (userByGoogle) {
             console.log("🟢 Existing Google user found, logging in.");
-            return sendToken(user, 200, "Logged in with Google successfully.", res);
+            return sendToken(mapUserFromDb(userByGoogle), 200, "Logged in with Google successfully.", res);
         }
 
-        let existingUserByEmail = await User.findOne({ email });
-        if (existingUserByEmail) {
+        const { data: userByEmail, error: err2 } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", email)
+          .maybeSingle();
+
+        if (userByEmail) {
             console.log("🟢 Email found without GoogleId, linking account.");
-            existingUserByEmail.googleId = googleId;
-            existingUserByEmail.accountVerified = true;
-            await existingUserByEmail.save({ validateBeforeSave: false });
-            return sendToken(existingUserByEmail, 200, "Logged in with Google successfully.", res);
+            
+            const { data: updatedUser, error: updateError } = await supabase
+              .from("users")
+              .update({
+                google_id: googleId,
+                account_verified: true,
+                updated_at: new Date().toISOString()
+              })
+              .eq("id", userByEmail.id)
+              .select()
+              .single();
+
+            if (updateError) {
+              return next(new ErrorHandler(updateError.message, 500));
+            }
+
+            return sendToken(mapUserFromDb(updatedUser), 200, "Logged in with Google successfully.", res);
         }
 
         console.log("🟢 New Google user, creating account.");
-        user = await User.create({
-            googleId,
-            name,
-            email,
-            password: undefined,
-            avatar: { public_id: "google_avatar", url: avatarUrl },
-            role: "User",
-            accountVerified: true,
-        });
+        const id = generateMongoId();
+        
+        const dbUser = {
+          id,
+          google_id: googleId,
+          name,
+          email,
+          avatar_public_id: "google_avatar",
+          avatar_url: avatarUrl,
+          role: "User",
+          account_verified: true
+        };
+
+        const { data: newUser, error: insertError } = await supabase
+          .from("users")
+          .insert(dbUser)
+          .select()
+          .single();
+
+        if (insertError) {
+          return next(new ErrorHandler(insertError.message, 500));
+        }
 
         console.log("🟢 New Google account created.");
-        return sendToken(user, 200, "Logged in with Google successfully.", res);
+        return sendToken(mapUserFromDb(newUser), 200, "Logged in with Google successfully.", res);
     } catch (error) {
         console.error("❌ Google Token Verification Error:", error);
         return next(new ErrorHandler("Google login failed: Invalid token or server error.", 401));

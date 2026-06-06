@@ -1,127 +1,90 @@
 // server/models/userModel.js
-import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-// import bcrypt from "bcryptjs"; // You might need this if you manually hash passwords for local signup
 
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      lowercase: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      // password is NOT required if googleId is present.
-      // We will handle validation with a custom validator or in pre-save hook.
-      select: false,
-    },
-    // NEW FIELD FOR GOOGLE AUTH
-    googleId: {
-        type: String,
-        unique: true,
-        sparse: true, // Allows null values, so users without googleId don't cause unique constraint errors
+export const getJwtToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET_KEY, {
+    expiresIn: process.env.JWT_EXPIRE || "7d",
+  });
+};
+
+export const generateVerificationCode = () => {
+  function generateRandomFiveDigitNumber() {
+    const firstDigit = Math.floor(Math.random() * 9) + 1;
+    const remainingDigits = Math.floor(Math.random() * 100000)
+      .toString()
+      .padStart(4, "0");
+
+    return parseInt(firstDigit + remainingDigits);
+  }
+
+  const verificationCode = generateRandomFiveDigitNumber();
+  const verificationCodeExpire = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+  return { verificationCode, verificationCodeExpire };
+};
+
+export const getResetPasswordToken = () => {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  const resetPasswordExpire = new Date(Date.now() + 15 * 60 * 1000);
+
+  return { resetToken, resetPasswordToken, resetPasswordExpire };
+};
+
+export const mapUserFromDb = (dbUser) => {
+  if (!dbUser) return null;
+  const user = {
+    _id: dbUser.id,
+    name: dbUser.name,
+    email: dbUser.email,
+    password: dbUser.password, // Keep the hashed password inside the mapped user for bcrypt check
+    googleId: dbUser.google_id,
+    role: dbUser.role || "User",
+    accountVerified: dbUser.account_verified || false,
+    avatar: {
+      public_id: dbUser.avatar_public_id || "_",
+      url: dbUser.avatar_url || "_"
     },
-    role: {
-      type: String,
-      enum: ["Admin", "User"],
-      default: "User",
-    },
-    accountVerified: {
-      type: Boolean,
-      default: false,
-    },
-    cart: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Society",
-      },
-    ],
-    avatar: {
-      public_id: String,
-      url: String,
-    },
-    verificationCode: Number,
-    verificationCodeExpire: Date,
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
-  },
-  {
-    timestamps: true,
-  }
-);
+    verificationCode: dbUser.verification_code,
+    verificationCodeExpire: dbUser.verification_code_expire,
+    resetPasswordToken: dbUser.reset_password_token,
+    resetPasswordExpire: dbUser.reset_password_expire,
+    createdAt: dbUser.created_at,
+    updatedAt: dbUser.updated_at
+  };
 
-// Pre-save hook to handle password hashing for local users
-// If you are using `bcryptjs` for password hashing, uncomment the import above and add this:
-/*
-userSchema.pre("save", async function(next) {
-    // Only hash the password if it's modified and it's not a Google-only login
-    // For Google logins, the password field might be empty or a placeholder
-    if (!this.isModified("password")) {
-        return next();
-    }
-    // Only hash if password exists (i.e., it's a local user or google user setting a password later)
-    if (this.password) {
-        this.password = await bcrypt.hash(this.password, 10);
-    }
-    next();
-});
-*/
+  // Attach instance method to behave like Mongoose document instance
+  user.getJwtToken = function () {
+    return getJwtToken(this._id);
+  };
 
-// Method to compare password (for local login)
-// If you use bcryptjs, your comparePassword method would look like this:
-/*
-userSchema.methods.comparePassword = async function(enteredPassword) {
-    if (!this.password) return false; // If no password stored, can't compare
-    return await bcrypt.compare(enteredPassword, this.password);
-};
-*/
-
-// ✅ Generate JWT
-userSchema.methods.getJwtToken = function () {
-  // Ensure process.env.JWT_SECRET_KEY is defined in your config.env
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
-        expiresIn: process.env.JWT_EXPIRE, // Add expiry from your config
-    });
+  return user;
 };
 
-// ✅ Generate OTP
-userSchema.methods.generateVerificationCode = async function () {
-  function generateRandomFiveDigitNumber() {
-    const firstDigit = Math.floor(Math.random() * 9) + 1;
-    const remainingDigits = Math.floor(Math.random() * 100000)
-      .toString()
-      .padStart(4, "0");
-
-    return parseInt(firstDigit + remainingDigits);
-  }
-
-  const verificationCode = generateRandomFiveDigitNumber();
-  this.verificationCode = verificationCode;
-  this.verificationCodeExpire = Date.now() + 15 * 60 * 1000; // 15 mins
-  return verificationCode;
+export const mapUserToDb = (user) => {
+  if (!user) return null;
+  const dbUser = {};
+  if (user._id) dbUser.id = user._id;
+  if (user.name !== undefined) dbUser.name = user.name;
+  if (user.email !== undefined) dbUser.email = user.email;
+  if (user.password !== undefined) dbUser.password = user.password;
+  if (user.googleId !== undefined) dbUser.google_id = user.googleId;
+  if (user.role !== undefined) dbUser.role = user.role;
+  if (user.accountVerified !== undefined) dbUser.account_verified = user.accountVerified;
+  
+  if (user.avatar !== undefined) {
+    dbUser.avatar_public_id = user.avatar.public_id;
+    dbUser.avatar_url = user.avatar.url;
+  }
+  
+  if (user.verificationCode !== undefined) dbUser.verification_code = user.verificationCode;
+  if (user.verificationCodeExpire !== undefined) dbUser.verification_code_expire = user.verificationCodeExpire;
+  if (user.resetPasswordToken !== undefined) dbUser.reset_password_token = user.resetPasswordToken;
+  if (user.resetPasswordExpire !== undefined) dbUser.reset_password_expire = user.resetPasswordExpire;
+  return dbUser;
 };
-
-// ✅ Generate reset password token
-userSchema.methods.getResetPasswordToken = function () {
-  const resetToken = crypto.randomBytes(20).toString("hex");
-
-  this.resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
-
-  this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
-
-  return resetToken;
-};
-
-// Export the model as `User` for consistency with your existing code
-export const User = mongoose.model("User", userSchema);

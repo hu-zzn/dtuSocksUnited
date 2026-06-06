@@ -1,71 +1,39 @@
-import mongoose from "mongoose";
+// server/models/socModel.js
 
-const socSchema = new mongoose.Schema(
-    {
-        socName: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        socCategory: {
-            type: [String],
-            required: true,
-        },
-        socAbout: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        socLogo: {
-            type: String,
-            default: "_",  // Default placeholder image path or URL
-            trim: true,
-        },
-        socKeyEvents: [
-            {
-                name: { type: String, trim: true, required: true, default: "_" },
-                description: { type: String, trim: true, default: "_" },
-            },
-        ],
-        socHighlights: {
-            type: [String],
-            default: [],
-        },
-        socKeyWord: {
-            type: [String],
-            default: [],
-        },
-        socContact: {
-            team: [
-                {
-                    role: { type: String, required: true, trim: true },
-                    name: { type: String, required: true, trim: true },
-                }
-            ],
-            socSocials: {
-                instagram: {
-                    type: String,
-                    default: "_",
-                    trim: true,
-                },
-                linkedin: {
-                    type: String,
-                    default: "_",
-                    trim: true,
-                },
-                linktree: {
-                    type: String,
-                    default: "_",
-                    trim: true,
-                },
-            },
-        },
+export const mapSocFromDb = (dbSoc) => {
+  if (!dbSoc) return null;
+  return {
+    _id: dbSoc.id,
+    socName: dbSoc.soc_name,
+    socCategory: dbSoc.soc_category || [],
+    socAbout: dbSoc.soc_about,
+    socLogo: dbSoc.soc_logo || "_",
+    socKeyEvents: dbSoc.soc_key_events || [],
+    socHighlights: dbSoc.soc_highlights || [],
+    socKeyWord: dbSoc.soc_keyword || [],
+    socContact: {
+      team: dbSoc.soc_contact_team || [],
+      socSocials: dbSoc.soc_socials || { instagram: "_", linkedin: "_", linktree: "_" }
     },
-    {
-        timestamps: true,
-    }
-);
+    createdAt: dbSoc.created_at,
+    updatedAt: dbSoc.updated_at
+  };
+};
 
-export const Soc = mongoose.model("Society", socSchema);
-
-// export const Soc = mongoose.model("Soc", socSchema, "societies");
+export const mapSocToDb = (soc) => {
+  if (!soc) return null;
+  const dbSoc = {};
+  if (soc._id) dbSoc.id = soc._id;
+  if (soc.socName !== undefined) dbSoc.soc_name = soc.socName;
+  if (soc.socCategory !== undefined) dbSoc.soc_category = soc.socCategory;
+  if (soc.socAbout !== undefined) dbSoc.soc_about = soc.socAbout;
+  if (soc.socLogo !== undefined) dbSoc.soc_logo = soc.socLogo;
+  if (soc.socKeyEvents !== undefined) dbSoc.soc_key_events = soc.socKeyEvents;
+  if (soc.socHighlights !== undefined) dbSoc.soc_highlights = soc.socHighlights;
+  if (soc.socKeyWord !== undefined) dbSoc.soc_keyword = soc.socKeyWord;
+  if (soc.socContact !== undefined) {
+    if (soc.socContact.team !== undefined) dbSoc.soc_contact_team = soc.socContact.team;
+    if (soc.socContact.socSocials !== undefined) dbSoc.soc_socials = soc.socContact.socSocials;
+  }
+  return dbSoc;
+};

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
-import { User } from "../models/userModel.js";
+import { supabase } from "../database/supabaseClient.js";
+import { mapUserFromDb } from "../models/userModel.js";
 import ErrorHandler from "./errorMiddlewares.js";
 
 // 🔐 Authentication Middleware
@@ -13,13 +14,18 @@ export const isAuthenticated = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    const user = await User.findById(decoded.id);
+    
+    const { data: dbUser, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", decoded.id)
+      .maybeSingle();
 
-    if (!user) {
+    if (error || !dbUser) {
       return next(new ErrorHandler("User not found.", 404));
     }
 
-    req.user = user;
+    req.user = mapUserFromDb(dbUser);
     next();
   } catch (err) {
     return next(new ErrorHandler("Invalid token.", 401));

@@ -3,7 +3,7 @@ import express from "express";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import mongoose from "mongoose";
+import { supabase } from "./database/supabaseClient.js";
 import authRouter from "./routes/AuthRouter.js";
 import socRouter from "./routes/socRouter.js";
 import cartRouter from "./routes/cartRouter.js";
@@ -84,13 +84,14 @@ app.use("/api/v1/cart", cartRouter);
 // ✅ DB Check Route (useful for debugging deployment)
 app.get("/test-db", async (req, res) => {
   try {
-    if (!mongoose.connection.readyState)
-      throw new Error("Mongoose is not connected");
-    const dbStatus = await mongoose.connection.db.admin().ping();
-    res.send("✅ MongoDB Connected Successfully!");
+    const { error } = await supabase.from("users").select("id").limit(1);
+    if (error && error.code !== "PGRST116" && !error.message.includes("does not exist")) {
+      throw error;
+    }
+    res.send("✅ Supabase Connected Successfully!");
   } catch (err) {
-    console.error("❌ MongoDB ping failed:", err.message);
-    res.status(500).send("❌ MongoDB Connection Failed");
+    console.error("❌ Supabase connection check failed:", err.message);
+    res.status(500).send("❌ Supabase Connection Failed");
   }
 });
 
