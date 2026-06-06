@@ -53,13 +53,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${inter.className} bg-background text-foreground transition-colors duration-300`}>
-        {googleClientId ? (
-          <GoogleOAuthProvider clientId={googleClientId}>
-            <ProvidersWrapper>{children}</ProvidersWrapper>
-          </GoogleOAuthProvider>
-        ) : (
+        <GoogleOAuthProvider clientId={googleClientId || "dummy-id"}>
           <ProvidersWrapper>{children}</ProvidersWrapper>
-        )}
+        </GoogleOAuthProvider>
         <Toaster position="top-center" />
       </body>
     </html>
