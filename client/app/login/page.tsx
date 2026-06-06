@@ -71,7 +71,7 @@ export default function LoginPage() {
             const idToken = credentialResponse.credential;
 
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`, {
+                const response = await fetch(`/api/auth/google/login`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json',},
                     credentials: 'include',
