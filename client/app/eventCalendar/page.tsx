@@ -224,7 +224,7 @@ const App = () => {
       <div className="w-full max-w-4xl p-6 bg-white rounded-lg shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
           <h1 className="text-3xl font-bold text-gray-800">
-            Society Orientations and Recruitment
+            Society Orientations
           </h1>
           {canAddOrientation && (
             <Button onClick={openAddDialog} className="self-start sm:self-auto">
