@@ -29,6 +29,10 @@ export const authApi = {
 // SOCIETY API
 export const societyApi = {
   getAll: () => apiClient.get<{ success: boolean; socs: Society[] }>("/api/soc/all"),
+  managed: () =>
+    apiClient.get<{ success: boolean; socs: Society[] }>("/api/soc/managed"),
+  getForEdit: (id: string) =>
+    apiClient.get<{ success: boolean; soc: Society }>(`/api/soc/edit/${id}`),
   add: (data: Partial<Society>) =>
     apiClient.post<{ success: boolean; message: string; soc: Society }>("/api/soc/admin/add", data),
   update: (id: string, data: Partial<Society>) =>
@@ -36,6 +40,19 @@ export const societyApi = {
       `/api/soc/admin/update/${id}`, data),
   delete: (id: string) =>
     apiClient.delete<{ success: boolean; message: string }>(`/api/soc/admin/delete/${id}`),
+  edit: (
+    id: string,
+    data: Partial<Pick<Society, "socAbout" | "socHighlights" | "socKeyEvents" | "socContact">>
+  ) =>
+    apiClient.patch<{ success: boolean; message: string; soc: Society }>(
+      `/api/soc/edit/${id}`,
+      data
+    ),
+  transferAdmin: (id: string, data: { newAdminEmail?: string; newAdminId?: string }) =>
+    apiClient.post<{ success: boolean; message: string; soc: Society }>(
+      `/api/soc/transfer/${id}`,
+      data
+    ),
 };
 
 // CART API

@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu"
-import { ShoppingCart, User, Menu, X, Home, Calendar, Shield } from "lucide-react"
+import { ShoppingCart, User, Menu, X, Home, Calendar, Settings } from "lucide-react"
 import { useAuth } from "../context/auth-context"
 import { useCart } from "../context/cart-context"
 import { ThemeToggle } from "../components/theme-toggle"
@@ -58,9 +58,9 @@ export function Navbar() {
             <Link href="/eventCalendar" className="hover:text-primary transition-colors font-light">
               Orientation Calendar
             </Link>
-            {user?.role === "Admin" && (
-              <Link href="/admin" className="hover:text-primary transition-colors font-light">
-                Admin Panel
+            {user?.isSocAdmin && (
+              <Link href="/manage-society" className="hover:text-primary transition-colors font-light">
+                Manage Societies
               </Link>
             )}
           </div>
@@ -144,14 +144,14 @@ export function Navbar() {
                   Event Calendar
                 </Link>
 
-                {user?.role === "Admin" && (
+                {user?.isSocAdmin && (
                   <Link
-                    href="/admin"
+                    href="/manage-society"
                     onClick={closeMobileMenu}
                     className="flex items-center w-full px-8 py-3 hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                   >
-                    <Shield className="w-4 h-4 mr-3" />
-                    Admin Panel
+                    <Settings className="w-4 h-4 mr-3" />
+                    Manage Societies
                   </Link>
                 )}
               </div>

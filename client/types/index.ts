@@ -11,6 +11,7 @@ export interface User {
     url: string;
   };
   cart: string[];
+  isSocAdmin?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -57,6 +58,7 @@ export interface Society {
   socKeyWord: string[];
   socContact: SocContact;
   socLogo?: string;
+  socAdmin?: string | null;
   createdAt: string;
   updatedAt: string;
 }

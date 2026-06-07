@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
       socContact,
       socKeyWord,
       socLogo,
+      socAdmin,
     } = body;
 
     if (!socName || !socCategory || !socAbout) {
@@ -44,6 +45,7 @@ export async function POST(req: NextRequest) {
           linktree: "_",
         },
       soc_logo: socLogo || "_",
+      soc_admin: socAdmin || null,
     };
 
     const { data, error } = await supabase
