@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { Plus } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { orientationApi, societyApi } from "../../lib/apis";
 import { useAuth } from "../../context/auth-context";
 import type { Orientation, Society } from "../../types";
@@ -31,7 +31,7 @@ const sortOrientationsByDate = (a: Orientation, b: Orientation): number => {
   return new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime();
 };
 
-type AddDraft = {
+type Draft = {
   socId: string;
   name: string;
   eventDate: string;
@@ -40,13 +40,22 @@ type AddDraft = {
   isNew: boolean;
 };
 
-const emptyAddDraft = (): AddDraft => ({
+const emptyDraft = (): Draft => ({
   socId: "",
   name: "",
   eventDate: "",
   venue: "",
   time: "",
   isNew: false,
+});
+
+const draftFromOrientation = (o: Orientation): Draft => ({
+  socId: o.socId,
+  name: o.name ?? "",
+  eventDate: o.eventDate ?? "",
+  venue: o.venue ?? "",
+  time: o.time ?? "",
+  isNew: o.isNew ?? false,
 });
 
 const App = () => {
@@ -56,11 +65,17 @@ const App = () => {
   const [error, setError] = useState<string | null>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [managedSocs, setManagedSocs] = useState<Society[]>([]);
-  const [socsLoading, setSocsLoading] = useState(false);
-  const [draft, setDraft] = useState<AddDraft>(emptyAddDraft());
-  const [creating, setCreating] = useState(false);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [draft, setDraft] = useState<Draft>(emptyDraft());
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const canAddOrientation = Boolean(
+    user && (user.isSocAdmin || user.role === "Admin")
+  );
 
   const loadOrientations = async () => {
     try {
@@ -94,59 +109,113 @@ const App = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!canAddOrientation) {
+      setManagedSocs([]);
+      return;
+    }
+    let active = true;
+    (async () => {
+      try {
+        const res = await societyApi.managed();
+        if (active) setManagedSocs(res.socs ?? []);
+      } catch {
+        if (active) setManagedSocs([]);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [canAddOrientation]);
+
   const sorted = useMemo(
     () => [...orientations].sort(sortOrientationsByDate),
     [orientations]
   );
 
-  const canAddOrientation = Boolean(
-    user && (user.isSocAdmin || user.role === "Admin")
+  const managedSocIds = useMemo(
+    () => new Set(managedSocs.map((s) => s._id)),
+    [managedSocs]
   );
 
-  const openAddDialog = async () => {
-    setDraft(emptyAddDraft());
-    setDialogOpen(true);
-    setSocsLoading(true);
-    try {
-      const res = await societyApi.managed();
-      const socs = res.socs ?? [];
-      setManagedSocs(socs);
-      if (socs.length === 1) {
-        setDraft((d) => ({ ...d, socId: socs[0]._id }));
-      }
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to load your societies."
-      );
-    } finally {
-      setSocsLoading(false);
-    }
+  const canEdit = (event: Orientation): boolean => {
+    if (!user) return false;
+    if (user.role === "Admin") return true;
+    return managedSocIds.has(event.socId);
   };
 
-  const handleCreate = async () => {
-    if (!draft.socId) return toast.error("Pick a society.");
+  const openAddDialog = () => {
+    setEditingId(null);
+    const initial = emptyDraft();
+    if (managedSocs.length === 1) initial.socId = managedSocs[0]._id;
+    setDraft(initial);
+    setDialogOpen(true);
+  };
+
+  const openEditDialog = (event: Orientation) => {
+    setEditingId(event._id);
+    setDraft(draftFromOrientation(event));
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setEditingId(null);
+    setDraft(emptyDraft());
+  };
+
+  const handleSubmit = async () => {
+    if (!editingId && !draft.socId) return toast.error("Pick a society.");
     if (!draft.eventDate) return toast.error("Event date is required.");
     if (!draft.venue.trim()) return toast.error("Venue is required.");
     if (!draft.time.trim()) return toast.error("Time is required.");
 
-    setCreating(true);
+    setSaving(true);
     try {
-      const res = await orientationApi.create({
-        socId: draft.socId,
-        name: draft.name.trim() || undefined,
-        eventDate: draft.eventDate,
-        venue: draft.venue.trim(),
-        time: draft.time.trim(),
-        isNew: draft.isNew,
-      });
-      toast.success(res.message || "Orientation added.");
-      setDialogOpen(false);
-      setDraft(emptyAddDraft());
-      await loadOrientations();
+      if (editingId) {
+        const res = await orientationApi.update(editingId, {
+          name: draft.name.trim() || null,
+          eventDate: draft.eventDate,
+          venue: draft.venue.trim(),
+          time: draft.time.trim(),
+          isNew: draft.isNew,
+        });
+        toast.success(res.message || "Orientation updated.");
+        setOrientations((prev) =>
+          prev.map((o) => (o._id === editingId ? res.orientation : o))
+        );
+      } else {
+        const res = await orientationApi.create({
+          socId: draft.socId,
+          name: draft.name.trim() || undefined,
+          eventDate: draft.eventDate,
+          venue: draft.venue.trim(),
+          time: draft.time.trim(),
+          isNew: draft.isNew,
+        });
+        toast.success(res.message || "Orientation added.");
+        await loadOrientations();
+      }
+      closeDialog();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to add.");
+      toast.error(err instanceof Error ? err.message : "Failed to save.");
     } finally {
-      setCreating(false);
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (event: Orientation) => {
+    const label = event.name || event.socName || "this orientation";
+    if (!confirm(`Delete "${label}"? This can't be undone.`)) return;
+    setDeletingId(event._id);
+    try {
+      const res = await orientationApi.delete(event._id);
+      toast.success(res.message || "Orientation deleted.");
+      setOrientations((prev) => prev.filter((o) => o._id !== event._id));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete.");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -210,7 +279,30 @@ const App = () => {
                     </div>
                     <div className="text-gray-900">{formatDate(event.eventDate)}</div>
                     <div className="text-gray-900">{event.time}</div>
-                    <div className="text-gray-900">{event.venue}</div>
+                    <div className="text-gray-900 flex items-center justify-between gap-2">
+                      <span className="truncate">{event.venue}</span>
+                      {canEdit(event) && (
+                        <span className="flex gap-1 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => openEditDialog(event)}
+                            className="p-1.5 rounded-md hover:bg-gray-200 text-gray-700"
+                            aria-label="Edit orientation"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(event)}
+                            disabled={deletingId === event._id}
+                            className="p-1.5 rounded-md hover:bg-red-100 text-red-600 disabled:opacity-50"
+                            aria-label="Delete orientation"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -254,7 +346,7 @@ const App = () => {
                   </button>
 
                   {openIndex === index && (
-                    <div className="p-4 border-t border-gray-300 text-sm space-y-1 text-gray-700">
+                    <div className="p-4 border-t border-gray-300 text-sm space-y-2 text-gray-700">
                       <p>
                         <span className="font-semibold text-gray-800">Date:</span>{" "}
                         {formatDate(event.eventDate)}
@@ -267,6 +359,28 @@ const App = () => {
                         <span className="font-semibold text-gray-800">Venue:</span>{" "}
                         {event.venue}
                       </p>
+                      {canEdit(event) && (
+                        <div className="flex gap-2 pt-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditDialog(event)}
+                          >
+                            <Pencil className="w-4 h-4 mr-1" /> Edit
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(event)}
+                            disabled={deletingId === event._id}
+                            className="text-red-600 hover:bg-red-50"
+                          >
+                            <Trash2 className="w-4 h-4 mr-1" /> Delete
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -276,46 +390,56 @@ const App = () => {
         )}
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          if (!open) closeDialog();
+          else setDialogOpen(true);
+        }}
+      >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add an orientation</DialogTitle>
+            <DialogTitle>
+              {editingId ? "Edit orientation" : "Add an orientation"}
+            </DialogTitle>
             <DialogDescription>
-              Posted to the public orientation calendar.
+              {editingId
+                ? "Changes are reflected on the public calendar immediately."
+                : "Posted to the public orientation calendar."}
             </DialogDescription>
           </DialogHeader>
 
-          {socsLoading ? (
-            <p className="text-sm text-muted-foreground">Loading your societies…</p>
-          ) : managedSocs.length === 0 ? (
+          {!editingId && managedSocs.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               You aren&apos;t a soc admin of any society yet. Ask the platform
               admin to grant you access.
             </p>
           ) : (
             <div className="space-y-4">
+              {!editingId && (
+                <div>
+                  <Label htmlFor="orient-soc">Society</Label>
+                  <select
+                    id="orient-soc"
+                    value={draft.socId}
+                    onChange={(e) =>
+                      setDraft({ ...draft, socId: e.target.value })
+                    }
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="">Select a society…</option>
+                    {managedSocs.map((s) => (
+                      <option key={s._id} value={s._id}>
+                        {s.socName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div>
-                <Label htmlFor="add-soc">Society</Label>
-                <select
-                  id="add-soc"
-                  value={draft.socId}
-                  onChange={(e) =>
-                    setDraft({ ...draft, socId: e.target.value })
-                  }
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">Select a society…</option>
-                  {managedSocs.map((s) => (
-                    <option key={s._id} value={s._id}>
-                      {s.socName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <Label htmlFor="add-name">Name (optional)</Label>
+                <Label htmlFor="orient-name">Name (optional)</Label>
                 <Input
-                  id="add-name"
+                  id="orient-name"
                   value={draft.name}
                   onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                   placeholder="e.g. Auditions Round 1"
@@ -323,9 +447,9 @@ const App = () => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <Label htmlFor="add-date">Date</Label>
+                  <Label htmlFor="orient-date">Date</Label>
                   <Input
-                    id="add-date"
+                    id="orient-date"
                     type="date"
                     value={draft.eventDate}
                     onChange={(e) =>
@@ -334,9 +458,9 @@ const App = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="add-venue">Venue</Label>
+                  <Label htmlFor="orient-venue">Venue</Label>
                   <Input
-                    id="add-venue"
+                    id="orient-venue"
                     value={draft.venue}
                     onChange={(e) =>
                       setDraft({ ...draft, venue: e.target.value })
@@ -345,9 +469,9 @@ const App = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="add-time">Time</Label>
+                  <Label htmlFor="orient-time">Time</Label>
                   <Input
-                    id="add-time"
+                    id="orient-time"
                     value={draft.time}
                     onChange={(e) =>
                       setDraft({ ...draft, time: e.target.value })
@@ -371,19 +495,19 @@ const App = () => {
           )}
 
           <DialogFooter>
-            <Button
-              variant="ghost"
-              onClick={() => setDialogOpen(false)}
-              disabled={creating}
-            >
+            <Button variant="ghost" onClick={closeDialog} disabled={saving}>
               Cancel
             </Button>
             <Button
-              onClick={handleCreate}
-              disabled={creating || socsLoading || managedSocs.length === 0}
+              onClick={handleSubmit}
+              disabled={
+                saving || (!editingId && managedSocs.length === 0)
+              }
             >
-              {creating ? (
+              {saving ? (
                 <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              ) : editingId ? (
+                "Save"
               ) : (
                 "Create"
               )}
