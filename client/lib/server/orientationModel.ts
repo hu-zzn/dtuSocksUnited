@@ -1,6 +1,7 @@
 export interface DbOrientation {
   id: string;
   soc_id: string;
+  name: string | null;
   event_date: string;
   venue: string;
   event_time: string;
@@ -14,6 +15,7 @@ export interface MappedOrientation {
   socId: string;
   socName?: string;
   socLogo?: string;
+  name: string | null;
   eventDate: string;
   venue: string;
   time: string;
@@ -34,6 +36,7 @@ export const mapOrientationFromDb = (
     socId: dbRow.soc_id,
     socName: soc?.soc_name ?? undefined,
     socLogo: soc?.soc_logo ?? undefined,
+    name: dbRow.name ?? null,
     eventDate: dbRow.event_date,
     venue: dbRow.venue,
     time: dbRow.event_time,

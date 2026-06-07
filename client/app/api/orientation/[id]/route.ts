@@ -60,7 +60,8 @@ export async function PATCH(
     if (!guard.ok) return guard.response;
 
     const body = await req.json();
-    const { eventDate, venue, time, isNew } = body as {
+    const { name, eventDate, venue, time, isNew } = body as {
+      name?: string | null;
       eventDate?: string;
       venue?: string;
       time?: string;
@@ -70,6 +71,10 @@ export async function PATCH(
     const updates: Record<string, unknown> = {
       updated_at: new Date().toISOString(),
     };
+    if (name !== undefined) {
+      const trimmed = typeof name === "string" ? name.trim() : "";
+      updates.name = trimmed || null;
+    }
     if (eventDate !== undefined) updates.event_date = eventDate;
     if (venue !== undefined) updates.venue = venue;
     if (time !== undefined) updates.event_time = time;

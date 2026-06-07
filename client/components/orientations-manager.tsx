@@ -17,6 +17,7 @@ import {
 } from "./ui/card";
 
 type Draft = {
+  name: string;
   eventDate: string;
   venue: string;
   time: string;
@@ -24,6 +25,7 @@ type Draft = {
 };
 
 const emptyDraft = (): Draft => ({
+  name: "",
   eventDate: "",
   venue: "",
   time: "",
@@ -31,6 +33,7 @@ const emptyDraft = (): Draft => ({
 });
 
 const draftFromOrientation = (o: Orientation): Draft => ({
+  name: o.name ?? "",
   eventDate: o.eventDate ?? "",
   venue: o.venue ?? "",
   time: o.time ?? "",
@@ -199,6 +202,17 @@ export default function OrientationsManager({ socId }: { socId: string }) {
                 key={o._id}
                 className="border border-border rounded-xl p-4 space-y-3"
               >
+                <div>
+                  <Label htmlFor={`name-${o._id}`}>Name (optional)</Label>
+                  <Input
+                    id={`name-${o._id}`}
+                    value={d.name}
+                    onChange={(e) =>
+                      handleFieldChange(o._id, "name", e.target.value)
+                    }
+                    placeholder="e.g. Auditions Round 1"
+                  />
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
                     <Label htmlFor={`date-${o._id}`}>Date</Label>
@@ -279,6 +293,17 @@ export default function OrientationsManager({ socId }: { socId: string }) {
 
         {newDraft && (
           <div className="border border-dashed border-primary/40 rounded-xl p-4 space-y-3 bg-muted/20">
+            <div>
+              <Label htmlFor="new-name">Name (optional)</Label>
+              <Input
+                id="new-name"
+                value={newDraft.name}
+                onChange={(e) =>
+                  setNewDraft({ ...newDraft, name: e.target.value })
+                }
+                placeholder="e.g. Auditions Round 1"
+              />
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <Label htmlFor="new-date">Date</Label>

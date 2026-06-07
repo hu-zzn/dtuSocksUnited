@@ -55,7 +55,7 @@ export const getManagedOrientations = catchAsyncErrors(
 );
 
 export const addOrientation = catchAsyncErrors(async (req, res, next) => {
-  const { socId, eventDate, venue, time, isNew } = req.body;
+  const { socId, name, eventDate, venue, time, isNew } = req.body;
 
   if (!socId || !eventDate || !venue || !time) {
     return next(
@@ -83,9 +83,11 @@ export const addOrientation = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
+  const trimmedName = typeof name === "string" ? name.trim() : "";
   const insertRow = {
     id: generateMongoId(),
     soc_id: socId,
+    name: trimmedName || null,
     event_date: eventDate,
     venue,
     event_time: time,
@@ -145,8 +147,12 @@ export const updateOrientation = catchAsyncErrors(async (req, res, next) => {
   const guard = await loadAndAuthorize(req, id);
   if (guard.error) return next(guard.error);
 
-  const { eventDate, venue, time, isNew } = req.body;
+  const { name, eventDate, venue, time, isNew } = req.body;
   const updates = { updated_at: new Date().toISOString() };
+  if (name !== undefined) {
+    const trimmed = typeof name === "string" ? name.trim() : "";
+    updates.name = trimmed || null;
+  }
   if (eventDate !== undefined) updates.event_date = eventDate;
   if (venue !== undefined) updates.venue = venue;
   if (time !== undefined) updates.event_time = time;

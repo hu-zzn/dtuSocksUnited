@@ -12,8 +12,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { socId, eventDate, venue, time, isNew } = body as {
+    const { socId, name, eventDate, venue, time, isNew } = body as {
       socId?: string;
+      name?: string;
       eventDate?: string;
       venue?: string;
       time?: string;
@@ -46,9 +47,11 @@ export async function POST(req: NextRequest) {
     }
 
     const id = generateMongoId();
+    const trimmedName = typeof name === "string" ? name.trim() : "";
     const insertRow = {
       id,
       soc_id: socId,
+      name: trimmedName || null,
       event_date: eventDate,
       venue,
       event_time: time,

@@ -8,6 +8,7 @@ export const mapOrientationFromDb = (dbRow) => {
     socId: dbRow.soc_id,
     socName: soc?.soc_name,
     socLogo: soc?.soc_logo,
+    name: dbRow.name ?? null,
     eventDate: dbRow.event_date,
     venue: dbRow.venue,
     time: dbRow.event_time,

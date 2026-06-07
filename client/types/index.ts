@@ -70,6 +70,7 @@ export interface Orientation {
   socId: string;
   socName?: string;
   socLogo?: string;
+  name: string | null;
   eventDate: string; // ISO date (YYYY-MM-DD)
   venue: string;
   time: string;

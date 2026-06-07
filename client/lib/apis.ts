@@ -67,6 +67,7 @@ export const orientationApi = {
     ),
   create: (data: {
     socId: string;
+    name?: string;
     eventDate: string;
     venue: string;
     time: string;
@@ -79,7 +80,9 @@ export const orientationApi = {
     }>("/api/orientation/create", data),
   update: (
     id: string,
-    data: Partial<Pick<Orientation, "eventDate" | "venue" | "time" | "isNew">>
+    data: Partial<
+      Pick<Orientation, "name" | "eventDate" | "venue" | "time" | "isNew">
+    >
   ) =>
     apiClient.patch<{
       success: boolean;

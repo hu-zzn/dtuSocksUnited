@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS cart_items (
 CREATE TABLE IF NOT EXISTS orientations (
     id VARCHAR(24) PRIMARY KEY,
     soc_id VARCHAR(24) NOT NULL REFERENCES societies(id) ON DELETE CASCADE,
+    name TEXT,
     event_date DATE NOT NULL,
     venue TEXT NOT NULL,
     event_time TEXT NOT NULL,
