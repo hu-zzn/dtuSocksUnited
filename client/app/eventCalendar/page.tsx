@@ -140,7 +140,6 @@ const App = () => {
 
   const canEdit = (event: Orientation): boolean => {
     if (!user) return false;
-    if (user.role === "Admin") return true;
     return managedSocIds.has(event.socId);
   };
 
