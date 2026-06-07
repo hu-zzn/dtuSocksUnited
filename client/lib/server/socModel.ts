@@ -9,6 +9,7 @@ export interface DbSoc {
   soc_keyword: string[] | null;
   soc_contact_team: unknown[] | null;
   soc_socials: { instagram?: string; linkedin?: string; linktree?: string } | null;
+  soc_admin: string | null;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -29,6 +30,7 @@ export const mapSocFromDb = (dbSoc: DbSoc | null) => {
       socSocials:
         dbSoc.soc_socials || { instagram: "_", linkedin: "_", linktree: "_" },
     },
+    socAdmin: dbSoc.soc_admin || null,
     createdAt: dbSoc.created_at,
     updatedAt: dbSoc.updated_at,
   };

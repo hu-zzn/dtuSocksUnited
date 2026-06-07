@@ -34,6 +34,7 @@ export async function PATCH(
       socContact,
       socKeyWord,
       socLogo,
+      socAdmin,
     } = body;
 
     if (!socName || !socCategory || !socAbout) {
@@ -63,6 +64,7 @@ export async function PATCH(
           linktree: "_",
         },
       soc_logo: socLogo || "_",
+      soc_admin: socAdmin !== undefined ? socAdmin : previousSoc.soc_admin ?? null,
     };
 
     const { data: soc, error: insertError } = await supabase

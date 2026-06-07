@@ -11,26 +11,32 @@ export async function DELETE(
   const auth = await requireRole(req, "Admin");
   if (!auth.ok) return auth.response;
 
-  const { id } = await params;
+  try {
+    const { id } = await params;
 
-  const { data: soc, error: findError } = await supabase
-    .from("societies")
-    .select("id")
-    .eq("id", id)
-    .maybeSingle();
+    const { data: soc, error: findError } = await supabase
+      .from("societies")
+      .select("id")
+      .eq("id", id)
+      .maybeSingle();
 
-  if (findError) return errorResponse(findError.message, 500);
-  if (!soc) return errorResponse("Society not found.", 404);
+    if (findError) return errorResponse(findError.message, 500);
+    if (!soc) return errorResponse("Society not found.", 404);
 
-  const { error: deleteError } = await supabase
-    .from("societies")
-    .delete()
-    .eq("id", id);
+    const { error: deleteError } = await supabase
+      .from("societies")
+      .delete()
+      .eq("id", id);
 
-  if (deleteError) return errorResponse(deleteError.message, 500);
+    if (deleteError) return errorResponse(deleteError.message, 500);
 
-  return NextResponse.json({
-    success: true,
-    message: "Soc delete successfully.",
-  });
+    return NextResponse.json({
+      success: true,
+      message: "Soc delete successfully.",
+    });
+  } catch (err) {
+    console.error("DELETE /api/soc/admin/delete failed:", err);
+    const msg = err instanceof Error ? err.message : "Internal Server Error";
+    return errorResponse(msg, 500);
+  }
 }
