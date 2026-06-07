@@ -1,6 +1,6 @@
 // client/lib/apis.ts
 import { apiClient } from "./apiClient";
-import { User, LoginResponse, GenericResponse, Society } from "../types";
+import { User, LoginResponse, GenericResponse, Society, Orientation } from "../types";
 
 // AUTH API
 export const authApi = {
@@ -52,6 +52,43 @@ export const societyApi = {
     apiClient.post<{ success: boolean; message: string; soc: Society }>(
       `/api/soc/transfer/${id}`,
       data
+    ),
+};
+
+// ORIENTATION API
+export const orientationApi = {
+  getAll: () =>
+    apiClient.get<{ success: boolean; orientations: Orientation[] }>(
+      "/api/orientation/all"
+    ),
+  managed: () =>
+    apiClient.get<{ success: boolean; orientations: Orientation[] }>(
+      "/api/orientation/managed"
+    ),
+  create: (data: {
+    socId: string;
+    eventDate: string;
+    venue: string;
+    time: string;
+    isNew?: boolean;
+  }) =>
+    apiClient.post<{
+      success: boolean;
+      message: string;
+      orientation: Orientation;
+    }>("/api/orientation/create", data),
+  update: (
+    id: string,
+    data: Partial<Pick<Orientation, "eventDate" | "venue" | "time" | "isNew">>
+  ) =>
+    apiClient.patch<{
+      success: boolean;
+      message: string;
+      orientation: Orientation;
+    }>(`/api/orientation/${id}`, data),
+  delete: (id: string) =>
+    apiClient.delete<{ success: boolean; message: string }>(
+      `/api/orientation/${id}`
     ),
 };
 

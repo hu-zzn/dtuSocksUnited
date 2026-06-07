@@ -44,7 +44,21 @@ CREATE TABLE IF NOT EXISTS cart_items (
     UNIQUE(user_id, soc_id)
 );
 
--- 4. Enable Row Level Security (RLS) if desired.
+-- 4. Create orientations table
+CREATE TABLE IF NOT EXISTS orientations (
+    id VARCHAR(24) PRIMARY KEY,
+    soc_id VARCHAR(24) NOT NULL REFERENCES societies(id) ON DELETE CASCADE,
+    event_date DATE NOT NULL,
+    venue TEXT NOT NULL,
+    event_time TEXT NOT NULL,
+    is_new BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS orientations_soc_id_idx ON orientations(soc_id);
+CREATE INDEX IF NOT EXISTS orientations_event_date_idx ON orientations(event_date);
+
+-- 5. Enable Row Level Security (RLS) if desired.
 -- For maximum speed and simplicity matching their Express backend direct access,
 -- we will access Supabase using the service_role key, bypassing RLS.
 -- However, we can also enable RLS and write policies, but since the Node backend

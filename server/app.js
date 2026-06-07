@@ -7,6 +7,7 @@ import { supabase } from "./database/supabaseClient.js";
 import authRouter from "./routes/AuthRouter.js";
 import socRouter from "./routes/socRouter.js";
 import cartRouter from "./routes/cartRouter.js";
+import orientationRouter from "./routes/orientationRouter.js";
 import { errorMiddleware } from "./middlewares/errorMiddlewares.js";
 
 // ✅ Load environment variables
@@ -80,6 +81,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/soc", socRouter);
 app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/orientation", orientationRouter);
 
 // ✅ DB Check Route (useful for debugging deployment)
 app.get("/test-db", async (req, res) => {

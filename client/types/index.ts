@@ -62,3 +62,18 @@ export interface Society {
   createdAt: string;
   updatedAt: string;
 }
+
+// Orientation Types
+
+export interface Orientation {
+  _id: string;
+  socId: string;
+  socName?: string;
+  socLogo?: string;
+  eventDate: string; // ISO date (YYYY-MM-DD)
+  venue: string;
+  time: string;
+  isNew: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
+}

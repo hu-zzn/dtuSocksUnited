@@ -1,148 +1,152 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { orientationApi } from "../../lib/apis";
+import type { Orientation } from "../../types";
 
-// Define the TypeScript type for an Event object.
-type Event = {
-  societyName: string;
-  eventDate: string;
-  venue: string;
-  time: string;
-  isNew: boolean;
+const formatDate = (iso: string): string => {
+  if (!iso) return "TBA";
+  const [year, month, day] = iso.split("-");
+  if (!year || !month || !day) return iso;
+  return `${day}-${month}-${year}`;
+};
+
+const sortOrientationsByDate = (a: Orientation, b: Orientation): number => {
+  if (!a.eventDate) return 1;
+  if (!b.eventDate) return -1;
+  return new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime();
 };
 
 const App = () => {
-  const initialEvents: Event[] = [
-    { societyName: "AUV", eventDate: "03-08-2025", venue: "Online Mode", time: "7:30 pm", isNew: false },
-    { societyName: "EHAX", eventDate: "11-08-2025", venue: "SPS-11", time: "4:00 pm", isNew: false },
-    { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR Audi", time: "2:00 pm", isNew: false },
-    { societyName: "IPI-DTU", eventDate: "13-08-2025", venue: "SPS-13", time: "2:00 pm", isNew: false },
-    { societyName: "IFSA-DTU", eventDate: "10-08-2025", venue: "Online Mode", time: "8:00 pm", isNew: false },
-    { societyName: "SATTVA", eventDate: "10-08-2025", venue: "Online Mode", time: "9:00 pm", isNew: false },
-    { societyName: "Team Inferno", eventDate: "20-08-2025", venue: "SPS-11", time: "4:00 pm", isNew: false },
-    { societyName: "AIMS-DTU", eventDate: "18-08-2025", venue: "BR AUDI", time: "2:00 pm", isNew: false },
-    { societyName: "UGV-DTU", eventDate: "20-08-2025", venue: "SPS-6", time: "4:00 pm", isNew: false },
-    { societyName: "TEAM DEFINZ RACING", eventDate: "19-08-2025", venue: "SPS-10", time: "4:00 pm", isNew: false },
-    { societyName: "DTU NCC", eventDate: "22-08-2025", venue: "BR AUDI", time: "12:00 pm", isNew: false },
-    { societyName: "SAHITYA", eventDate: "21-08-2025", venue: "CONVOCATION HALL", time: "3:00 pm", isNew: false },
-    { societyName: "COGNITIVE MINDS", eventDate: "20-08-2025", venue: "AB3 218", time: "4:00 pm", isNew: false },
-    { societyName: "DTU Bhangra", eventDate: "27-08-2025", venue: "Windpoint (Science Block)", time: "3:30 pm", isNew: false },
-    { societyName: "DelTech MUN and Debsoc ", eventDate: "28-08-2025", venue: "AB", time: "12:00 pm", isNew: false },
-    { societyName: "IGTS-DTU ", eventDate: "28-08-2025", venue: "AB", time: "12:00 pm", isNew: false },
-    { societyName: "KALAKRITI ", eventDate: "29-08-2025", venue: "BR AUDI", time: "12:30 pm", isNew: false },
-    { societyName: "PARCHHAYI DTU  ", eventDate: "04-09-2025", venue: "BR AUDI", time: "2:00pm", isNew: false },
-    { societyName: "Panache DTU", eventDate: "03-09-2025", venue: "BR Auditorium", time: "12:00 PM onwards", isNew: false },
-    { societyName: "STEP DTU", eventDate: "28-08-2025", venue: "BR Auditorium", time: "11:00 AM", isNew: false },
-    { societyName: "Let’s Talk - The Communication & Soft Skills Society", eventDate: "09-09-2025", venue: "BR Auditorium", time: "2:00 PM", isNew: true },
-    { societyName: "BioSoc DTU", eventDate: "04-09-2025", venue: "Convocation Hall", time: "12:00 PM - 2:00 PM", isNew: false },
-    { societyName: "SIAM DTU ", eventDate: "10-09-2025", venue: "SPS-10", time: "3PM", isNew: true },
-    { societyName: "Madhurima Auditions", eventDate: "10-09-2025", venue: "Convocation Hall", time: "11PM-5PM", isNew: true },
-  ];
-
-  const [events, setEvents] = useState<Event[]>(initialEvents);
+  const [orientations, setOrientations] = useState<Orientation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  // Sort by latest first
-  const sortEventsByDate = (a: Event, b: Event): number => {
-    if (a.eventDate === "TBA") return 1;
-    if (b.eventDate === "TBA") return -1;
-    const [dayA, monthA, yearA] = a.eventDate.split("-").map(Number);
-    const [dayB, monthB, yearB] = b.eventDate.split("-").map(Number);
-    const dateA = new Date(yearA, monthA - 1, dayA);
-    const dateB = new Date(yearB, monthB - 1, dayB);
-    return dateB.getTime() - dateA.getTime(); // latest first
-  };
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await orientationApi.getAll();
+        if (!active) return;
+        setOrientations(res.orientations ?? []);
+      } catch (err) {
+        if (!active) return;
+        setError(err instanceof Error ? err.message : "Failed to load orientations.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const sorted = [...orientations].sort(sortOrientationsByDate);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
       <div className="w-full max-w-4xl p-6 bg-white rounded-lg shadow-xl">
-        {/* Page Title */}
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Society Orientations and Recruitment
         </h1>
 
-        {/* Desktop Table View */}
-        <div className="hidden md:block">
-          <div className="grid grid-cols-4 bg-gray-50 py-3 px-6 border border-gray-200 text-sm md:text-base font-semibold text-gray-700 rounded-t-lg">
-            <div>Society Name</div>
-            <div>Event Date</div>
-            <div>Time</div>
-            <div>Venue</div>
-          </div>
+        {loading && (
+          <p className="text-center text-gray-600">Loading orientations…</p>
+        )}
+        {error && !loading && (
+          <p className="text-center text-red-600">{error}</p>
+        )}
+        {!loading && !error && sorted.length === 0 && (
+          <p className="text-center text-gray-600">No orientations posted yet.</p>
+        )}
 
-          <div className="divide-y divide-gray-200 border border-t-0 border-gray-200 rounded-b-lg">
-            {events.sort(sortEventsByDate).map((event, index) => (
-              <div
-                key={index}
-                className={`grid grid-cols-4 gap-2 py-4 px-6 text-sm md:text-base ${
-                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                } hover:bg-gray-100 transition-colors duration-200`}
-              >
-                <div className="text-gray-900">
-                  {event.societyName}
-                  {event.isNew && (
-                    <span className="ml-2 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full">
-                      NEW
-                    </span>
-                  )}
-                </div>
-                <div className="text-gray-900">{event.eventDate}</div>
-                <div className="text-gray-900">{event.time}</div>
-                <div className="text-gray-900">{event.venue}</div>
+        {!loading && !error && sorted.length > 0 && (
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+              <div className="grid grid-cols-4 bg-gray-50 py-3 px-6 border border-gray-200 text-sm md:text-base font-semibold text-gray-700 rounded-t-lg">
+                <div>Society Name</div>
+                <div>Event Date</div>
+                <div>Time</div>
+                <div>Venue</div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Mobile Accordion View */}
-        <div className="md:hidden space-y-3">
-          {events.sort(sortEventsByDate).map((event, index) => (
-            <div
-              key={index}
-              className="border border-gray-300 rounded-lg bg-white shadow-sm"
-            >
-              {/* Accordion Header */}
-              <button
-                className="w-full flex justify-between items-center p-4 text-left text-gray-900 font-semibold"
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-              >
-                <span>
-                  {event.societyName}
-                  {event.isNew && (
-                    <span className="ml-2 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full">
-                      NEW
-                    </span>
-                  )}
-                </span>
-                <span
-                  className={`transform transition-transform ${
-                    openIndex === index ? "rotate-180" : ""
-                  }`}
-                >
-                  ▼
-                </span>
-              </button>
-
-              {/* Accordion Content */}
-              {openIndex === index && (
-                <div className="p-4 border-t border-gray-300 text-sm space-y-1 text-gray-700">
-                  <p>
-                    <span className="font-semibold text-gray-800">Date:</span>{" "}
-                    {event.eventDate}
-                  </p>
-                  <p>
-                    <span className="font-semibold text-gray-800">Time:</span>{" "}
-                    {event.time}
-                  </p>
-                  <p>
-                    <span className="font-semibold text-gray-800">Venue:</span>{" "}
-                    {event.venue}
-                  </p>
-                </div>
-              )}
+              <div className="divide-y divide-gray-200 border border-t-0 border-gray-200 rounded-b-lg">
+                {sorted.map((event, index) => (
+                  <div
+                    key={event._id}
+                    className={`grid grid-cols-4 gap-2 py-4 px-6 text-sm md:text-base ${
+                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    } hover:bg-gray-100 transition-colors duration-200`}
+                  >
+                    <div className="text-gray-900">
+                      {event.socName ?? "—"}
+                      {event.isNew && (
+                        <span className="ml-2 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full">
+                          NEW
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-gray-900">{formatDate(event.eventDate)}</div>
+                    <div className="text-gray-900">{event.time}</div>
+                    <div className="text-gray-900">{event.venue}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
+
+            {/* Mobile Accordion View */}
+            <div className="md:hidden space-y-3">
+              {sorted.map((event, index) => (
+                <div
+                  key={event._id}
+                  className="border border-gray-300 rounded-lg bg-white shadow-sm"
+                >
+                  <button
+                    className="w-full flex justify-between items-center p-4 text-left text-gray-900 font-semibold"
+                    onClick={() =>
+                      setOpenIndex(openIndex === index ? null : index)
+                    }
+                  >
+                    <span>
+                      {event.socName ?? "—"}
+                      {event.isNew && (
+                        <span className="ml-2 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full">
+                          NEW
+                        </span>
+                      )}
+                    </span>
+                    <span
+                      className={`transform transition-transform ${
+                        openIndex === index ? "rotate-180" : ""
+                      }`}
+                    >
+                      ▼
+                    </span>
+                  </button>
+
+                  {openIndex === index && (
+                    <div className="p-4 border-t border-gray-300 text-sm space-y-1 text-gray-700">
+                      <p>
+                        <span className="font-semibold text-gray-800">Date:</span>{" "}
+                        {formatDate(event.eventDate)}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-gray-800">Time:</span>{" "}
+                        {event.time}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-gray-800">Venue:</span>{" "}
+                        {event.venue}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

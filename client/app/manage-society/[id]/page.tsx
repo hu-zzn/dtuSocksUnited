@@ -18,6 +18,7 @@ import {
   CardTitle,
   CardDescription,
 } from "../../../components/ui/card";
+import OrientationsManager from "../../../components/orientations-manager";
 
 type TeamMember = { role: string; name: string };
 
@@ -408,6 +409,8 @@ export default function ManageSocietyEditPage() {
             </div>
           </CardContent>
         </Card>
+
+        <OrientationsManager socId={society._id} />
 
         <div className="sticky bottom-4 z-10 flex justify-end">
           <Button
