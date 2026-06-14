@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { supabase } from "@/lib/server/supabaseClient";
 import {
-  generateMongoId,
+  generateUUID,
   generateVerificationCode,
 } from "@/lib/server/userModel";
 import { sendVerificationCode } from "@/lib/server/sendVerificationCode";
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
       return errorResponse("Password must be between 4 and 16 characters.", 400);
     }
 
-    const id = generateMongoId();
+    const id = generateUUID();
     const hashedPassword = await bcrypt.hash(password, 10);
     const { verificationCode, verificationCodeExpire } =
       generateVerificationCode();

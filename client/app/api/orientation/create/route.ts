@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/server/supabaseClient";
 import { mapOrientationFromDb } from "@/lib/server/orientationModel";
-import { generateMongoId } from "@/lib/server/userModel";
+import { generateUUID } from "@/lib/server/userModel";
+import { isUuid } from "@/lib/server/validation";
 import { errorResponse, requireAuth } from "@/lib/server/auth";
 
 export const runtime = "nodejs";
@@ -28,6 +29,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!isUuid(socId)) {
+      return errorResponse("Society not found.", 404);
+    }
+
     const { data: soc, error: findError } = await supabase
       .from("societies")
       .select("id, soc_admin")
@@ -46,7 +51,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const id = generateMongoId();
+    const id = generateUUID();
     const trimmedName = typeof name === "string" ? name.trim() : "";
     const insertRow = {
       id,

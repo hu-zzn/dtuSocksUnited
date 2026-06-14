@@ -17,12 +17,6 @@ import { supabase } from "../database/supabaseClient.js";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const generateMongoId = () => {
-  return Array.from({ length: 24 }, () =>
-    Math.floor(Math.random() * 16).toString(16)
-  ).join("");
-};
-
 export const register = catchAsyncErrors(async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
@@ -80,7 +74,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
         }
 
         // Register new user (local signup)
-        const id = generateMongoId();
+        const id = crypto.randomUUID();
         const hashedPassword = await bcrypt.hash(password, 10);
         const { verificationCode, verificationCodeExpire } = generateVerificationCode();
 
@@ -483,7 +477,7 @@ export const googleLogin = catchAsyncErrors(async (req, res, next) => {
         }
 
         console.log("🟢 New Google user, creating account.");
-        const id = generateMongoId();
+        const id = crypto.randomUUID();
         
         const dbUser = {
           id,

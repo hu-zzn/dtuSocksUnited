@@ -78,7 +78,4 @@ export const getResetPasswordToken = () => {
   return { resetToken, resetPasswordToken, resetPasswordExpire };
 };
 
-export const generateMongoId = (): string =>
-  Array.from({ length: 24 }, () =>
-    Math.floor(Math.random() * 16).toString(16)
-  ).join("");
+export const generateUUID = (): string => crypto.randomUUID();

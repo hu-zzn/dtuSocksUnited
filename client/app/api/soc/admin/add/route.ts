@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/server/supabaseClient";
 import { mapSocFromDb } from "@/lib/server/socModel";
-import { generateMongoId } from "@/lib/server/userModel";
+import { generateUUID } from "@/lib/server/userModel";
+import { isUuid } from "@/lib/server/validation";
 import { errorResponse, requireRole } from "@/lib/server/auth";
 
 export const runtime = "nodejs";
@@ -28,7 +29,21 @@ export async function POST(req: NextRequest) {
       return errorResponse("Please fill all fields.", 400);
     }
 
-    const id = generateMongoId();
+    let adminId: string | null = null;
+    if (socAdmin != null && socAdmin !== "") {
+      if (!isUuid(socAdmin)) {
+        return errorResponse("socAdmin must be a valid user id.", 400);
+      }
+      const { data: adminUser } = await supabase
+        .from("users")
+        .select("id")
+        .eq("id", socAdmin)
+        .maybeSingle();
+      if (!adminUser) return errorResponse("socAdmin user not found.", 404);
+      adminId = socAdmin;
+    }
+
+    const id = generateUUID();
     const dbSoc = {
       id,
       soc_name: socName,
@@ -45,7 +60,7 @@ export async function POST(req: NextRequest) {
           linktree: "_",
         },
       soc_logo: socLogo || "_",
-      soc_admin: socAdmin || null,
+      soc_admin: adminId,
     };
 
     const { data, error } = await supabase

@@ -3,7 +3,7 @@ import { OAuth2Client } from "google-auth-library";
 import { supabase } from "@/lib/server/supabaseClient";
 import {
   mapUserFromDb,
-  generateMongoId,
+  generateUUID,
 } from "@/lib/server/userModel";
 import { errorResponse, sendTokenResponse } from "@/lib/server/auth";
 
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const id = generateMongoId();
+    const id = generateUUID();
     const { data: newUser, error: insertError } = await supabase
       .from("users")
       .insert({

@@ -1,13 +1,8 @@
+import crypto from "crypto";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import { supabase } from "../database/supabaseClient.js";
 import { mapSocFromDb } from "../models/socModel.js";
 import ErrorHandler from "../middlewares/errorMiddlewares.js";
-
-const generateMongoId = () => {
-  return Array.from({ length: 24 }, () =>
-    Math.floor(Math.random() * 16).toString(16)
-  ).join("");
-};
 
 export const addSoc = catchAsyncErrors(async (req, res, next) => {
     const { socName, socCategory, socAbout, socKeyEvents, socHighlights, socContact } = req.body;
@@ -16,7 +11,7 @@ export const addSoc = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Please fill all fields.", 400));
     }
     
-    const id = generateMongoId();
+    const id = crypto.randomUUID();
     
     const dbSoc = {
       id,

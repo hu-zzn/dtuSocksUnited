@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/server/supabaseClient";
 import { mapSocFromDb } from "@/lib/server/socModel";
+import { isUuid } from "@/lib/server/validation";
 import { errorResponse, requireAuth } from "@/lib/server/auth";
 
 export const runtime = "nodejs";
@@ -22,6 +23,10 @@ export async function POST(
         "Provide newAdminEmail or newAdminId of the new soc admin.",
         400
       );
+    }
+
+    if (newAdminId && !isUuid(newAdminId)) {
+      return errorResponse("newAdminId must be a valid user id.", 400);
     }
 
     const { data: soc, error: findError } = await supabase

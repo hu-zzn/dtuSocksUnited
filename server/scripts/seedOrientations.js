@@ -8,6 +8,7 @@
 // Resolves each row's societyName -> soc.id by case-insensitive, trimmed match.
 // Skips duplicates (same soc_id + event_date + event_time) so re-running is safe.
 
+import crypto from "crypto";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 
@@ -60,11 +61,6 @@ const ddmmyyyyToIso = (s) => {
   const [d, m, y] = s.split("-");
   return `${y}-${m}-${d}`;
 };
-const generateMongoId = () =>
-  Array.from({ length: 24 }, () =>
-    Math.floor(Math.random() * 16).toString(16)
-  ).join("");
-
 const run = async () => {
   console.log(`🌱 Seeding orientations${dryRun ? " (dry run)" : ""}…`);
 
@@ -109,7 +105,7 @@ const run = async () => {
     }
     existingKeys.add(key);
     toInsert.push({
-      id: generateMongoId(),
+      id: crypto.randomUUID(),
       soc_id: socId,
       event_date: eventDate,
       venue: row.venue,

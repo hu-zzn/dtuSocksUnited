@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/server/supabaseClient";
 import { mapSocFromDb } from "@/lib/server/socModel";
+import { isUuid } from "@/lib/server/validation";
 import { errorResponse, requireRole } from "@/lib/server/auth";
 
 export const runtime = "nodejs";
@@ -41,6 +42,26 @@ export async function PATCH(
       return errorResponse("Please fill all required fields.", 400);
     }
 
+    // Resolve soc_admin before the destructive delete below, so a malformed
+    // or non-existent admin id can never destroy the society.
+    let nextAdmin: string | null = previousSoc.soc_admin ?? null;
+    if (socAdmin !== undefined) {
+      if (socAdmin === null || socAdmin === "") {
+        nextAdmin = null;
+      } else {
+        if (!isUuid(socAdmin)) {
+          return errorResponse("socAdmin must be a valid user id.", 400);
+        }
+        const { data: adminUser } = await supabase
+          .from("users")
+          .select("id")
+          .eq("id", socAdmin)
+          .maybeSingle();
+        if (!adminUser) return errorResponse("socAdmin user not found.", 404);
+        nextAdmin = socAdmin;
+      }
+    }
+
     const { error: deleteError } = await supabase
       .from("societies")
       .delete()
@@ -64,7 +85,7 @@ export async function PATCH(
           linktree: "_",
         },
       soc_logo: socLogo || "_",
-      soc_admin: socAdmin !== undefined ? socAdmin : previousSoc.soc_admin ?? null,
+      soc_admin: nextAdmin,
     };
 
     const { data: soc, error: insertError } = await supabase

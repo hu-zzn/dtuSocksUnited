@@ -1,12 +1,11 @@
+import crypto from "crypto";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import { supabase } from "../database/supabaseClient.js";
 import { mapOrientationFromDb } from "../models/orientationModel.js";
 import ErrorHandler from "../middlewares/errorMiddlewares.js";
 
-const generateMongoId = () =>
-  Array.from({ length: 24 }, () =>
-    Math.floor(Math.random() * 16).toString(16)
-  ).join("");
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const SELECT_WITH_SOC =
   "*, societies:soc_id (soc_name, soc_logo)";
@@ -63,6 +62,10 @@ export const addOrientation = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
+  if (!UUID_RE.test(socId)) {
+    return next(new ErrorHandler("Society not found.", 404));
+  }
+
   const { data: soc, error: findError } = await supabase
     .from("societies")
     .select("id, soc_admin")
@@ -85,7 +88,7 @@ export const addOrientation = catchAsyncErrors(async (req, res, next) => {
 
   const trimmedName = typeof name === "string" ? name.trim() : "";
   const insertRow = {
-    id: generateMongoId(),
+    id: crypto.randomUUID(),
     soc_id: socId,
     name: trimmedName || null,
     event_date: eventDate,
