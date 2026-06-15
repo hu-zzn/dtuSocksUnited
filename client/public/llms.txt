@@ -1,0 +1,21 @@
+# infoSoc
+
+> infoSoc is the central platform connecting students with all the societies and clubs at Delhi Technological University (DTU). It helps students discover societies, browse events and orientations, and join the campus community.
+
+infoSoc brings DTU's technical, cultural, artistic, debate, music, and sports societies together in one place. Students can explore societies and upcoming events; society administrators manage their society's profile and post orientations.
+
+## Pages
+
+- [Home](https://infosoc.in/): Searchable directory of every DTU society and club, grouped by category.
+- [About](https://infosoc.in/about): What infoSoc is and the core team behind it.
+- [Event Calendar](https://infosoc.in/eventCalendar): Upcoming society events and orientation sessions.
+
+## Contact
+
+- Instagram: https://www.instagram.com/infosoc.dtu/
+- Email: infosoc.queries@gmail.com
+
+## Notes
+
+- The full, up-to-date list of societies (with their leadership) and events is shown on the Home and Event Calendar pages.
+- Account, cart, and society-management pages (/login, /register, /cart, /manage-society) require sign-in and are not general content pages.

@@ -1,44 +1,54 @@
-'use client';
-
-import React from "react";
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 
 import "./globals.css";
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { Toaster } from 'react-hot-toast';
-
-import { Navbar } from "../components/navbar";
-import { Footer } from "../components/footer";
-import BottomTicker from "../components/BottomTicker";
-import { ThemeProvider } from "../components/theme-provider";
-
-import { AuthProvider } from "../context/auth-context";
-import { CartProvider } from "../context/cart-context";
+import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-
-if (process.env.NODE_ENV !== 'production' && !googleClientId) {
-  console.warn('⚠️ NEXT_PUBLIC_GOOGLE_CLIENT_ID is not defined.');
-}
-
-const ProvidersWrapper = ({ children }: { children: React.ReactNode }) => (
-  <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-    <AuthProvider>
-      <CartProvider>
-        <Navbar />
-        <main className="min-h-screen bg-background text-foreground p-4 pb-16">
-          {children}
-        </main>
-        <BottomTicker />
-        <Footer />
-      </CartProvider>
-    </AuthProvider>
-  </ThemeProvider>
-);
+export const metadata: Metadata = {
+  metadataBase: new URL("https://infosoc.in"),
+  title: {
+    default: "infoSoc — Societies & Clubs at Delhi Technological University",
+    template: "%s | infoSoc",
+  },
+  description:
+    "infoSoc is the central platform connecting students with all the societies and clubs at Delhi Technological University (DTU). Discover societies, events, and join the community.",
+  applicationName: "infoSoc",
+  keywords: [
+    "infoSoc",
+    "DTU societies",
+    "DTU clubs",
+    "Delhi Technological University",
+    "college societies",
+    "student clubs DTU",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "infoSoc",
+    url: "https://infosoc.in",
+    title: "infoSoc — Societies & Clubs at Delhi Technological University",
+    description:
+      "infoSoc is the central platform connecting students with all the societies and clubs at Delhi Technological University (DTU).",
+    images: [{ url: "/infoSoc.png" }],
+  },
+  twitter: {
+    card: "summary",
+    title: "infoSoc — Societies & Clubs at Delhi Technological University",
+    description:
+      "infoSoc is the central platform connecting students with all the societies and clubs at Delhi Technological University (DTU).",
+    images: ["/infoSoc.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -53,10 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${inter.className} bg-background text-foreground transition-colors duration-300`}>
-        <GoogleOAuthProvider clientId={googleClientId || "dummy-id"}>
-          <ProvidersWrapper>{children}</ProvidersWrapper>
-        </GoogleOAuthProvider>
-        <Toaster position="top-center" />
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
