@@ -19,11 +19,13 @@ export default function PrivacyPolicyPage() {
       <div className="space-y-8 text-muted-foreground leading-relaxed">
         <section className="space-y-3">
           <p>
-            infoSoc ("we", "us", or "our") is the central platform connecting
-            students with societies and clubs at Delhi Technological University
-            (DTU). This Privacy Policy explains what information we collect when
-            you use infoSoc, how we use it, and the choices you have. By using
-            the platform, you agree to the practices described here.
+            infoSoc ("we", "us", or "our") is a student-run platform that helps
+            students discover societies and clubs at Delhi Technological
+            University (DTU). It is independently created by students and is not
+            officially affiliated with or endorsed by DTU. This Privacy Policy
+            explains what information we collect when you use infoSoc, how we
+            use it, and the choices you have. By using the platform, you agree
+            to the practices described here.
           </p>
         </section>
 
@@ -116,6 +118,16 @@ export default function PrivacyPolicyPage() {
             We may update this Privacy Policy from time to time. When we do, we
             will revise the "Last updated" date above. We encourage you to
             review this page periodically.
+          </p>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-2xl font-bold text-foreground">Disclaimer</h2>
+          <p>
+            This website is independently created by students and is not
+            officially affiliated with or endorsed by Delhi Technological
+            University. All content is for informational purposes only and may
+            not reflect the most accurate or official details.
           </p>
         </section>
 
