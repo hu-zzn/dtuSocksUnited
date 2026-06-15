@@ -50,6 +50,11 @@ export function Footer() {
                     About Us
                   </Button>
                 </Link>
+                <Link href="/privacy-policy">
+                  <Button variant="outline" className="justify-start w-full">
+                    Privacy Policy
+                  </Button>
+                </Link>
                 {/* Add other quick links here if needed, e.g., to clubs, events, etc. */}
               </div>
             </div>
