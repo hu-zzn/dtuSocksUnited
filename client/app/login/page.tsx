@@ -175,33 +175,37 @@ export default function LoginPage() {
                         </Button>
                     </form>
 
-                    <div className="relative flex justify-center text-sm">
-                        <span className="absolute px-2 text-muted-foreground bg-card -top-3">Or continue with</span>
-                        <div className="flex-grow border-t border-border"></div>
-                    </div>
+                    {process.env.NEXT_PUBLIC_ENABLE_GOOGLE_LOGIN === "true" && (
+                        <>
+                            <div className="relative flex justify-center text-sm">
+                                <span className="absolute px-2 text-muted-foreground bg-card -top-3">Or continue with</span>
+                                <div className="flex-grow border-t border-border"></div>
+                            </div>
 
-                    <div className="flex justify-center">
-                        {/* Corrected: Conditionally render the GoogleLogin component */}
-                        {!(loading || googleLoading) ? ( // Only render GoogleLogin if no other login is in progress
-                            <GoogleLogin
-                                onSuccess={handleGoogleSuccess}
-                                onError={handleGoogleError}
-                                // You can customize the button appearance here, e.g.:
-                                // shape="pill"
-                                // theme="outline"
-                                // text="signin_with"
-                                // size="large"
-                            />
-                        ) : (
-                            // Render a disabled button or spinner if a login is in progress
-                            <Button
-                                disabled
-                                className="w-full h-11 rounded-full bg-gray-200 text-gray-500"
-                            >
-                                {loading ? "Logging in..." : "Signing in with Google..."}
-                            </Button>
-                        )}
-                    </div>
+                            <div className="flex justify-center">
+                                {/* Corrected: Conditionally render the GoogleLogin component */}
+                                {!(loading || googleLoading) ? ( // Only render GoogleLogin if no other login is in progress
+                                    <GoogleLogin
+                                        onSuccess={handleGoogleSuccess}
+                                        onError={handleGoogleError}
+                                        // You can customize the button appearance here, e.g.:
+                                        // shape="pill"
+                                        // theme="outline"
+                                        // text="signin_with"
+                                        // size="large"
+                                    />
+                                ) : (
+                                    // Render a disabled button or spinner if a login is in progress
+                                    <Button
+                                        disabled
+                                        className="w-full h-11 rounded-full bg-gray-200 text-gray-500"
+                                    >
+                                        {loading ? "Logging in..." : "Signing in with Google..."}
+                                    </Button>
+                                )}
+                            </div>
+                        </>
+                    )}
 
                     <div className="text-center text-sm text-muted-foreground">
                         Don’t have an account?{" "}

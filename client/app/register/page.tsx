@@ -236,34 +236,38 @@ export default function RegisterPage() {
                 </Button>
             </form>
 
-            {/* Separator for "Or" */}
-            <div className="relative flex justify-center text-sm my-6"> {/* Added margin for spacing */}
-                <span className="absolute px-2 text-muted-foreground bg-card -top-3">Or</span>
-                <div className="flex-grow border-t border-border"></div>
-            </div>
+            {process.env.NEXT_PUBLIC_ENABLE_GOOGLE_LOGIN === "true" && (
+                <>
+                    {/* Separator for "Or" */}
+                    <div className="relative flex justify-center text-sm my-6"> {/* Added margin for spacing */}
+                        <span className="absolute px-2 text-muted-foreground bg-card -top-3">Or</span>
+                        <div className="flex-grow border-t border-border"></div>
+                    </div>
 
-            {/* Google Registration Button */}
-            <div className="flex justify-center">
-                {!(submitting || googleLoading) ? ( // Only render GoogleLogin if no other action is in progress
-                    <GoogleLogin
-                        onSuccess={handleGoogleSuccess}
-                        onError={handleGoogleError}
-                        text="signup_with" // Suggests "Sign up with Google" text
-                    // Optional button styling:
-                    // shape="pill"
-                    // theme="outline"
-                    // size="large"
-                    />
-                ) : (
-                    // Render a disabled button or spinner if an action is in progress
-                    <Button
-                        disabled
-                        className="w-full h-11 rounded-full bg-gray-200 text-gray-500"
-                    >
-                        {submitting ? "Registering..." : "Signing up with Google..."}
-                    </Button>
-                )}
-            </div>
+                    {/* Google Registration Button */}
+                    <div className="flex justify-center">
+                        {!(submitting || googleLoading) ? ( // Only render GoogleLogin if no other action is in progress
+                            <GoogleLogin
+                                onSuccess={handleGoogleSuccess}
+                                onError={handleGoogleError}
+                                text="signup_with" // Suggests "Sign up with Google" text
+                                // Optional button styling:
+                                // shape="pill"
+                                // theme="outline"
+                                // size="large"
+                            />
+                        ) : (
+                            // Render a disabled button or spinner if an action is in progress
+                            <Button
+                                disabled
+                                className="w-full h-11 rounded-full bg-gray-200 text-gray-500"
+                            >
+                                {submitting ? "Registering..." : "Signing up with Google..."}
+                            </Button>
+                        )}
+                    </div>
+                </>
+            )}
 
             <div className="mt-8 text-center text-sm text-muted-foreground">
                 Already have an account?{" "}

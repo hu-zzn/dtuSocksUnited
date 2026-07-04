@@ -12,6 +12,9 @@ export const runtime = "nodejs";
 const googleClient = new OAuth2Client((process.env.GOOGLE_CLIENT_ID || process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID));
 
 export async function POST(req: NextRequest) {
+  if (process.env.ENABLE_GOOGLE_LOGIN !== "true" && process.env.NEXT_PUBLIC_ENABLE_GOOGLE_LOGIN !== "true") {
+    return errorResponse("Google login is currently disabled. Please contact support.", 503);
+  }
   try {
     const body = await req.json();
     const id_token = body?.id_token;
