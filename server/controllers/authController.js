@@ -178,7 +178,11 @@ export const login = catchAsyncErrors(async (req, res, next) => {
     }
 
     if (dbUser.google_id && !dbUser.password) {
-        return next(new ErrorHandler("Please log in with Google for this account.", 400));
+        if (process.env.ENABLE_GOOGLE_LOGIN === "true") {
+            return next(new ErrorHandler("Please log in with Google for this account.", 400));
+        } else {
+            return next(new ErrorHandler("Google login is currently disabled. Please contact support.", 400));
+        }
     }
 
     const isPasswordMatched = await bcrypt.compare(password, dbUser.password);
@@ -229,10 +233,7 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("Invalid email.", 400));
     }
 
-    if (dbUser.google_id && !dbUser.password) {
-        return next(new ErrorHandler("This account is registered via Google. Please use Google login.", 400));
-    }
-
+    // Allow password reset for Google-only accounts (no error)
     const { resetToken, resetPasswordToken, resetPasswordExpire } = getResetPasswordToken();
 
     const { error: updateError } = await supabase
@@ -411,99 +412,106 @@ export const resendOtp = catchAsyncErrors(async (req, res, next) => {
     sendverificationCode(verificationCode, email, res);
 });
 
-export const googleLogin = catchAsyncErrors(async (req, res, next) => {
-    const { id_token } = req.body;
-    console.log("🟢 Received Google login request", id_token ? "Token received" : "No token provided");
+export const googleLogin = process.env.ENABLE_GOOGLE_LOGIN === "true"
+  ? catchAsyncErrors(async (req, res, next) => {
+      const { id_token } = req.body;
+      console.log("🟢 Received Google login request", id_token ? "Token received" : "No token provided");
 
-    if (!id_token) {
-        console.error("❌ Google login failed: ID token missing");
-        return next(new ErrorHandler("Google ID token is required", 400));
-    }
+      if (!id_token) {
+          console.error("❌ Google login failed: ID token missing");
+          return next(new ErrorHandler("Google ID token is required", 400));
+      }
 
-    try {
-        const ticket = await googleClient.verifyIdToken({
-            idToken: id_token,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
+      try {
+          const ticket = await googleClient.verifyIdToken({
+              idToken: id_token,
+              audience: process.env.GOOGLE_CLIENT_ID,
+          });
 
-        const payload = ticket.getPayload();
-        console.log("🟢 Google payload received:", payload);
+          const payload = ticket.getPayload();
+          console.log("🟢 Google payload received:", payload);
 
-        if (!payload || !payload.sub || !payload.email || !payload.name) {
-            console.error("❌ Incomplete Google payload:", payload);
-            return next(new ErrorHandler("Google login failed: Incomplete user data from Google.", 401));
-        }
+          if (!payload || !payload.sub || !payload.email || !payload.name) {
+              console.error("❌ Incomplete Google payload:", payload);
+              return next(new ErrorHandler("Google login failed: Incomplete user data from Google.", 401));
+          }
 
-        const { sub: googleId, email, name, picture: avatarUrl } = payload;
+          const { sub: googleId, email, name, picture: avatarUrl } = payload;
+          console.log(`🟢 Checking user existence: googleId=${googleId}, email=${email}`);
 
-        console.log(`🟢 Checking user existence: googleId=${googleId}, email=${email}`);
+          const { data: userByGoogle, error: err1 } = await supabase
+            .from("users")
+            .select("*")
+            .eq("google_id", googleId)
+            .maybeSingle();
 
-        const { data: userByGoogle, error: err1 } = await supabase
-          .from("users")
-          .select("*")
-          .eq("google_id", googleId)
-          .maybeSingle();
+          if (userByGoogle) {
+              console.log("🟢 Existing Google user found, logging in.");
+              return sendToken(mapUserFromDb(userByGoogle), 200, "Logged in with Google successfully.", res);
+          }
 
-        if (userByGoogle) {
-            console.log("🟢 Existing Google user found, logging in.");
-            return sendToken(mapUserFromDb(userByGoogle), 200, "Logged in with Google successfully.", res);
-        }
+          const { data: userByEmail, error: err2 } = await supabase
+            .from("users")
+            .select("*")
+            .eq("email", email)
+            .maybeSingle();
 
-        const { data: userByEmail, error: err2 } = await supabase
-          .from("users")
-          .select("*")
-          .eq("email", email)
-          .maybeSingle();
+          if (userByEmail) {
+              console.log("🟢 Email found without GoogleId, linking account.");
 
-        if (userByEmail) {
-            console.log("🟢 Email found without GoogleId, linking account.");
-            
-            const { data: updatedUser, error: updateError } = await supabase
-              .from("users")
-              .update({
-                google_id: googleId,
-                account_verified: true,
-                updated_at: new Date().toISOString()
-              })
-              .eq("id", userByEmail.id)
-              .select()
-              .single();
+              const { data: updatedUser, error: updateError } = await supabase
+                .from("users")
+                .update({
+                  google_id: googleId,
+                  account_verified: true,
+                  updated_at: new Date().toISOString()
+                })
+                .eq("id", userByEmail.id)
+                .select()
+                .single();
 
-            if (updateError) {
-              return next(new ErrorHandler(updateError.message, 500));
-            }
+              if (updateError) {
+                  return next(new ErrorHandler(updateError.message, 500));
+              }
 
-            return sendToken(mapUserFromDb(updatedUser), 200, "Logged in with Google successfully.", res);
-        }
+              return sendToken(mapUserFromDb(updatedUser), 200, "Logged in with Google successfully.", res);
+          }
 
-        console.log("🟢 New Google user, creating account.");
-        const id = crypto.randomUUID();
-        
-        const dbUser = {
-          id,
-          google_id: googleId,
-          name,
-          email,
-          avatar_public_id: "google_avatar",
-          avatar_url: avatarUrl,
-          role: "User",
-          account_verified: true
-        };
+          console.log("🟢 New Google user, creating account.");
+          const id = crypto.randomUUID();
 
-        const { data: newUser, error: insertError } = await supabase
-          .from("users")
-          .insert(dbUser)
-          .select()
-          .single();
+          const dbUser = {
+            id,
+            google_id: googleId,
+            name,
+            email,
+            avatar_public_id: "google_avatar",
+            avatar_url: avatarUrl,
+            role: "User",
+            account_verified: true
+          };
 
-        if (insertError) {
-          return next(new ErrorHandler(insertError.message, 500));
-        }
+          const { data: newUser, error: insertError } = await supabase
+            .from("users")
+            .insert(dbUser)
+            .select()
+            .single();
 
-        console.log("🟢 New Google account created.");
-        return sendToken(mapUserFromDb(newUser), 200, "Logged in with Google successfully.", res);
-    } catch (error) {
-        console.error("❌ Google Token Verification Error:", error);
-        return next(new ErrorHandler("Google login failed: Invalid token or server error.", 401));
-    }
-});
+          if (insertError) {
+              return next(new ErrorHandler(insertError.message, 500));
+          }
+
+          console.log("🟢 New Google account created.");
+          return sendToken(mapUserFromDb(newUser), 200, "Logged in with Google successfully.", res);
+      } catch (error) {
+          console.error("❌ Google Token Verification Error:", error);
+          return next(new ErrorHandler("Google login failed: Invalid token or server error.", 401));
+      }
+  })
+  : (req, res) => {
+      res.status(503).json({
+          success: false,
+          message: "Google login is currently disabled. Please contact support."
+      });
+  };
+
