@@ -2,7 +2,7 @@
 
 -- 1. Create societies table
 CREATE TABLE IF NOT EXISTS societies (
-    id VARCHAR(24) PRIMARY KEY, -- Stores original MongoDB _id
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Stores UUIDs
     soc_name TEXT NOT NULL,
     soc_category TEXT[] NOT NULL,
     soc_about TEXT NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS societies (
 
 -- 2. Create users table
 CREATE TABLE IF NOT EXISTS users (
-    id VARCHAR(24) PRIMARY KEY, -- Stores original MongoDB _id
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Stores UUIDs
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT,
@@ -38,16 +38,16 @@ CREATE TABLE IF NOT EXISTS users (
 -- 3. Create cart_items table
 CREATE TABLE IF NOT EXISTS cart_items (
     id BIGSERIAL PRIMARY KEY,
-    user_id VARCHAR(24) REFERENCES users(id) ON DELETE CASCADE,
-    soc_id VARCHAR(24) REFERENCES societies(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    soc_id UUID REFERENCES societies(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT now(),
     UNIQUE(user_id, soc_id)
 );
 
 -- 4. Create orientations table
 CREATE TABLE IF NOT EXISTS orientations (
-    id VARCHAR(24) PRIMARY KEY,
-    soc_id VARCHAR(24) NOT NULL REFERENCES societies(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    soc_id UUID NOT NULL REFERENCES societies(id) ON DELETE CASCADE,
     name TEXT,
     event_date DATE NOT NULL,
     venue TEXT NOT NULL,
