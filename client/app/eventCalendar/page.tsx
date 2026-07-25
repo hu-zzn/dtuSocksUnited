@@ -28,7 +28,7 @@ const formatDate = (iso: string): string => {
 const sortOrientationsByDate = (a: Orientation, b: Orientation): number => {
   if (!a.eventDate) return 1;
   if (!b.eventDate) return -1;
-  return new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime();
+  return new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime();
 };
 
 type Draft = {
