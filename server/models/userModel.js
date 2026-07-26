@@ -10,12 +10,7 @@ export const getJwtToken = (userId) => {
 
 export const generateVerificationCode = () => {
   function generateRandomFiveDigitNumber() {
-    const firstDigit = Math.floor(Math.random() * 9) + 1;
-    const remainingDigits = Math.floor(Math.random() * 100000)
-      .toString()
-      .padStart(4, "0");
-
-    return parseInt(firstDigit + remainingDigits);
+    return Math.floor(Math.random() * 90000) + 10000;
   }
 
   const verificationCode = generateRandomFiveDigitNumber();
